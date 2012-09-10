@@ -6,7 +6,7 @@ namespace libpi
   class Value
   { public:
       Value(int size, const char *date);
-      ~Value();
+      virtual ~Value();
   
       int GetSize();
       const char *GetDate();
@@ -15,4 +15,4 @@ namespace libpi
       int mySize;
       char *myDate;
   };
-}  
+}
