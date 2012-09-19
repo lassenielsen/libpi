@@ -1,3 +1,5 @@
+#ifndef libpi_channel
+#define libpi_channel
 /** This file defines the cpi (pi-calculus operations for C++) channel structure and interface.
  */
 #include <SDL_net.h>
@@ -18,3 +20,4 @@ namespace libpi
       IPaddress myAddress;
   };
 }
+#endif
