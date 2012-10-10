@@ -1,0 +1,77 @@
+#include <libpi/channel_mq.hpp>
+#include <sys/types.h>
+#include <unistd.h>
+using namespace libpi;
+using namespace std;
+
+Channel_MQ::Channel_MQ(const string &queue) // {{{
+{
+  if (queue=="")
+  { // Create new uniqie name
+    myName="/libpi_"+int2string(getpid())+"_"+int2strin(++ourQueueCounter);
+  }
+  else
+  { // Use given name for queue
+    myName="/libpi_static_"+queue;
+  }
+  myQueue=mq_open(myName,O_RDWR | O_CREAT);
+  mq_getattr(myQueue,&myAttributes);
+} // }}}
+
+Channel_MQ::~Channel_MQ() // {{{
+{
+  mq_close(myQueue);
+} // }}}
+
+void Channel_MQ::Send(const Message &msg) // {{{
+{
+  int pos=0;
+  int size=msg.GetSize();
+  char *data=msg.GetData();
+  mq_send(myQueue, &size, 4,0); // Send Size
+  while (pos<size)
+  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.msgsize;
+    mq_send(myQueue,data+pos,delta,0);
+    pos+=delta;
+  }
+} // }}}
+
+void Channel_MQ::Receive(Message &msg) // {{{
+{
+  int pos=0;
+  int size;
+  char *data = new char[myAttributes.mq_msgsize];
+  mq_receive(myQueue, &size, 4,0); // Receive Size
+  while (pos<size)
+  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.msgsize;
+    mq_receive(myQueue,data,delta,0);
+    pos+=delta;
+    msg.AddData(data,delta);
+  }
+} // }}}
+
+void Channel_MQ::SingleReceive(Message &msg) // {{{
+{
+  char *data = new char[myAttributes.mq_msgsize];
+  mq_receive(myQueue, data, myAttributes.mq_msgsize,0);
+  int size=*((int*)data);
+  msg.AddData(data+4,size);
+  delete [] data;
+} // }}}
+
+void Channel_MQ::SingleSend(const Message &msg) // {{{
+{
+  int size=msg.GetSize();
+  if (size+4>myAttributes.mq_msgsize)
+    throw "Channel::SingleSend message exceeds maximum size";
+  char *data = new char[myAttributes.mq_msgsize];
+  char *msgdata=msg.GetData();
+  memcpy(&size,data,4);
+  memcpy(msgdata,data+4,size);
+  mq_send(myQueue, data, size+4,0); // Send Size
+  delete [] data;
+} // }}}
+
+string Channel_MQ::GetAddress() // {{{
+{ return myName:
+} // }}}

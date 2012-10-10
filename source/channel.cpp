@@ -2,6 +2,7 @@
 #include <unistd.h>
 
 using namespace libpi;
+using namespace std;
 
 Channel::Channel() // {{{
 {
@@ -27,4 +28,10 @@ TCPsocket Channel::Accept() // {{{
 IPaddress Channel::GetAddress() // {{{
 {
   return myAddress;
+} // }}}
+
+string Channel::str() const // {{{
+{ string result;
+  // TODO: Create result
+  return result;
 } // }}}

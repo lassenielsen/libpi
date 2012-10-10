@@ -29,8 +29,11 @@ args = -fPIC $(opt) -I./include/ `sdl-config --cflags`
 
 library_objects = \
   objects/common.o \
-  objects/channel.o \
-  objects/session.o \
+  objects/message.o \
+  objects/channel_mq.o \
+  objects/session_mq.o \
+#  objects/channel_tcp.o \
+#  objects/session_tcp.o \
 
 default:
 	@echo "Use make config, make build, sudo make install, make clean and if you don't like it sudo make uninstall."

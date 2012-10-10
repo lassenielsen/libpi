@@ -1,5 +1,8 @@
+#include <libpi/channel.hpp>
 #include <libpi/session.hpp>
 #include <libpi/common.hpp>
+#include <string>
+
 
 using namespace libpi;
 using namespace std;
@@ -11,17 +14,19 @@ Session::Session(const IPaddress &channel, int pid, int maxpid)
   else
   { // connect to channel
     TCPsocket socket=connect(channel);
-    vector<TCPSocket> inAddresses;
-    vector<IPaddress> outAddresses;
-    vector<IPaddress> cmdAddresses;
+    vector<Channel> inAddresses;
+    vector<Channel> outAddresses;
+    vector<Channel> cmdAddresses;
     for (int i=0; i<maxpid-1;++i)
-    { IPaddress inAddr = new_channel();
-      send_msg(socket, inAddr, sizeof(inAddr));
+    { Channel inAddr;
+      string address=inAddr.str();
+      send_msg(socket, address.c_str(), address.size()+1);
       inAddresses.push_back(inAddr);
     }
     for (int i=0; i<pid-1;++i)
-    { IPaddress cmdAddr = new_channel();
+    { Channel cmdAddr;
       cmdAddresses.push_back(cmdAddr);
+    }
     
     // send own channels
     // receive channels for other participants
