@@ -4,34 +4,15 @@
 using namespace libpi;
 using namespace std;
 
-Channel::Channel() // {{{
-{
-  for (bool success=false; success=false;) 
-  { if ((SDLNet_ResolveHost(&myAddress, NULL, 0) >= 0) &&
-        (mySocket = SDLNet_TCP_Open(&myAddress)))
-      success=true;
-  }
-} // }}}
+map<string,Channel::channel_creator> Channel::ourChannelCreators;
 
-Channel::Channel(const TCPsocket &socket, const IPaddress &address) // {{{
-{ mySocket=socket;
-  myAddress=address;
-} // }}}
-
-TCPsocket Channel::Accept() // {{{
-{ TCPsocket s;
-  while (!(s = SDLNet_TCP_Accept(mySocket)))
-    usleep(100000); // No Connection: Wait a bit
-  return s;
-} // }}}
-
-IPaddress Channel::GetAddress() // {{{
-{
-  return myAddress;
-} // }}}
-
-string Channel::str() const // {{{
-{ string result;
-  // TODO: Create result
-  return result;
+Channel *Channel::Create(const string &address) // {{{
+{ // Split address into its components
+  int pos=address.find("://");
+  if (pos<0) throw "Channel::Create: address is not formatted correctly, missing ://";
+  string protocol=address.substr(0,pos-1);
+  string addr=address.substr(pos+3);
+  channel_creator create=ourChannelCreators[protocol];
+  if (create==NULL) throw (string)"Channel::Create: Unknown protocol: " + protocol;
+  return create(address);
 } // }}}

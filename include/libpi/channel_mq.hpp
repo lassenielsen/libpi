@@ -7,8 +7,8 @@
  */
 // }}}
 
-
 #include <libpi/channel.hpp>
+#include <mqueue.h>
 
 namespace libpi
 {

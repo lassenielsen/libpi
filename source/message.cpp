@@ -1,7 +1,7 @@
 #include <libpi/message.hpp>
 #include <string.h>
 
-uning namespace libpi;
+using namespace libpi;
 using namespace std;
 
 Message::Message() // {{{
@@ -14,7 +14,7 @@ Message::~Message() // {{{
 void Message::Clear() // {{{
 {
   while (myData.size()>0)
-  { delete [] myData.back()->first;
+  { delete [] myData.back().first;
     myData.pop_back();
   }
 } // }}}
@@ -27,9 +27,9 @@ const char *Message::GetData() // {{{
   int size=GetSize();
   char *data=new char[size];
   int pos=0;
-  for (vector<pair<char*,int> >::const_iterator it=myDate.begin();
+  for (vector<pair<char*,int> >::const_iterator it=myData.begin();
        it!=myData.end(); ++it)
-  { memcpy(it->first,data+pos,it->second);
+  { memcpy(data+pos,it->first,it->second);
   }
   Clear();
   myData.push_back(pair<char*,int>(data,size));
@@ -38,13 +38,13 @@ const char *Message::GetData() // {{{
 int Message::GetSize() // {{{
 {
   int size=0;
-  for (vector<pair<char*,int> >::const_iterator it=myDate.begin();
+  for (vector<pair<char*,int> >::const_iterator it=myData.begin(); it!=myData.end(); ++it)
     size+=it->second;
   return size;
 } // }}}
 void Message::AddData(const char *data, int size) // {{{
 {
   char *datacpy = new char[size];
-  memcpy(data,datacpy,size);
-  myData.push_back(pair<char*,int>(datacpy,size);
+  memcpy(datacpy,data,size);
+  myData.push_back(pair<char*,int>(datacpy,size));
 } // }}}

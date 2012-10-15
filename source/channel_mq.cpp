@@ -1,6 +1,8 @@
 #include <libpi/channel_mq.hpp>
+#include <libpi/common.hpp>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
 using namespace libpi;
 using namespace std;
 
@@ -8,13 +10,13 @@ Channel_MQ::Channel_MQ(const string &queue) // {{{
 {
   if (queue=="")
   { // Create new uniqie name
-    myName="/libpi_"+int2string(getpid())+"_"+int2strin(++ourQueueCounter);
+    myName="/libpi_"+int2str(getpid())+"_"+int2str(++ourQueueCounter);
   }
   else
   { // Use given name for queue
     myName="/libpi_static_"+queue;
   }
-  myQueue=mq_open(myName,O_RDWR | O_CREAT);
+  myQueue=mq_open(myName.c_str(),O_RDWR | O_CREAT);
   mq_getattr(myQueue,&myAttributes);
 } // }}}
 
