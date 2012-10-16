@@ -25,14 +25,14 @@ Channel_MQ::~Channel_MQ() // {{{
   mq_close(myQueue);
 } // }}}
 
-void Channel_MQ::Send(const Message &msg) // {{{
+void Channel_MQ::Send(Message &msg) // {{{
 {
   int pos=0;
   int size=msg.GetSize();
-  char *data=msg.GetData();
-  mq_send(myQueue, &size, 4,0); // Send Size
+  const char *data=msg.GetData();
+  mq_send(myQueue, (const char*)&size, 4,0); // Send Size
   while (pos<size)
-  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.msgsize;
+  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.mq_msgsize;
     mq_send(myQueue,data+pos,delta,0);
     pos+=delta;
   }
@@ -43,9 +43,9 @@ void Channel_MQ::Receive(Message &msg) // {{{
   int pos=0;
   int size;
   char *data = new char[myAttributes.mq_msgsize];
-  mq_receive(myQueue, &size, 4,0); // Receive Size
+  mq_receive(myQueue, (char*)&size, 4,0); // Receive Size
   while (pos<size)
-  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.msgsize;
+  { int delta=size-pos<myAttributes.mq_msgsize?size-pos:myAttributes.mq_msgsize;
     mq_receive(myQueue,data,delta,0);
     pos+=delta;
     msg.AddData(data,delta);
@@ -61,19 +61,19 @@ void Channel_MQ::SingleReceive(Message &msg) // {{{
   delete [] data;
 } // }}}
 
-void Channel_MQ::SingleSend(const Message &msg) // {{{
+void Channel_MQ::SingleSend(Message &msg) // {{{
 {
   int size=msg.GetSize();
   if (size+4>myAttributes.mq_msgsize)
     throw "Channel::SingleSend message exceeds maximum size";
   char *data = new char[myAttributes.mq_msgsize];
-  char *msgdata=msg.GetData();
-  memcpy(&size,data,4);
-  memcpy(msgdata,data+4,size);
+  const char *msgdata=msg.GetData();
+  memcpy(data,(const char*)&size,4);
+  memcpy(data+4,msgdata,size);
   mq_send(myQueue, data, size+4,0); // Send Size
   delete [] data;
 } // }}}
 
 string Channel_MQ::GetAddress() // {{{
-{ return myName:
+{ return myName;
 } // }}}

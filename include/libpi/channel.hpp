@@ -31,7 +31,7 @@ namespace libpi
  * Send transmits a message on the channel.
  */
 // }}}
-      virtual void Send(const Message &msg)=0;
+      virtual void Send(Message &msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for a message on the channel, receives and stores the message

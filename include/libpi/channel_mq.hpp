@@ -42,7 +42,7 @@ namespace libpi
        * @param msg contains the data to transmit.
        */
       // }}}
-      void Send(const Message &msg);
+      void Send(Message &msg);
       // DOCUMENTATION Receive method {{{
       /*!
        * Receives data through multiple messages and stores it in the
@@ -61,7 +61,7 @@ namespace libpi
        * @param msg contains the data to transmit.
        */
       // }}}
-      void SingleSend(const Message &msg);
+      void SingleSend(Message &msg);
       // DOCUMENTATION SingleReceive method {{{
       /*!
        * Receives data through a single message where the first 4 bytes
