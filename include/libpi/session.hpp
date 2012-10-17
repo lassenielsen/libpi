@@ -132,7 +132,7 @@ namespace libpi
 // }}}
       static Session *Create(const std::string &address);
 
-    private:
+    protected:
       virtual void DelegateTo(Channel &to)=0;
 
       std::vector<Channel*> myInChannels;

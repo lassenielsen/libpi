@@ -7,10 +7,11 @@
  */
 // }}}
 #include <libpi/session.hpp>
+#include <libpi/channel_mq.hpp>
 
 namespace libpi
 {
-  class Session_MQ
+  class Session_MQ : public Session
   { public:
 // DOCUMENTATION: Session constructor {{{
 /*!
