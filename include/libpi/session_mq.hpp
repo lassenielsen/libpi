@@ -33,8 +33,21 @@ namespace libpi
 // }}}
       virtual ~Session_MQ();
   
+      void Send(int to, Message &msg);
+      void Receive(int from, Message &msg);
+      void Delegate(int to, Session &s);
+      void DelegateTo(Channel &to);
+      Session *ReceiveSession(int from);
+      void Close();
+      bool Closed();
+
+      static Session *creator_del(std::string address, int pid, int actors);
+
     private:
-      virtual void DelegateTo(Channel &to);
+      Session_MQ(std::vector<Channel_MQ*> &inChannels, std::vector<Channel_MQ*> &outChannels, int pid, int actors);
+
+      std::vector<Channel_MQ*> myInChannels;
+      std::vector<Channel_MQ*> myOutChannels;
   };
 }
 #endif

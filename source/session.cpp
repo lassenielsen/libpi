@@ -4,60 +4,51 @@
 using namespace libpi;
 using namespace std;
 
-Session::~Session() // {{{
-{ Close();
+Session::Session(int pid, int actors) // {{{
+: myPid(pid),
+  myActors(actors)
+{
 } // }}}
 
-void Session::Send(int to, const Message &msg) // {{{
-{ if (Closed()) return;
-  if (to<0 || to>=GetActors()) throw "Session::Delegate: to must be between 0 and actors-1";
-  myOutChannels[to]->Send(msg);
+Session::~Session() // {{{
+{
+} // }}}
+
+void Session::Send(int to, Message &msg) // {{{
+{ throw "Session::Send: Trying to send on dummy session.";
 } //}}}
 
 void Session::Receive(int from, Message &msg) // {{{
-{ if (Closed()) return;
-  if (from<0 || from>=GetActors()) throw "Session::Delegate: to must be between 0 and actors-1";
-  myInChannels[from]->Receive(msg);
+{ throw "Session::Receive: Trying to receive on dummy session.";
 } //}}}
 
 void Session::Delegate(int to, Session &s) // {{{
-{ if (Closed()) return;
-  if (to<0 || to>=GetActors()) throw "Session::Delegate: to must be between 0 and actors-1";
-  s.DelegateTo(*myOutChannels[to]);
+{ throw "Session::Delegate: Trying to delegate over dummy session.";
 } //}}}
 
 Session *Session::ReceiveSession(int from) // {{{
-{ if (Closed()) return NULL;
-  if (from<0 || from>=GetActors()) throw "Session::ReceiveSession: from must be between 0 and actors-1";
-  Message addrMsg;
-  myInChannels[from]->Receive(addrMsg);
-  string addr=addrMsg.GetData();
-  return Create(addr);
+{ throw "Session::ReceiveSession: Trying to receive over dummy session.";
 } //}}}
 
 void Session::Close() // {{{
-{ while (myInChannels.size()>0)
-  { delete myInChannels.back();
-    myInChannels.pop_back();
-  }
-  while (myOutChannels.size()>0)
-  { delete myOutChannels.back();
-    myOutChannels.pop_back();
-  }
+{ myActors=0;
+  myPid=0;
 } // }}}
 
 bool Session::Closed() // {{{
-{ return myInChannels.size()==0;
+{ return myActors==0;
+} // }}}
+
+void Session::DelegateTo(Channel &to) // {{{
+{ throw "Session::DelegateTo: Trying to delegate dummy session.";
 } // }}}
 
 int Session::GetActors() // {{{
-{ if (Closed()) return 0;
-  return myActors;
+{ return myActors;
 } // }}}
 
 int Session::GetPid() // {{{
-{ if (Closed()) return 0;
-  return myPid;
+{ return myPid;
 } // }}}
 
 map<string,Session::session_creator> Session::ourSessionCreators;
@@ -70,7 +61,7 @@ Session *Session::Create(const string &address) // {{{
   string addr=address.substr(pos+3);
   pos=addr.find('@');
   if (pos<0) throw "Session::Create: address is not formatted correctly, missing @";
-  string meta=addr.substr(pos+2,addr.size()-pos-2);
+  string meta=addr.substr(pos+2,addr.size()-pos-3);
   addr=addr.substr(0,pos);
   pos=meta.find(',');
   if (pos<0) throw "Session::Create: address is not formatted correctly, missing , in metadata";
@@ -82,3 +73,6 @@ Session *Session::Create(const string &address) // {{{
   if (create==NULL) throw (string)"Session::Create: Unknown protocol: " + protocol;
   return create(address,pid,actors);
 } // }}}
+int Session::RegisterSessionCreator(string protocol,session_creator creator) // {{{
+{ ourSessionCreators[protocol]=creator;
+}

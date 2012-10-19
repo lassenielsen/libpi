@@ -31,6 +31,7 @@ namespace libpi
 * session.
 */
 // }}}
+      Session(int pid, int actors);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -49,7 +50,7 @@ namespace libpi
  * @param msg is the message to send.
  */
 // }}}
-      void Send(int to, const Message &msg);
+      virtual void Send(int to, Message &msg);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a message on the channel from the
@@ -60,7 +61,7 @@ namespace libpi
  * @param msg is the message to send.
  */
 // }}}
-      void Receive(int from, Message &msg);
+      virtual void Receive(int from, Message &msg);
 // DOCUMENTATION: Delegate method {{{
 /*!
  * Delegate "transmits" a session to the @to participant of the session.
@@ -74,7 +75,8 @@ namespace libpi
  * @s the session to transmit.
  */
 // }}}
-      void Delegate(int to, Session &s);
+      virtual void Delegate(int to, Session &s);
+      virtual void DelegateTo(Channel &to);
 // DOCUMENTATION: ReceiveSession method {{{
 /*!
  * ReceiveSession "receives" a session on the channel from the
@@ -86,7 +88,7 @@ namespace libpi
  * pid of the receiving process.
  */
 // }}}
-      Session *ReceiveSession(int from);
+      virtual Session *ReceiveSession(int from);
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
 // DOCUMENTATION: Close method {{{
@@ -94,7 +96,7 @@ namespace libpi
  * Close closes the session, disabeling further communication.
  */
 // }}}
-      void Close();
+      virtual void Close();
 // DOCUMENTATION: Closed method {{{
 /*!
  * Closed returns true if the session is closed.
@@ -131,13 +133,9 @@ namespace libpi
  */
 // }}}
       static Session *Create(const std::string &address);
+      static int RegisterSessionCreator(std::string protocol,session_creator creator);
 
-    protected:
-      virtual void DelegateTo(Channel &to)=0;
-
-      std::vector<Channel*> myInChannels;
-      std::vector<Channel*> myOutChannels;
-
+    private:
       int myPid;
       int myActors;
 
