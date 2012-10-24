@@ -39,7 +39,6 @@ namespace libpi
       void DelegateTo(Channel &to);
       Session *ReceiveSession(int from);
       void Close();
-      bool Closed();
 
       static Session *creator_del(std::string address, int pid, int actors);
 

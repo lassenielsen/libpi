@@ -3,37 +3,39 @@
 #include <vector>
 #include <sstream>
 
-using namespace libpi;
 using namespace std;
 
-TCPsocket connect(const IPaddress &channel) // {{{
-{ int wait=     100000;
-  int maxwait=10000000;
-  IPaddress c=channel;
-  TCPsocket socket=SDLNet_TCP_Open(&c);
-  while (!socket) // retry connection until success
-  { usleep(wait); // wait a bit before retrying
-    wait = 2*wait;
-    if (wait>maxwait)
-      wait=maxwait;
-    // retry
-    socket = SDLNet_TCP_Open(&c);
-  }
-  return socket;
-} // }}}
-
-void send_msg(const TCPsocket &s, const void *msg, int msgSize) // {{{
+namespace libpi
 {
-} // }}}
 
-void *receive_msg() // {{{
-{ vector<char*> buffers;
-  int size=1024;
-  while (size==1024)
-  { char *buffer=new char[1024];
-    //size=SDLNet_TCP_Recv();
-  }
-} // }}}
+//TCPsocket connect(const IPaddress &channel) // {{{
+//{ int wait=     100000;
+//  int maxwait=10000000;
+//  IPaddress c=channel;
+//  TCPsocket socket=SDLNet_TCP_Open(&c);
+//  while (!socket) // retry connection until success
+//  { usleep(wait); // wait a bit before retrying
+//    wait = 2*wait;
+//    if (wait>maxwait)
+//      wait=maxwait;
+//    // retry
+//    socket = SDLNet_TCP_Open(&c);
+//  }
+//  return socket;
+//} // }}}
+//
+//void send_msg(const TCPsocket &s, const void *msg, int msgSize) // {{{
+//{
+//} // }}}
+//
+//void *receive_msg() // {{{
+//{ vector<char*> buffers;
+//  int size=1024;
+//  while (size==1024)
+//  { char *buffer=new char[1024];
+//    //size=SDLNet_TCP_Recv();
+//  }
+//} // }}}
 
 int str2int(const string &s) // {{{
 { stringstream ss;
@@ -43,8 +45,10 @@ int str2int(const string &s) // {{{
   return result;
 } // }}}
 
-string str2int(int i) // {{{
+string int2str(int i) // {{{
 { stringstream ss;
   ss << i;
   return ss.str();
 } // }}}
+
+}

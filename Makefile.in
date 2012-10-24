@@ -23,13 +23,15 @@ OS_AUTO = $(shell uname -s)
 compiler = g++
 ctags = ctags
 opt = -g
-args = -fPIC $(opt) -I./include/ `sdl-config --cflags`
+args = -fPIC $(opt) -I./include/
 #OS_MAClibs = 
-#OS_LINUXlibs = -lrcp `sdl-config --libs`
+#OS_LINUXlibs = -lrt
 
 library_objects = \
   objects/common.o \
   objects/message.o \
+  objects/channel.o \
+  objects/session.o \
   objects/channel_mq.o \
   objects/session_mq.o \
 #  objects/channel_tcp.o \
