@@ -19,7 +19,8 @@ void Message::Clear() // {{{
   }
 } // }}}
 const char *Message::GetData() // {{{
-{ if (myData.size()==0)
+{ 
+  if (myData.size()==0)
     return NULL;
   if (myData.size()==1)
     return myData.begin()->first;
@@ -30,6 +31,7 @@ const char *Message::GetData() // {{{
   for (vector<pair<char*,int> >::const_iterator it=myData.begin();
        it!=myData.end(); ++it)
   { memcpy(data+pos,it->first,it->second);
+    pos+=it->second;
   }
   Clear();
   myData.push_back(pair<char*,int>(data,size));

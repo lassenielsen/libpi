@@ -32,6 +32,13 @@ namespace libpi
        */
       // }}}
       ~Channel_MQ();
+      // DOCUMENTATION Unlink method {{{
+      /*!
+       * Unlink ensures that the underlying message queue will be
+       * unlinked when the channel is closed (object is deleted).
+       */
+      // }}}
+      void Unlink();
 
       // DOCUMENTATION Send method {{{
       /*!
@@ -100,6 +107,12 @@ namespace libpi
        */
       // }}}
       mq_attr myAttributes;
+      // DOCUMENTATION myUnlink field {{{
+      /*!
+       * Stores if the queue shoulb be unlinked when closing channel.
+       */
+      // }}}
+      bool myUnlink;
       // DOCUMENTATION myName field {{{
       /*!
        * A counter used to create unique queue names.
