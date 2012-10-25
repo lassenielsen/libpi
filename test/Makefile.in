@@ -1,4 +1,4 @@
-programs = send2self-channel_mq
+programs = send2self-channel_mq ipc-channel_mq
 name = apims
 version = 2.5.0
 compiler = g++
