@@ -24,7 +24,13 @@ namespace libpi
   { public:
       // DOCUMENTATION Channel_MQ method {{{
       /*!
-       * Create new channel on given queue name (or on created new queue
+       * Create new channel from mqchannel address string
+       */
+      // }}}
+      Channel_MQ(const std::string &address);
+      // DOCUMENTATION Channel_MQ method {{{
+      /*!
+       * Create new channel from given queue key (or created new queue)
        */
       // }}}
       Channel_MQ(int key=-1);

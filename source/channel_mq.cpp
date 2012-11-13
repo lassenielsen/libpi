@@ -13,6 +13,40 @@ using namespace std;
 unsigned int Channel_MQ::ourQueueCounter=0;
 const int Channel_MQ::ourMessageLength=1024*8;
 
+Channel_MQ::Channel_MQ(const string &address) // {{{
+: myUnlink(false)
+{
+  // Extract key
+  string prefix("mqchannel");
+  if (address.compare(0, prefix.size(), prefix))
+      throw (string)"Channel_MQ::Channel_MQ: Address is not an mqchannel: " + address;
+  int key=str2int(address.substr(prefix.size()));
+
+  if (key==-1)
+  { // Create new uniqie name
+    myKey=getpid()*1000+(++ourQueueCounter);
+  }
+  else
+  { // Create name based on queue
+    myKey=key;
+  }
+  cout << "msgget(" << myKey << ",00600 | IPC_CREAT)" << endl;
+  myQueue=msgget(myKey,00600 | IPC_CREAT);
+  cout << "msgget(" << myKey << ",00600 | IPC_CREAT)=" << myQueue << endl;
+  if (myQueue==-1) // Error
+    throw (string)"Unable to create message queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+  if (msgctl(myQueue,IPC_STAT, &myAttributes)==-1)
+    throw (string)"Unable to stat queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+  cout << "Original msg_qbytes: " << myAttributes.msg_qbytes << endl;
+  cout << "Setting msg_qbytes to 100MB";
+  myAttributes.msg_qbytes=1024*1024*100;
+  if (msgctl(myQueue,IPC_SET, &myAttributes)==-1)
+    throw (string)"Unable to set msg_qbytes on queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+} // }}}
+
 Channel_MQ::Channel_MQ(int key) // {{{
 : myUnlink(false)
 {
