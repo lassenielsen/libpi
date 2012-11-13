@@ -46,7 +46,7 @@ Session_MQ::Session_MQ(vector<Channel_MQ> &chs, int pid, int actors) // {{{
   Message msg;
   if (pid==0) // Orchestrate session initiation
   {
-    myOutChannels.push_back(Channel::Create(myInChannels[pid]->GetAddress()));
+    myOutChannels.push_back(new Channel_MQ(myInChannels[pid]->GetAddress()));
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     {
       msg.Clear();
