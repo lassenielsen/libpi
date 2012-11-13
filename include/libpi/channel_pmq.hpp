@@ -1,33 +1,31 @@
-#ifndef libpi_channel_mq
-#define libpi_channel_mq
-// DOCUMENTATION: channel_pmq.hpp {{{
+#ifndef libpi_channel_pmq
+#define libpi_channel_pmq
+// DOCUMENTATION: channel_mq.hpp {{{
 /*! \file
  * This file defines the interface for channels implemented with
- * SYSTEM V memmory queues.
+ * POSIX memmory queues.
  */
 // }}}
 
 #include <libpi/channel.hpp>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
+#include <mqueue.h>
 
 namespace libpi
 {
 // DOCUMENTATION: channel_mq.hpp {{{
 /*!
- * Implementation of the Channel interface based on the
- * SYSTEM V memory queue technology.
+ * Implementation of the Channel interface based on the memory queue
+ * technology.
  */
 // }}}
-  class Channel_MQ : public Channel
+  class Channel_PMQ : public Channel
   { public:
       // DOCUMENTATION Channel_MQ method {{{
       /*!
        * Create new channel on given queue name (or on created new queue
        */
       // }}}
-      Channel_MQ(int key=-1);
+      Channel_MQ(const std::string &queue="");
       // DOCUMENTATION Channel_MQ method {{{
       /*!
        * Closes the channel, but does not unlink.
@@ -90,38 +88,37 @@ namespace libpi
       std::string GetAddress();
 
     private:
-      // DOCUMENTATION myKey field {{{
+      // DOCUMENTATION myName field {{{
       /*!
-       * Holds the queue kqy, used to establish a connection.
+       * Holds the queue name, used to establish a connection.
        */
       // }}}
-      key_t myKey;
-      // DOCUMENTATION myQueue field {{{
+      std::string myName;
+      // DOCUMENTATION myName field {{{
       /*!
        * Holds the queue identifier, representing this process'
        * connection to the queue.
        */
       // }}}
-      int myQueue;
-      // DOCUMENTATION myAttributes field {{{
+      mqd_t myQueue;
+      // DOCUMENTATION myName field {{{
       /*!
-       * Holds the queue attributes such at message limit and max length.
+       * Holds the attributes of the queue, such as the maximum message size.
        */
       // }}}
-      msqid_ds myAttributes;
+      mq_attr myAttributes;
       // DOCUMENTATION myUnlink field {{{
       /*!
        * Stores if the queue shoulb be unlinked when closing channel.
        */
       // }}}
       bool myUnlink;
-      // DOCUMENTATION ourQueueCounter field {{{
+      // DOCUMENTATION myName field {{{
       /*!
        * A counter used to create unique queue names.
        */
       // }}}
       static unsigned int ourQueueCounter;
-      static const int ourMessageLength;
   };
 }
 #endif
