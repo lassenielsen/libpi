@@ -14,7 +14,7 @@ int main(int argc, char **argv)
       return 1;
     case 0: // child process
       try
-      { Channel_MQ snd("test");
+      { Channel_MQ snd(102);
         Message msg;
         msg.Clear();
         msg.AddData("Ping",5);
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
       break;
     default: // parent
       try
-      { Channel_MQ rcv("test");
+      { Channel_MQ rcv(102);
         Message msg;
         msg.Clear();
         cout << "Parent: Receiving message..." << endl;

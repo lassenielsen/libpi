@@ -78,8 +78,8 @@ Session_MQ::Session_MQ(vector<Channel_MQ> &chs, int pid, int actors) // {{{
   else
   {
     msg.Clear();
-    msg.AddData("phony",//myInChannels.front()->GetAddress().c_str(),
-                6);//myInChannels.front()->GetAddress().size()+1);
+    msg.AddData(myInChannels.front()->GetAddress().c_str(),
+                myInChannels.front()->GetAddress().size()+1);
     chs[pid-1].SingleSend(msg);
     cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1].GetAddress() << endl;
     msg.Clear();

@@ -14,8 +14,8 @@ int main(int argc, char **argv)
       return 1;
     case 0: // child process
       try
-      { Channel_MQ snd("c2p");
-        Channel_MQ rcv("p2c");
+      { Channel_MQ snd(102);
+        Channel_MQ rcv(201);
         Message msg;
         msg.AddData("Ping",5);
         cout << "Child: Sending message: " << msg.GetData() << endl;
@@ -31,7 +31,6 @@ int main(int argc, char **argv)
         string s="Delegation succeeded!";
         msg.AddData(s.c_str(),s.size()+1);
         cout << "Child: Sending message on received channel: " << msg.GetData() << endl;
-        snd.Send(msg);
         del.Send(msg);
         rcv.Unlink();
       } catch (string s)
@@ -42,8 +41,8 @@ int main(int argc, char **argv)
       break;
     default: // parent
       try
-      { Channel_MQ snd("p2c");
-        Channel_MQ rcv("c2p");
+      { Channel_MQ snd(201);
+        Channel_MQ rcv(102);
         Channel_MQ del;
         Message msg;
         msg.AddData("Pong",5);
