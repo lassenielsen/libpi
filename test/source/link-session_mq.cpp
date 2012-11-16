@@ -82,7 +82,6 @@ int main(int argc, char **argv)
             link.push_back(Channel_MQ(10002));
             link[0].Unlink();
             link[1].Unlink();
-            link[2].Unlink();
             Session_MQ s(link,2,3);
             Message msg;
             string strmsg0="P2->P0";

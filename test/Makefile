@@ -1,4 +1,4 @@
-programs = send2self-channel_mq ipc-channel_mq link-session_mq wait4message-channel_mq
+programs = send2self-channel_mq ipc-channel_mq wait4message-channel_mq link-session_mq delegate-session_mq
 name = libpi-test
 version = 2.5.0
 compiler = g++

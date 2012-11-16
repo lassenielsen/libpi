@@ -57,7 +57,7 @@ Session *Session::Create(const string &address) // {{{
 { // Split address into its components
   int pos=address.find("://");
   if (pos<0) throw "Session::Create: address is not formatted correctly, missing ://";
-  string protocol=address.substr(0,pos-1);
+  string protocol=address.substr(0,pos);
   string addr=address.substr(pos+3);
   pos=addr.find('@');
   if (pos<0) throw "Session::Create: address is not formatted correctly, missing @";
@@ -71,7 +71,7 @@ Session *Session::Create(const string &address) // {{{
   int actors=str2int(actors_str);
   session_creator create=ourSessionCreators[protocol];
   if (create==NULL) throw (string)"Session::Create: Unknown protocol: " + protocol;
-  return create(address,pid,actors);
+  return create(addr,pid,actors);
 } // }}}
 int Session::RegisterSessionCreator(string protocol,session_creator creator) // {{{
 { ourSessionCreators[protocol]=creator;

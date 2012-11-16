@@ -140,9 +140,10 @@ void Session_MQ::Delegate(int to, Session &s) // {{{
   s.DelegateTo(*myOutChannels[to]);
 } //}}}
 
+// FIXME: redesign to GetAddress
 void Session_MQ::DelegateTo(Channel &to) // {{{
 { stringstream ss;
-  ss << "mqdel://";
+  ss << "mqsession://";
   for (int i=0; i<GetActors(); ++i)
   { if (i>0)
       ss << ",";
@@ -209,4 +210,4 @@ Session *Session_MQ::creator_del(string address, int pid, int actors) // {{{
   return new Session_MQ(inChannels,outChannels,pid,actors);
 } // }}}
 
-int _1=Session::RegisterSessionCreator("mqdel",Session_MQ::creator_del);
+int _1=Session::RegisterSessionCreator("mqsession",Session_MQ::creator_del);
