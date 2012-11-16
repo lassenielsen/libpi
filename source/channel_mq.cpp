@@ -87,7 +87,7 @@ void Channel_MQ::Unlink() // {{{
 
 void Channel_MQ::Send(Message &msg) // {{{
 {
-  cout << GetAddress() << "(" << myQueue << ") " << " << " << msg.GetData() << endl;
+  //cout << GetAddress() << "(" << myQueue << ") " << " << " << msg.GetData() << endl;
   int pos=0;
   long size=msg.GetSize();
   struct {long mtype; char mtext[ourMessageLength];} message;
@@ -136,12 +136,12 @@ void Channel_MQ::Receive(Message &msg) // {{{
     pos+=delta;
     //cout << "rcv6 size: " << size << ", pos: " << pos << ", delta: " << delta << "Buffer: " << msg.GetData() << endl;
   }
-  cout << GetAddress() << "(" << myQueue << ") " << " >> " << msg.GetData() << endl;
+  //cout << GetAddress() << "(" << myQueue << ") " << " >> " << msg.GetData() << endl;
 } // }}}
 
 void Channel_MQ::SingleSend(Message &msg) // {{{
 {
-  cout << GetAddress() << "(" << myQueue << ") " << " « " << msg.GetData() << endl;
+  //cout << GetAddress() << "(" << myQueue << ") " << " « " << msg.GetData() << endl;
   if (msg.GetSize()>ourMessageLength)
     throw (string)"Channel_MQ::SingleSend: Meggage is too long for a single message";
   struct {long mtype; char mtext[ourMessageLength];} message;
@@ -152,11 +152,11 @@ void Channel_MQ::SingleSend(Message &msg) // {{{
 
 void Channel_MQ::SingleReceive(Message &msg) // {{{
 {
-  cout << GetAddress() << "(" << myQueue << ") " << " » ..." << endl;
+  //cout << GetAddress() << "(" << myQueue << ") " << " » ..." << endl;
   struct {long mtype; char mtext[ourMessageLength];} message;
   int size=msgrcv(myQueue,&message,ourMessageLength,0,0);
   msg.AddData(&message.mtext[0],size);
-  cout << GetAddress() << "(" << myQueue << ") " << " » " << msg.GetData() << endl;
+  //cout << GetAddress() << "(" << myQueue << ") " << " » " << msg.GetData() << endl;
 } // }}}
 
 string Channel_MQ::GetAddress() // {{{

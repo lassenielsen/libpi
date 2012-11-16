@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         s.Receive(1,msg);
         cout << "Participant 0 received message: " << msg.GetData() << endl;
         msg.Clear();
-        s.Receive(3,msg);
+        s.Receive(2,msg);
         cout << "Participant 0 received message: " << msg.GetData() << endl;
       } catch (string s)
       { cerr << "Error in child (0) process." << endl
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
             msg.Clear();
             string strmsg1="P2->P1";
             msg.AddData(strmsg1.c_str(),strmsg1.size()+1);
-            s.Send(2,msg);
+            s.Send(1,msg);
             cout << "Sent. " << strmsg1 << " to participant 2" << endl;
             msg.Clear();
             s.Receive(0,msg);
