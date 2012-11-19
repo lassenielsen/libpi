@@ -140,7 +140,7 @@ void Session_MQ::Delegate(int to, Session &s) // {{{
   s.DelegateTo(*myOutChannels[to]);
 } //}}}
 
-// FIXME: redesign to GetAddress
+// FIXME: Redesign to GetAddress
 void Session_MQ::DelegateTo(Channel &to) // {{{
 { stringstream ss;
   ss << "mqsession://";
