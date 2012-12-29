@@ -7,6 +7,9 @@ using namespace std;
 Message::Message() // {{{
 {
 } // }}}
+Message::Message(const string &str) // {{{
+{ AddData(str.c_str(),str.size()+1);
+} // }}}
 Message::~Message() // {{{
 { Clear();
 } // }}}
@@ -50,3 +53,6 @@ void Message::AddData(const char *data, int size) // {{{
   memcpy(datacpy,data,size);
   myData.push_back(pair<char*,int>(datacpy,size));
 } // }}}
+Message::operator string () // {{{
+{ return (string)GetData();
+}

@@ -2,7 +2,7 @@
 #define libpi_session_mq
 // DOCUMENTATION: session_mq.hpp {{{
 /*! \file
- * This file denines the cpi (pi-calculus operations for C++) session
+ * This file defines the cpi (pi-calculus operations for C++) session
  * interface for implementation using memmory queues.
  */
 // }}}
@@ -50,4 +50,3 @@ namespace libpi
   };
 }
 #endif
-

@@ -8,6 +8,7 @@
 // }}}
 
 #include <vector>
+#include <string>
 
 namespace libpi
 {
@@ -20,12 +21,14 @@ namespace libpi
   class Message
   { public:
       Message();
+      Message(const std::string &str);
       ~Message();
 
       void Clear();
       const char *GetData();
       int GetSize();
       void AddData(const char *data, int size);
+      operator std::string ();
 
     private:
       std::vector<std::pair<char*,int> > myData;
