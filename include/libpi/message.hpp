@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <gmp.h>
 
 namespace libpi
 {
@@ -22,13 +23,15 @@ namespace libpi
   { public:
       Message();
       Message(const std::string &str);
+      Message(const mpz_t &val);
       ~Message();
 
       void Clear();
       const char *GetData();
       int GetSize();
       void AddData(const char *data, int size);
-      operator std::string ();
+      void GetValue(std::string &dest);
+      void GetValue(mpz_t dest);
 
     private:
       std::vector<std::pair<char*,int> > myData;

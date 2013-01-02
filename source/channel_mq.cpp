@@ -155,7 +155,10 @@ void Channel_MQ::SingleReceive(Message &msg) // {{{
   //cout << GetAddress() << "(" << myQueue << ") " << " » ..." << endl;
   struct {long mtype; char mtext[ourMessageLength];} message;
   int size=msgrcv(myQueue,&message,ourMessageLength,0,0);
-  msg.AddData(&message.mtext[0],size);
+  if (size==-1) // error
+    throw (string)"Unable to receive message on queue: " + int2str(myKey) + "(" + int2str(myQueue) + ")\n"
+                + "Error was: " + strerror(errno);
+    msg.AddData(&message.mtext[0],size);
   //cout << GetAddress() << "(" << myQueue << ") " << " » " << msg.GetData() << endl;
 } // }}}
 

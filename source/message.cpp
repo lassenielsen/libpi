@@ -1,5 +1,6 @@
 #include <libpi/message.hpp>
 #include <string.h>
+#include <stdlib.h>
 
 using namespace libpi;
 using namespace std;
@@ -9,6 +10,12 @@ Message::Message() // {{{
 } // }}}
 Message::Message(const string &str) // {{{
 { AddData(str.c_str(),str.size()+1);
+} // }}}
+Message::Message(const mpz_t &val) // {{{
+{ 
+  char *str=mpz_get_str(NULL,10,val);
+  AddData(str,strlen(str)+1);
+  free(str);
 } // }}}
 Message::~Message() // {{{
 { Clear();
@@ -53,6 +60,9 @@ void Message::AddData(const char *data, int size) // {{{
   memcpy(datacpy,data,size);
   myData.push_back(pair<char*,int>(datacpy,size));
 } // }}}
-Message::operator string () // {{{
-{ return (string)GetData();
-}
+void Message::GetValue(string &dest) // {{{
+{ dest =GetData();
+} // }}}
+void Message::GetValue(mpz_t result) // {{{
+{ mpz_init_set_str(result,GetData(),10);
+} // }}}
