@@ -30,6 +30,7 @@ args = -fPIC $(opt) -I./include/
 library_objects = \
   objects/common.o \
   objects/message.o \
+  objects/value.o \
   objects/channel.o \
   objects/session.o \
   objects/channel_mq.o \

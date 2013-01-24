@@ -64,5 +64,5 @@ void Message::GetValue(string &dest) // {{{
 { dest =GetData();
 } // }}}
 void Message::GetValue(mpz_t result) // {{{
-{ mpz_init_set_str(result,GetData(),10);
+{ mpz_set_str(result,GetData(),10);
 } // }}}
