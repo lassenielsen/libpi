@@ -4,6 +4,11 @@
 using namespace std;
 using namespace libpi;
 
+// Value (partial) Implementation
+Value::~Value // {{{
+{
+} // }}}
+
 // IntValue Implementation
 IntValue::IntValue(const IntValue &rhs) // {{{
 { mpz_init(myValue);
@@ -77,4 +82,41 @@ bool IntValue::operator==(const IntValue &rhs) // {{{
 const mpz_t &IntValue::GetValue() const // {{{
 { return myValue;
 } // }}}
+
+// StringValue Implementation
+StringValue::StringValue(const StringValue &rhs) // {{{
+{ myValue=rhs.GetValue();
+} // }}}
+StringValue &StringValue::operator=(const StringValue &rhs) // {{{
+{ myValue=rhs.GetValue();
+} // }}}
+
+StringValue::StringValue(Message &msg) // {{{
+{ myValue=msg.GetData();
+} // }}}
+StringValue::StringValue(const std::string &val) // {{{
+{ myValue=val;
+} // }}}
+
+StringValue::~StringValue() // {{{
+{
+} // }}}
+
+void StringValue::ToMessage(Message &msg) // {{{
+{ msg.AddData(myValue.c_str(),myValue.size()+1);
+} // }}}
+
+StringValue StringValue::operator+(const StringValue &rhs) // {{{
+{ return StringValue(myValue+rhs.GetValue());
+} // }}}
+bool StringValue::operator==(const StringValue &rhs) // {{{
+{ return myValue == rhs.GetValue();
+} // }}}
+const std::string &StringValue::GetValue() const // {{{
+{ return myValue;
+} // }}}
+
+// BoolValue Implementation
+
+// TupleValue Implementation
 
