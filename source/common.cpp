@@ -37,7 +37,7 @@ namespace libpi
 //  }
 //} // }}}
 
-int str2int(const string &s) // {{{
+inline int str2int(const string &s) // {{{
 { stringstream ss;
   ss << s;
   int result;
@@ -45,10 +45,49 @@ int str2int(const string &s) // {{{
   return result;
 } // }}}
 
-string int2str(int i) // {{{
+inline string int2str(int i) // {{{
 { stringstream ss;
   ss << i;
   return ss.str();
 } // }}}
 
+inline std::vector<std::string> stringsplit(const std::string &source, const std::string &delim) // {{{
+{ std::vector<std::string> dest;
+  if (delim=="")
+    return dest;
+  int lastpos=0;
+  int pos = source.find(delim,lastpos);
+  while (pos < source.size())
+  {
+    dest.push_back(source.substr(lastpos,pos-lastpos));
+    lastpos=pos+delim.size();
+    pos = source.find(delim,lastpos);
+  }
+  dest.push_back(source.substr(lastpos,source.size()-lastpos));
+  return dest;
+} // }}}
+
+inline std::string stringreplace(const std::string &source, const std::string &from, const std::string &to) // {{{
+{
+  std::vector<std::string> split=stringsplit(source,from);
+  std::stringstream dest;
+  for (std::vector<std::string>::const_iterator it=split.begin();
+       it!=split.end(); ++it)
+  {
+    if (it!=split.begin())
+      dest << to;
+    dest << *it;
+  }
+  return dest.str();
+} // }}}
+
+template <class T>
+inline void DeleteVector(std::vector<T*> &container) // {{{
+{
+  while (container.size() > 0)
+  {
+    delete container.back();
+    container.pop_back();
+  }
+} // }}}
 }

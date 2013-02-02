@@ -2,6 +2,7 @@
 #define PIVALUE_HPP
 
 #include <libpi/message.hpp>
+#include <vector>
 
 namespace libpi
 {
@@ -11,8 +12,12 @@ namespace libpi
  */
 // }}}
 class Value // {{{
-{ virtual ~Valut();
-  virtual void ToMessage(Message &dest)=0;
+{ public:
+    virtual ~Value();
+    void ToMessage(Message &dest) const;
+    virtual std::string ToString() const=0;
+    virtual Value *Copy() const=0;
+    virtual bool operator==(const Value &rhs) const;
 }; // }}}
 
 // DOCUMENTATION: IntValue class {{{
@@ -27,6 +32,7 @@ class IntValue : public Value // {{{
     // Copy constructor and assignment
     IntValue(const IntValue &val);
     IntValue &operator=(const IntValue &rhs);
+    IntValue *Copy() const;
 
     // Constructors
     IntValue(Message &msg);
@@ -35,13 +41,13 @@ class IntValue : public Value // {{{
     IntValue(long val);
     virtual ~IntValue();
 
-    void ToMessage(Message &dest);
-    IntValue operator+(const IntValue &rhs);
-    IntValue operator-(const IntValue &rhs);
-    IntValue operator*(const IntValue &rhs);
-    IntValue operator/(const IntValue &rhs);
-    bool operator<=(const IntValue &rhs);
-    bool operator==(const IntValue &rhs);
+    std::string ToString() const;
+    IntValue operator+(const IntValue &rhs) const;
+    IntValue operator-(const IntValue &rhs) const;
+    IntValue operator*(const IntValue &rhs) const;
+    IntValue operator/(const IntValue &rhs) const;
+    bool operator<=(const IntValue &rhs) const;
+    bool operator==(const Value &rhs) const;
 
     const mpz_t &GetValue() const;
   private:
@@ -60,15 +66,16 @@ class StringValue : public Value // {{{
     // Copy constructor and assignment
     StringValue(const StringValue &val);
     StringValue &operator=(const StringValue &rhs);
+    StringValue *Copy() const;
 
     // Constructors
     StringValue(Message &msg);
     StringValue(const std::string &val);
     virtual ~StringValue();
 
-    void ToMessage(Message &dest);
-    StringValue operator+(const StringValue &rhs);
-    bool operator==(const StringValue &rhs);
+    std::string ToString() const;
+    StringValue operator+(const StringValue &rhs) const;
+    bool operator==(const Value &rhs) const;
 
     const std::string &GetValue() const;
   private:
@@ -87,15 +94,18 @@ class BoolValue : public Value // {{{
     // Copy constructor and assignment
     BoolValue(const BoolValue &val);
     BoolValue &operator=(const BoolValue &rhs);
+    BoolValue *Copy() const;
 
     // Constructors
     BoolValue(Message &msg);
     BoolValue(bool val);
     virtual ~BoolValue();
 
-    void ToMessage(Message &dest);
-    BoolValue operator+(const BoolValue &rhs);
-    bool operator==(const BoolValue &rhs);
+    std::string ToString() const;
+    BoolValue operator&&(const BoolValue &rhs) const;
+    BoolValue operator||(const BoolValue &rhs) const;
+    BoolValue operator!() const;
+    bool operator==(const Value &rhs) const;
 
     bool GetValue() const;
   private:
@@ -114,21 +124,25 @@ class TupleValue : public Value // {{{
     // Copy constructor and assignment
     TupleValue(const TupleValue &val);
     TupleValue &operator=(const TupleValue &rhs);
+    TupleValue *Copy() const;
 
     // Constructors
-    TupleValue(Message &msg);
+    // FIXME: Implemenr dynamic value creation method
+    //TupleValue(Message &msg);
     TupleValue();
     virtual ~TupleValue();
 
-    void AddValue(Value *val);
+    std::string ToString() const;
+    const Value &GetValue(const IntValue &index) const;
+    const Value &GetValue(int index) const;
+    bool operator==(const Value &rhs) const;
 
-    void ToMessage(Message &dest);
-    Value &GetValue(const IntValue &rhs);
-    Value &GetValue(int index);
-    bool operator==(const TupleValue &rhs);
+    const std::vector<Value*> &GetValues() const;
+    void AddValue(const Value &val);
+
 
   private:
-    vector<Value*> myValues;
+    std::vector<Value*> myValues;
 }; // }}}
 
 }
