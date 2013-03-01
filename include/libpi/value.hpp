@@ -1,11 +1,13 @@
 #ifndef PIVALUE_HPP
 #define PIVALUE_HPP
 
-#include <libpi/message.hpp>
 #include <vector>
+#include <gmp.h>
+#include <string>
 
 namespace libpi
 {
+  class Message;
 // DOCUMENTATION: Value class {{{
 /*!
  * Value defines the common interface for all values.
@@ -17,7 +19,7 @@ class Value // {{{
     void ToMessage(Message &dest) const;
     virtual std::string ToString() const=0;
     virtual Value *Copy() const=0;
-    virtual bool operator==(const Value &rhs) const;
+    virtual bool operator==(const Value &rhs) const=0;
 }; // }}}
 
 // DOCUMENTATION: IntValue class {{{
@@ -38,7 +40,7 @@ class IntValue : public Value // {{{
     IntValue(Message &msg);
     IntValue(const std::string &val);
     IntValue(mpz_t &val, bool clear_arg=false);
-    IntValue(long val);
+    IntValue(long val=0);
     virtual ~IntValue();
 
     std::string ToString() const;
@@ -71,6 +73,7 @@ class StringValue : public Value // {{{
     // Constructors
     StringValue(Message &msg);
     StringValue(const std::string &val);
+    StringValue();
     virtual ~StringValue();
 
     std::string ToString() const;
@@ -98,7 +101,7 @@ class BoolValue : public Value // {{{
 
     // Constructors
     BoolValue(Message &msg);
-    BoolValue(bool val);
+    BoolValue(bool val=false);
     virtual ~BoolValue();
 
     std::string ToString() const;

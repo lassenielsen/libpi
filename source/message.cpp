@@ -60,9 +60,12 @@ void Message::AddData(const char *data, int size) // {{{
   memcpy(datacpy,data,size);
   myData.push_back(pair<char*,int>(datacpy,size));
 } // }}}
-void Message::GetValue(string &dest) // {{{
-{ dest =GetData();
+void Message::GetValue(IntValue &dest) // {{{
+{ dest=IntValue(GetData());
 } // }}}
-void Message::GetValue(mpz_t result) // {{{
-{ mpz_set_str(result,GetData(),10);
+void Message::GetValue(StringValue &dest) // {{{
+{ dest=StringValue(GetData());
+} // }}}
+void Message::GetValue(BoolValue &dest) // {{{
+{ dest=BoolValue(GetData());
 } // }}}

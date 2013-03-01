@@ -1,7 +1,7 @@
 #include <iostream>
 #include <errno.h>
 #include <libpi/channel_pmq.hpp>
-#include <libpi/common.hpp>
+#include "common.cpp"
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>

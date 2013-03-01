@@ -1,6 +1,8 @@
 #include <libpi/value.hpp>
 #include <string.h>
 #include "common.cpp"
+#include <stdlib.h>
+#include <libpi/message.hpp>
 
 using namespace std;
 namespace libpi
@@ -54,7 +56,7 @@ IntValue::~IntValue() // {{{
 string IntValue::ToString() const // {{{
 { char *str=mpz_get_str(NULL,10,myValue);
   string result=str;
-  delete [] str;
+  free(str);
   return result;
 } // }}}
 IntValue IntValue::operator+(const IntValue &rhs) const // {{{
@@ -112,6 +114,9 @@ StringValue::StringValue(Message &msg) // {{{
 } // }}}
 StringValue::StringValue(const std::string &val) // {{{
 { myValue=val;
+} // }}}
+StringValue::StringValue() // {{{
+{ myValue="";
 } // }}}
 
 StringValue::~StringValue() // {{{

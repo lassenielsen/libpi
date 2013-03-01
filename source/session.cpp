@@ -1,5 +1,5 @@
 #include <libpi/session.hpp>
-#include <libpi/common.hpp>
+#include "common.cpp"
 
 using namespace libpi;
 using namespace std;
