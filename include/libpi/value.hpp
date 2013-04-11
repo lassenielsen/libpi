@@ -8,6 +8,7 @@
 namespace libpi
 {
   class Message;
+  class Channel_MQ;
 // DOCUMENTATION: Value class {{{
 /*!
  * Value defines the common interface for all values.
@@ -113,6 +114,33 @@ class BoolValue : public Value // {{{
     bool GetValue() const;
   private:
     bool myValue;
+}; // }}}
+
+// DOCUMENTATION: ChannelValue class {{{
+/*!
+ * ChannelValue wraps a channnel vector-
+ * This allows a straight forward and uniform syntax for performing all
+ * operations.
+ */
+// }}}
+class MQChannelValue : public Value // {{{
+{ public:
+    // Copy constructor and assignment
+    MQChannelValue(const MQChannelValue &val);
+    MQChannelValue &operator=(const MQChannelValue &rhs);
+    MQChannelValue *Copy() const;
+
+    // Constructors
+    MQChannelValue(Message &msg);
+    MQChannelValue();
+    virtual ~MQChannelValue();
+
+    std::string ToString() const;
+    bool operator==(const Value &rhs) const;
+
+    const std::vector<Channel_MQ*> &GetValues() const;
+  private:
+    std::vector<Channel_MQ*> myChannels;
 }; // }}}
 
 // DOCUMENTATION: TupleValue class {{{

@@ -3,6 +3,7 @@
 #include "common.cpp"
 #include <stdlib.h>
 #include <libpi/message.hpp>
+#include <libpi/channel_mq.hpp>
 
 using namespace std;
 namespace libpi
@@ -190,6 +191,74 @@ bool BoolValue::operator==(const Value &rhs) const // {{{
 
 bool BoolValue::GetValue() const // {{{
 { return myValue;
+} // }}}
+
+MQChannelValue::MQChannelValue(const MQChannelValue &val) // {{{
+{ for (vector<Channel_MQ*>::const_iterator it=val.GetValues().begin();
+       it!=val.GetValues().end();
+       ++it)
+    myChannels.push_back(new Channel_MQ((*it)->GetAddress()));
+} // }}}
+MQChannelValue &MQChannelValue::operator=(const MQChannelValue &rhs) // {{{
+{ DeleteVector(myChannels);
+  for (vector<Channel_MQ*>::const_iterator it=rhs.GetValues().begin();
+       it!=rhs.GetValues().end();
+       ++it)
+    myChannels.push_back(new Channel_MQ((*it)->GetAddress()));
+} // }}}
+MQChannelValue *MQChannelValue::Copy() const // {{{
+{
+  return new MQChannelValue(*this);
+} // }}}
+
+vector<string> split(const std::string &s, char delim) // {{{
+{
+  vector<string> result;
+  stringstream ss(s);
+  string item;
+  while (getline(ss, item, delim)) {
+      result.push_back(item);
+  }
+  return result;
+} // }}}
+MQChannelValue::MQChannelValue(Message &val) // {{{
+{ vector<string> addresses=split((string)val.GetData(),';');
+  for (vector<string>::const_iterator it=addresses.begin();
+       it!=addresses.end();
+       ++it)
+    myChannels.push_back(new Channel_MQ(*it));
+} // }}}
+MQChannelValue::MQChannelValue() // {{{
+{
+} // }}}
+MQChannelValue::~MQChannelValue() // {{{
+{ DeleteVector(myChannels);
+} // }}}
+
+string MQChannelValue::ToString() const // {{{
+{ stringstream result;
+  for (vector<Channel_MQ*>::const_iterator it=myChannels.begin();
+       it!=myChannels.end();
+       ++it)
+  { if (it!=myChannels.begin())
+      result << ";";
+    result << (*it)->GetAddress();
+  }
+  return result.str();
+} // }}}
+bool MQChannelValue::operator==(const Value &rhs) const // {{{
+{ const MQChannelValue *rhsptr=dynamic_cast<const MQChannelValue*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  if (myChannels.size()!=rhsptr->GetValues().size())
+    return false;
+  for (vector<Channel_MQ*>::const_iterator lhsCh=myChannels.begin(), rhsCh=rhsptr->GetValues().begin(); lhsCh!=myChannels.end() && rhsCh!=rhsptr->GetValues().end(); ++lhsCh, ++rhsCh)
+    if ((*lhsCh)->GetAddress()!=(*rhsCh)->GetAddress())
+      return false;
+  return true;
+} // }}}
+const vector<Channel_MQ*> &MQChannelValue::GetValues() const // {{{
+{ return myChannels;
 } // }}}
 
 // TupleValue Implementation
