@@ -139,6 +139,7 @@ class MQChannelValue : public Value // {{{
     bool operator==(const Value &rhs) const;
 
     const std::vector<Channel_MQ> &GetValues() const;
+    std::vector<Channel_MQ> &GetValues();
   private:
     std::vector<Channel_MQ> myChannels;
 }; // }}}

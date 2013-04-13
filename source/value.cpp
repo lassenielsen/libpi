@@ -260,6 +260,9 @@ bool MQChannelValue::operator==(const Value &rhs) const // {{{
 const vector<Channel_MQ> &MQChannelValue::GetValues() const // {{{
 { return myChannels;
 } // }}}
+vector<Channel_MQ> &MQChannelValue::GetValues() // {{{
+{ return myChannels;
+} // }}}
 
 // TupleValue Implementation
 TupleValue::TupleValue(const TupleValue &val) // {{{
