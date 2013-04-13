@@ -162,6 +162,6 @@ void Channel_MQ::SingleReceive(Message &msg) // {{{
   //cout << GetAddress() << "(" << myQueue << ") " << " » " << msg.GetData() << endl;
 } // }}}
 
-string Channel_MQ::GetAddress() // {{{
+string Channel_MQ::GetAddress() const // {{{
 { return (string)"mqchannel://"+int2str(myKey);
 } // }}}

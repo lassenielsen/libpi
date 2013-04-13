@@ -116,9 +116,9 @@ class BoolValue : public Value // {{{
     bool myValue;
 }; // }}}
 
-// DOCUMENTATION: ChannelValue class {{{
+// DOCUMENTATION: MQChannelValue class {{{
 /*!
- * ChannelValue wraps a channnel vector-
+ * MQChannelValue wraps a channnel vector.
  * This allows a straight forward and uniform syntax for performing all
  * operations.
  */
@@ -138,9 +138,9 @@ class MQChannelValue : public Value // {{{
     std::string ToString() const;
     bool operator==(const Value &rhs) const;
 
-    const std::vector<Channel_MQ*> &GetValues() const;
+    const std::vector<Channel_MQ> &GetValues() const;
   private:
-    std::vector<Channel_MQ*> myChannels;
+    std::vector<Channel_MQ> myChannels;
 }; // }}}
 
 // DOCUMENTATION: TupleValue class {{{

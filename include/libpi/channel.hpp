@@ -46,7 +46,7 @@ namespace libpi
  * key.
  */
 // }}}
-      virtual std::string GetAddress()=0;
+      virtual std::string GetAddress() const=0;
 
 // DOCUMENTATION: Create Method {{{
 /*!

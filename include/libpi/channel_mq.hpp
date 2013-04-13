@@ -93,7 +93,7 @@ namespace libpi
        * Returns the queue name
        */
       // }}}
-      std::string GetAddress();
+      std::string GetAddress() const;
 
     private:
       // DOCUMENTATION myKey field {{{
