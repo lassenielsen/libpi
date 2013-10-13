@@ -87,7 +87,7 @@ void Channel_MQ::Unlink() // {{{
 
 void Channel_MQ::Send(Message &msg) // {{{
 {
-  //cout << GetAddress() << "(" << myQueue << ") " << " << " << msg.GetData() << endl;
+  cout << GetAddress() << "(" << myQueue << ") " << " << " << msg.GetData() << endl;
   int pos=0;
   long size=msg.GetSize();
   struct {long mtype; char mtext[ourMessageLength];} message;
@@ -108,33 +108,34 @@ void Channel_MQ::Send(Message &msg) // {{{
 
 void Channel_MQ::Receive(Message &msg) // {{{
 {
+  cout << GetAddress() << "(" << myQueue << ") " << " >> " << "..." << endl;
   //cout << "rcv1" << endl;
   int pos=0;
   long size;
   struct {long mtype; char mtext[ourMessageLength];} message;
   int delta=msgrcv(myQueue,(void*)&message,ourMessageLength,0,0); // Receive Size
-  //cout << "Delta: " << delta;
-  //cout << "Size: " << *((long*)&message.mtext[0]) << endl;
+  cout << "Delta: " << delta;
+  cout << "Size: " << *((long*)&message.mtext[0]) << endl;
   if (delta != sizeof(size))
-    throw (string) "Channel_MQ::Receive: Wrong header size";
+    throw (string) "Channel_MQ::Receive: Wrong header size on channel key " + int2str(myKey) + "\n Expected: " + int2str(sizeof(size)) + "\n Found: " + int2str(delta);
   memcpy((char*)&size,&message.mtext[0],sizeof(size));
   //cout << "rcv2 size: " << size << endl;
   while (pos<size)
   { 
-    //cout << "rcv3 pos: " << pos << ", size: " << size << endl;
+    cout << "rcv3 pos: " << pos << ", size: " << size << endl;
     int delta=msgrcv(myQueue,(void*)&message,ourMessageLength,0,0);
     if (delta==-1)
       throw (string) "Channel_MQ::Receive: Unable to receive on message queue: " + int2str(myKey) + "\n"
                    + "Error was: " + strerror(errno);
-    //cout << "rcv4 size: " << size << ", pos: " << pos << ", delta: " << delta << endl;
+    cout << "rcv4 size: " << size << ", pos: " << pos << ", delta: " << delta << endl;
     if (delta>size-pos)
       throw (string) "Channel_MQ::Receive: Received too much data!" + "\n"
                    + "Remaining size: " + int2str(size-pos) + "\n"
                    + "Message size: " + int2str(delta);
-    //cout << "rcv5 size: " << size << ", pos: " << pos << ", delta: " << delta << endl;
+    cout << "rcv5 size: " << size << ", pos: " << pos << ", delta: " << delta << endl;
     msg.AddData(&message.mtext[0],delta);
     pos+=delta;
-    //cout << "rcv6 size: " << size << ", pos: " << pos << ", delta: " << delta << "Buffer: " << msg.GetData() << endl;
+    cout << "rcv6 size: " << size << ", pos: " << pos << ", delta: " << delta << "Buffer: " << msg.GetData() << endl;
   }
   //cout << GetAddress() << "(" << myQueue << ") " << " >> " << msg.GetData() << endl;
 } // }}}

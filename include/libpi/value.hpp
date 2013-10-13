@@ -132,6 +132,7 @@ class MQChannelValue : public Value // {{{
 
     // Constructors
     MQChannelValue(Message &msg);
+    MQChannelValue(const std::vector<Channel_MQ> &chs);
     MQChannelValue();
     virtual ~MQChannelValue();
 

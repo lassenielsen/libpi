@@ -228,6 +228,9 @@ MQChannelValue::MQChannelValue(Message &val) // {{{
        ++it)
     myChannels.push_back(Channel_MQ(*it));
 } // }}}
+MQChannelValue::MQChannelValue(const vector<Channel_MQ> &chs) // {{{
+{ myChannels=chs;
+} // }}}
 MQChannelValue::MQChannelValue() // {{{
 {
 } // }}}
