@@ -29,12 +29,13 @@ inline std::string timestamp() // {{{
 } // }}}
 
 #define _DEBUG_HEADER "[AT " << debug::timestamp() << "](PROCESS " << getpid() << ", THREAD " << pthread_self() << ")"
-#define INFOMSG(msg) std::cerr << _DEBUG_HEADER << debug::indent() << msg << std::endl
-#define WARNMSG(msg) INFOMSG(msg)
-#define ERRORMSG(msg) INFOMSG(msg)
-#define ENTER(msg) std::cerr << _DEBUG_HEADER << debug::indent(2) << "Entering " << msg << std::endl
-#define LEAVE(msg) std::cerr << _DEBUG_HEADER << debug::indent(-2) << "Leaving " << msg << std::endl
-#define DISPLAY(var) INFOMSG(std::string("VALUE OF ") + #var + " IS " + string(var))
+#define _LOG(i,m) { std::stringstream ss; ss << _DEBUG_HEADER << debug::indent(i) << m << std::endl; std::cerr << ss.str(); }
+#define INFOMSG(msg) _LOG(0,msg)
+#define WARNMSG(msg) _LOG(0,msg)
+#define ERRORMSG(msg) _LOG(0,msg)
+#define ENTER(msg) _LOG(2,std::string("Entering ") + msg)
+#define LEAVE(msg) _LOG(-2,std::string("Leaving ") + msg)
+#define DISPLAY(var) _LOG(0,std::string("VALUE OF ") + #var + " IS " + string(var))
 
 class Scope // {{{
 { public:

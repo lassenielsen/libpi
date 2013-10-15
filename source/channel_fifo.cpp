@@ -48,6 +48,24 @@ Channel_FIFO::Channel_FIFO(const string &path) // {{{
   } // }}}
 } // }}}
 
+Channel_FIFO::Channel_FIFO(const Channel_FIFO &init) // {{{
+: myUnlink(false)
+, myPath(init.GetPath())
+{
+  SCOPE(string("Channel_FIFO::Channel_FIFO"));
+  DISPLAY(init.GetAddress());
+  myStream.open(myPath.c_str());
+} // }}}
+
+Channel_FIFO &Channel_FIFO::operator=(const Channel_FIFO &rhs) // {{{
+{
+  SCOPE(string("Channel_FIFO::operator="));
+  DISPLAY(rhs.GetAddress());
+  myStream.close();
+  myPath=rhs.GetPath();
+  myStream.open(myPath.c_str());
+} // }}}
+
 Channel_FIFO::~Channel_FIFO() // {{{
 {
   SCOPE(string("Channel_FIFO::~Channel_FIFO(") + myPath + ")");
@@ -159,5 +177,9 @@ void Channel_FIFO::SingleReceive(Message &msg) // {{{
 } // }}}
 
 string Channel_FIFO::GetAddress() const // {{{
+{ return myPath;
+} // }}}
+
+string Channel_FIFO::GetPath() const // {{{
 { return myPath;
 } // }}}

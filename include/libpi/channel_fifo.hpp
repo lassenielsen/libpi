@@ -29,6 +29,9 @@ namespace libpi
        */
       // }}}
       Channel_FIFO(const std::string &path="");
+      Channel_FIFO(const Channel_FIFO &init);
+      Channel_FIFO &operator=(const Channel_FIFO &rhs);
+
       // DOCUMENTATION Channel_FIFO method {{{
       /*!
        * Closes the channel, but does not unlink.
@@ -90,6 +93,7 @@ namespace libpi
        */
       // }}}
       std::string GetAddress() const;
+      std::string GetPath() const;
 
     private:
       // DOCUMENTATION myPath field {{{

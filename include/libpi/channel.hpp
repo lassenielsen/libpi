@@ -24,6 +24,8 @@ namespace libpi
   { public:
       typedef Channel *(*channel_creator)(std::string);
 
+      bool operator==(const Channel &rhs) {return GetAddress()==rhs.GetAddress(); }
+
 // DOCUMENTATION: Send method {{{
 /*!
  * Send transmits a message on the channel.

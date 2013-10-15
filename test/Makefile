@@ -1,5 +1,6 @@
 programs = send2self-channel_fifo \
            singlesend2self-channel_fifo \
+           link-session_fifo \
            send2self-channel_mq \
            ipc-channel_mq \
            wait4message-channel_mq \
