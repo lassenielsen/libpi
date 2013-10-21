@@ -10,7 +10,7 @@
 
 namespace debug {
 
-#ifdef CWDEBUG
+#ifdef PIDEBUG
 std::map<int,int> _indent;
 inline std::string indent(int delta=0) // {{{
 {

@@ -12,8 +12,6 @@
 #=====================================================================#
 name = libpi
 version = 1.0.0
-libname = $(name).so
-libname_debug = $(name)_debug.so
 #OS_LINUXlibname = $(name).so
 #OS_LINUXlibname_debug = $(name)_debug.so
 #OS_MAClibname = $(name).dylib
@@ -26,7 +24,7 @@ OS_AUTO = $(shell uname -s)
 compiler = g++
 ctags = ctags
 opt = -O3
-opt_debug = -g -DCWDEBUG
+opt_debug = -g -DPIDEBUG
 args = -fPIC $(opt) -I./include/
 args_debug = -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = `pkg-config --libs libcwd_r`
@@ -188,7 +186,7 @@ $(libname)$(libversion): $(library_objects)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs)
 
 $(libname_debug)$(libversion): $(library_objects_debug)
-#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
+#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
 objects/%.o: source/%.cpp include/$(name)/*.hpp  include/$(name)/config.hpp

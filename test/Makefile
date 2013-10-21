@@ -1,17 +1,10 @@
-programs = send2self-channel_fifo \
-           singlesend2self-channel_fifo \
-           link-session_fifo \
-           send2self-channel_mq \
-           ipc-channel_mq \
-           wait4message-channel_mq \
-           link-session_mq \
-           delegate-session_mq
+programs = $(shell ls source/*.cpp | sed s/\\.cpp//g | sed s/source\\///g)
 name = libpi-test
 version = 2.5.0
 compiler = g++
 opt = -g
 args = $(opt) `sdl-config --cflags`
-libs = -lpi -lgmp
+libs = -lpi_debug -lgmp
 OS_AUTO = $(shell uname -s)
 COMMENT = _
 
