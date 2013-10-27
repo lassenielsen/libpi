@@ -34,6 +34,8 @@ namespace libpi
        */
       // }}}
       Channel_MQ(int key=-1);
+      Channel_MQ(const Channel_MQ &init);
+      Channel_MQ *Copy() const;
       // DOCUMENTATION Channel_MQ method {{{
       /*!
        * Closes the channel, but does not unlink.

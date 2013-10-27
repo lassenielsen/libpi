@@ -3,7 +3,7 @@
 #include "common.cpp"
 #include <stdlib.h>
 #include <libpi/message.hpp>
-#include <libpi/channel_mq.hpp>
+#include <libpi/channel.hpp>
 
 using namespace std;
 namespace libpi
@@ -193,22 +193,22 @@ bool BoolValue::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-MQChannelValue::MQChannelValue(const MQChannelValue &val) // {{{
-{ for (vector<Channel_MQ>::const_iterator it=val.GetValues().begin();
+ChannelsValue::ChannelsValue(const ChannelsValue &val) // {{{
+{ for (vector<Channel*>::const_iterator it=val.GetValues().begin();
        it!=val.GetValues().end();
        ++it)
-    myChannels.push_back(Channel_MQ(it->GetAddress()));
+    myChannels.push_back((*it)->Copy());
 } // }}}
-MQChannelValue &MQChannelValue::operator=(const MQChannelValue &rhs) // {{{
+ChannelsValue &ChannelsValue::operator=(const ChannelsValue &rhs) // {{{
 { myChannels.clear();
-  for (vector<Channel_MQ>::const_iterator it=rhs.GetValues().begin();
+  for (vector<Channel*>::const_iterator it=rhs.GetValues().begin();
        it!=rhs.GetValues().end();
        ++it)
-    myChannels.push_back(Channel_MQ(it->GetAddress()));
+    myChannels.push_back((*it)->Copy());
 } // }}}
-MQChannelValue *MQChannelValue::Copy() const // {{{
+ChannelsValue *ChannelsValue::Copy() const // {{{
 {
-  return new MQChannelValue(*this);
+  return new ChannelsValue(*this);
 } // }}}
 
 vector<string> split(const std::string &s, char delim) // {{{
@@ -221,49 +221,55 @@ vector<string> split(const std::string &s, char delim) // {{{
   }
   return result;
 } // }}}
-MQChannelValue::MQChannelValue(Message &val) // {{{
+ChannelsValue::ChannelsValue(Message &val) // {{{
 { vector<string> addresses=split((string)val.GetData(),';');
   for (vector<string>::const_iterator it=addresses.begin();
        it!=addresses.end();
        ++it)
-    myChannels.push_back(Channel_MQ(*it));
+    myChannels.push_back(Channel::Create(*it));
 } // }}}
-MQChannelValue::MQChannelValue(const vector<Channel_MQ> &chs) // {{{
-{ myChannels=chs;
+ChannelsValue::ChannelsValue(const vector<Channel*> &chs) // {{{
+{ for (vector<Channel*>::const_iterator it=chs.begin();
+       it!=chs.end();
+       ++it)
+    myChannels.push_back((*it)->Copy());
 } // }}}
-MQChannelValue::MQChannelValue() // {{{
+ChannelsValue::ChannelsValue() // {{{
 {
 } // }}}
-MQChannelValue::~MQChannelValue() // {{{
-{
+ChannelsValue::~ChannelsValue() // {{{
+{ while (myChannels.size()>0)
+  { delete myChannels.back();
+    myChannels.pop_back();
+  }
 } // }}}
 
-string MQChannelValue::ToString() const // {{{
+string ChannelsValue::ToString() const // {{{
 { stringstream result;
-  for (vector<Channel_MQ>::const_iterator it=myChannels.begin();
+  for (vector<Channel*>::const_iterator it=myChannels.begin();
        it!=myChannels.end();
        ++it)
   { if (it!=myChannels.begin())
       result << ";";
-    result << it->GetAddress();
+    result << (*it)->GetAddress();
   }
   return result.str();
 } // }}}
-bool MQChannelValue::operator==(const Value &rhs) const // {{{
-{ const MQChannelValue *rhsptr=dynamic_cast<const MQChannelValue*>(&rhs);
+bool ChannelsValue::operator==(const Value &rhs) const // {{{
+{ const ChannelsValue *rhsptr=dynamic_cast<const ChannelsValue*>(&rhs);
   if (rhsptr==NULL)
     return false;
   if (myChannels.size()!=rhsptr->GetValues().size())
     return false;
-  for (vector<Channel_MQ>::const_iterator lhsCh=myChannels.begin(), rhsCh=rhsptr->GetValues().begin(); lhsCh!=myChannels.end() && rhsCh!=rhsptr->GetValues().end(); ++lhsCh, ++rhsCh)
-    if (lhsCh->GetAddress()!=rhsCh->GetAddress())
+  for (vector<Channel*>::const_iterator lhsCh=myChannels.begin(), rhsCh=rhsptr->GetValues().begin(); lhsCh!=myChannels.end() && rhsCh!=rhsptr->GetValues().end(); ++lhsCh, ++rhsCh)
+    if ((*lhsCh)->GetAddress()!=(*rhsCh)->GetAddress())
       return false;
   return true;
 } // }}}
-const vector<Channel_MQ> &MQChannelValue::GetValues() const // {{{
+const vector<Channel*> &ChannelsValue::GetValues() const // {{{
 { return myChannels;
 } // }}}
-vector<Channel_MQ> &MQChannelValue::GetValues() // {{{
+vector<Channel*> &ChannelsValue::GetValues() // {{{
 { return myChannels;
 } // }}}
 

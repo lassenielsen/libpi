@@ -66,6 +66,10 @@ Channel_FIFO &Channel_FIFO::operator=(const Channel_FIFO &rhs) // {{{
   myStream.open(myPath.c_str());
 } // }}}
 
+Channel_FIFO *Channel_FIFO::Copy() const // {{{
+{ return new Channel_FIFO(*this);
+} // }}}
+
 Channel_FIFO::~Channel_FIFO() // {{{
 {
   SCOPE(string("Channel_FIFO::~Channel_FIFO(") + myPath + ")");
@@ -77,6 +81,7 @@ Channel_FIFO::~Channel_FIFO() // {{{
 void Channel_FIFO::Unlink() // {{{
 {
   SCOPE(string("Channel_FIFO::Unlink"));
+  DISPLAY(myPath);
   myUnlink=true;
 } // }}}
 
@@ -137,7 +142,7 @@ void Channel_FIFO::SingleSend(Message &msg) // {{{
   DISPLAY(buffer);
 
   myStream.close();
-  myStream.open(myPath.c_str()); // FIXME: otherwise chanse of segfault
+  myStream.open(myPath.c_str()); // FIXME: otherwise risk of segfault
   myStream.write(buffer,ourMessageLength);
 
   INFOMSG(string("Sent buffer: ") + buffer);

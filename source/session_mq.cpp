@@ -34,7 +34,7 @@ using namespace libpi;
    // DONE
   */
  // }}}
-Session_MQ::Session_MQ(vector<Channel_MQ> &chs, int pid, int actors) // {{{
+Session_MQ::Session_MQ(vector<Channel*> &chs, int pid, int actors) // {{{
 : Session(pid,actors)
 { 
   if (pid<0 || actors<=pid) throw "Session_QM::Session_MQ: pid must be between 0 and actors-1.";
@@ -51,7 +51,7 @@ Session_MQ::Session_MQ(vector<Channel_MQ> &chs, int pid, int actors) // {{{
     {
       msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1].GetAddress() << endl;
-      chs[actor-1].SingleReceive(msg);
+      chs[actor-1]->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
       myOutChannels.push_back(new Channel_MQ(msg.GetData()));
     }
@@ -80,7 +80,7 @@ Session_MQ::Session_MQ(vector<Channel_MQ> &chs, int pid, int actors) // {{{
     msg.Clear();
     msg.AddData(myInChannels.front()->GetAddress().c_str(),
                 myInChannels.front()->GetAddress().size()+1);
-    chs[pid-1].SingleSend(msg);
+    chs[pid-1]->SingleSend(msg);
     //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1].GetAddress() << endl;
     msg.Clear();
     //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
@@ -176,9 +176,9 @@ Session *Session_MQ::ReceiveSession(int from) // {{{
 void Session_MQ::Close(bool unlink) // {{{
 { while (myInChannels.size()>0)
   { //cout << "Deleting channel: " << myInChannels.back()->GetAddress() << endl;
-    if (unlink) myInChannels.back()->Unlink();
-    delete myInChannels.back();
-    myInChannels.pop_back();
+    //if (unlink) myInChannels.back()->Unlink();
+    //delete myInChannels.back();
+    //myInChannels.pop_back();
   }
   //while (myOutChannels.size()>0)
   //{ if (unlink) myOutChannels.back()->Unlink();

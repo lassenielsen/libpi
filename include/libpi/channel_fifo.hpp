@@ -29,8 +29,24 @@ namespace libpi
        */
       // }}}
       Channel_FIFO(const std::string &path="");
+      // DOCUMENTATION Channel_FIFO method {{{
+      /*!
+       * Clone FIFO channel (Copy constructor)
+       */
+      // }}}
       Channel_FIFO(const Channel_FIFO &init);
+      // DOCUMENTATION Channel_FIFO method {{{
+      /*!
+       * Assignment operator
+       */
+      // }}}
       Channel_FIFO &operator=(const Channel_FIFO &rhs);
+      // DOCUMENTATION Channel_FIFO method {{{
+      /*!
+       * Explicit copy function (usefull for generig Channel pointers)
+       */
+      // }}}
+      Channel_FIFO *Copy() const;
 
       // DOCUMENTATION Channel_FIFO method {{{
       /*!

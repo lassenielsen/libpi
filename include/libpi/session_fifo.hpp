@@ -24,7 +24,7 @@ namespace libpi
 * session.
 */
 // }}}
-      Session_FIFO(std::vector<Channel_FIFO> &chs, int pid, int actors);
+      Session_FIFO(std::vector<Channel*> &chs, int pid, int actors);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)

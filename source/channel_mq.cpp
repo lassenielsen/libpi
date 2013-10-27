@@ -74,6 +74,30 @@ Channel_MQ::Channel_MQ(int key) // {{{
                 + "Error was: " + strerror(errno);
 } // }}}
 
+Channel_MQ::Channel_MQ(const Channel_MQ &init) // {{{
+: myUnlink(false)
+{
+  myKey=init.myKey;
+  //cout << "msgget(" << myKey << ",00600 | IPC_CREAT)" << endl;
+  myQueue=msgget(myKey,00600 | IPC_CREAT);
+  //cout << "msgget(" << myKey << ",00600 | IPC_CREAT)=" << myQueue << endl;
+  if (myQueue==-1) // Error
+    throw (string)"Unable to create message queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+  if (msgctl(myQueue,IPC_STAT, &myAttributes)==-1)
+    throw (string)"Unable to stat queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+  //cout << "Original msg_qbytes: " << myAttributes.msg_qbytes << endl;
+  //cout << "Setting msg_qbytes to 100MB" << endl;
+  myAttributes.msg_qbytes=1024*1024*100;
+  if (msgctl(myQueue,IPC_SET, &myAttributes)==-1)
+    throw (string)"Unable to set msg_qbytes on queue: " + int2str(myKey) + "\n"
+                + "Error was: " + strerror(errno);
+} // }}}
+Channel_MQ *Channel_MQ::Copy() const // {{{
+{ return new Channel_MQ(*this);
+} // }}}
+
 Channel_MQ::~Channel_MQ() // {{{
 {
   if (myUnlink)

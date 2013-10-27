@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <libpi/channel.hpp>
+#include <libpi/value.hpp>
 
 namespace libpi
 {

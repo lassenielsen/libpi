@@ -33,7 +33,7 @@ using namespace libpi;
    // DONE
   */
  // }}}
-Session_FIFO::Session_FIFO(vector<Channel_FIFO> &chs, int pid, int actors) // {{{
+Session_FIFO::Session_FIFO(vector<Channel*> &chs, int pid, int actors) // {{{
 : Session(pid,actors)
 { 
   if (pid<0 || actors<=pid) throw "Session_QM::Session_FIFO: pid must be between 0 and actors-1.";
@@ -50,7 +50,7 @@ Session_FIFO::Session_FIFO(vector<Channel_FIFO> &chs, int pid, int actors) // {{
     {
       msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1].GetAddress() << endl;
-      chs[actor-1].SingleReceive(msg);
+      chs[actor-1]->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
       myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
     }
@@ -79,7 +79,7 @@ Session_FIFO::Session_FIFO(vector<Channel_FIFO> &chs, int pid, int actors) // {{
     msg.Clear();
     msg.AddData(myInChannels.front()->GetAddress().c_str(),
                 myInChannels.front()->GetAddress().size()+1);
-    chs[pid-1].SingleSend(msg);
+    chs[pid-1]->SingleSend(msg);
     //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1].GetAddress() << endl;
     msg.Clear();
     //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
@@ -112,9 +112,11 @@ Session_FIFO::Session_FIFO(vector<Channel_FIFO> &chs, int pid, int actors) // {{
 
 Session_FIFO::Session_FIFO(vector<Channel_FIFO*> &inChannels, vector<Channel_FIFO*> &outChannels, int pid, int actors) // {{{
 : Session(pid,actors)
-, myInChannels(inChannels)
-, myOutChannels(outChannels)
 { 
+  for (vector<Channel_FIFO*>::const_iterator inCh=inChannels.begin(); inCh!=inChannels.end(); ++inCh)
+    myInChannels.push_back((*inCh)->Copy());
+  for (vector<Channel_FIFO*>::const_iterator outCh=outChannels.begin(); outCh!=outChannels.end(); ++outCh)
+    myOutChannels.push_back((*outCh)->Copy());
 } // }}}
 
 Session_FIFO::~Session_FIFO() // {{{
@@ -172,7 +174,9 @@ Session *Session_FIFO::ReceiveSession(int from) // {{{
 } //}}}
 
 void Session_FIFO::Close(bool unlink) // {{{
-{ while (myInChannels.size()>0)
+{ myInChannels.clear();
+  myOutChannels.clear();
+  while (myInChannels.size()>0)
   { if (unlink) myInChannels.back()->Unlink();
     delete myInChannels.back();
     myInChannels.pop_back();

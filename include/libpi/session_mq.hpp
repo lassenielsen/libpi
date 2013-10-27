@@ -24,7 +24,7 @@ namespace libpi
 * session.
 */
 // }}}
-      Session_MQ(std::vector<Channel_MQ> &chs, int pid, int actors);
+      Session_MQ(std::vector<Channel*> &chs, int pid, int actors);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)

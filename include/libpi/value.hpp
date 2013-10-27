@@ -8,7 +8,7 @@
 namespace libpi
 {
   class Message;
-  class Channel_MQ;
+  class Channel;
 // DOCUMENTATION: Value class {{{
 /*!
  * Value defines the common interface for all values.
@@ -116,33 +116,33 @@ class BoolValue : public Value // {{{
     bool myValue;
 }; // }}}
 
-// DOCUMENTATION: MQChannelValue class {{{
+// DOCUMENTATION: ChannelsValue class {{{
 /*!
- * MQChannelValue wraps a channnel vector.
+ * ChannelsValue wraps a channnel vector.
  * This allows a straight forward and uniform syntax for performing all
  * operations.
  */
 // }}}
-class MQChannelValue : public Value // {{{
+class ChannelsValue : public Value // {{{
 { public:
     // Copy constructor and assignment
-    MQChannelValue(const MQChannelValue &val);
-    MQChannelValue &operator=(const MQChannelValue &rhs);
-    MQChannelValue *Copy() const;
+    ChannelsValue(const ChannelsValue &val);
+    ChannelsValue &operator=(const ChannelsValue &rhs);
+    ChannelsValue *Copy() const;
 
     // Constructors
-    MQChannelValue(Message &msg);
-    MQChannelValue(const std::vector<Channel_MQ> &chs);
-    MQChannelValue();
-    virtual ~MQChannelValue();
+    ChannelsValue(Message &msg);
+    ChannelsValue(const std::vector<Channel*> &chs);
+    ChannelsValue();
+    virtual ~ChannelsValue();
 
     std::string ToString() const;
     bool operator==(const Value &rhs) const;
 
-    const std::vector<Channel_MQ> &GetValues() const;
-    std::vector<Channel_MQ> &GetValues();
+    const std::vector<Channel*> &GetValues() const;
+    std::vector<Channel*> &GetValues();
   private:
-    std::vector<Channel_MQ> myChannels;
+    std::vector<Channel*> myChannels;
 }; // }}}
 
 // DOCUMENTATION: TupleValue class {{{

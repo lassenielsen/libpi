@@ -17,9 +17,9 @@ int main(int argc, char **argv)
       return 1; // }}}
     case 0: // child process {{{
       try
-      { vector<Channel_FIFO> link;
-        link.push_back(Channel_FIFO("./ch1"));
-        link.push_back(Channel_FIFO("./ch2"));
+      { vector<Channel*> link;
+        link.push_back(new Channel_FIFO("./ch1"));
+        link.push_back(new Channel_FIFO("./ch2"));
         Session_FIFO s(link,0,3);
         Message msg;
         string strmsg1="P0->P1";
@@ -51,9 +51,9 @@ int main(int argc, char **argv)
           return 1; // }}}
         case 0: // child process // {{{
           try
-          { vector<Channel_FIFO> link;
-            link.push_back(Channel_FIFO("./ch1"));
-            link.push_back(Channel_FIFO("./ch2"));
+          { vector<Channel*> link;
+            link.push_back(new Channel_FIFO("./ch1"));
+            link.push_back(new Channel_FIFO("./ch2"));
             cout << "PGM: Linking as participant 1" << endl;
             Session_FIFO s(link,1,3);
             Message msg;
@@ -80,11 +80,11 @@ int main(int argc, char **argv)
           break; // }}}
         default: // parent {{{
           try
-          { vector<Channel_FIFO> link;
-            link.push_back(Channel_FIFO("./ch1"));
-            link.push_back(Channel_FIFO("./ch2"));
-            link[0].Unlink();
-            link[1].Unlink();
+          { vector<Channel*> link;
+            link.push_back(new Channel_FIFO("./ch1"));
+            link.push_back(new Channel_FIFO("./ch2"));
+            link[0]->Unlink();
+            link[1]->Unlink();
             Session_FIFO s(link,2,3);
             Message msg;
             string strmsg0="P2->P0";
@@ -102,6 +102,8 @@ int main(int argc, char **argv)
             msg.Clear();
             s.Receive(1,msg);
             cout << "Participant 2 received message: " << msg.GetData() << endl;
+            delete link[0];
+            delete link[1];
           } catch (string s)
           { cerr << "Error in parrent (2) process." << endl
                  << "Message was: " << s << endl;

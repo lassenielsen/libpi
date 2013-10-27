@@ -24,6 +24,20 @@ namespace libpi
   { public:
       typedef Channel *(*channel_creator)(std::string);
 
+// DOCUMENTATION: Create Method {{{
+/*!
+ * Copy creates a new copy of the channel.
+ */
+// }}}
+      virtual Channel *Copy() const=0;
+// DOCUMENTATION: Create Method {{{
+/*!
+ * Unlink marks the channel to be removed (and its ressources freed) when the
+ * object is deleted.
+ */
+// }}}
+      virtual void Unlink()=0;
+
       bool operator==(const Channel &rhs) {return GetAddress()==rhs.GetAddress(); }
 
 // DOCUMENTATION: Send method {{{
@@ -32,6 +46,7 @@ namespace libpi
  */
 // }}}
       virtual void Send(Message &msg)=0;
+      virtual void SingleSend(Message &msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for a message on the channel, receives and stores the message
@@ -39,6 +54,7 @@ namespace libpi
  */
 // }}}
       virtual void Receive(Message &msg)=0;
+      virtual void SingleReceive(Message &msg)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

@@ -4,7 +4,7 @@ version = 2.5.0
 compiler = g++
 opt = -g
 args = $(opt) `sdl-config --cflags`
-libs = -lpi_debug -lgmp
+libs = -lpi -lgmp
 OS_AUTO = $(shell uname -s)
 COMMENT = _
 
