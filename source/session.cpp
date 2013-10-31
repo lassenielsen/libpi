@@ -30,7 +30,7 @@ Session *Session::ReceiveSession(int from) // {{{
 { throw "Session::ReceiveSession: Trying to receive over dummy session.";
 } //}}}
 
-void Session::Close() // {{{
+void Session::Close(bool unlink) // {{{
 { myActors=0;
   myPid=0;
 } // }}}

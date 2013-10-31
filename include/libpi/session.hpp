@@ -97,7 +97,7 @@ namespace libpi
  * Close closes the session, disabeling further communication.
  */
 // }}}
-      virtual void Close();
+      virtual void Close(bool unlink=true);
 // DOCUMENTATION: Closed method {{{
 /*!
  * Closed returns true if the session is closed.

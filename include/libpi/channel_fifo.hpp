@@ -53,7 +53,7 @@ namespace libpi
        * Closes the channel, but does not unlink.
        */
       // }}}
-      ~Channel_FIFO();
+      virtual ~Channel_FIFO();
       // DOCUMENTATION Unlink method {{{
       /*!
        * Unlink ensures that the underlying fifo file will be

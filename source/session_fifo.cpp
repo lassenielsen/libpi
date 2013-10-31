@@ -174,9 +174,7 @@ Session *Session_FIFO::ReceiveSession(int from) // {{{
 } //}}}
 
 void Session_FIFO::Close(bool unlink) // {{{
-{ myInChannels.clear();
-  myOutChannels.clear();
-  while (myInChannels.size()>0)
+{ while (myInChannels.size()>0)
   { if (unlink) myInChannels.back()->Unlink();
     delete myInChannels.back();
     myInChannels.pop_back();
@@ -185,7 +183,7 @@ void Session_FIFO::Close(bool unlink) // {{{
   { delete myOutChannels.back();
     myOutChannels.pop_back();
   }
-  Session::Close();
+  Session::Close(unlink);
 } // }}}
 
 Session *Session_FIFO::creator_del(string address, int pid, int actors) // {{{
