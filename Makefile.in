@@ -27,9 +27,9 @@ opt = -O3
 opt_debug = -g -DPIDEBUG
 args = -fPIC $(opt) -I./include/
 args_debug = -fPIC $(opt_debug) -I./include/
-#OS_MAClibs = `pkg-config --libs libcwd_r`
+#OS_MAClibs = 
 #OS_LINUXlibs = -lrt
-#OS_LINUXlibs_debug = -lrt `pkg-config --libs libcwd_r`
+#OS_LINUXlibs_debug = -lrt
 
 library_objects = \
   objects/message.o \

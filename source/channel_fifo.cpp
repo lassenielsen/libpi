@@ -92,7 +92,6 @@ void Channel_FIFO::Send(Message &msg) // {{{
   SCOPE(string("Channel_FIFO::Send"));
   DISPLAY(myPath);
   DISPLAY(msg.GetData());
-  cout << GetAddress() << "(" << myPath << ") " << " << " << msg.GetData() << endl;
   myStream << msg.GetSize() << endl;
   myStream.write(msg.GetData(),msg.GetSize());
   myStream << endl;
@@ -102,7 +101,6 @@ void Channel_FIFO::Receive(Message &msg) // {{{
 {
   SCOPE(string("Channel_FIFO::Receive"));
   DISPLAY(myPath);
-  cout << GetAddress() << "(" << myPath << ") " << " >> " << "..." << endl;
   long size;
   INFOMSG("RECEIVE SIZE");
   myStream>>size;
@@ -119,7 +117,6 @@ void Channel_FIFO::Receive(Message &msg) // {{{
   INFOMSG("READ NEWLINE");
   myStream.read(&newline,1); // read newline
   INFOMSG("DONE");
-  cout << GetAddress() << "(" << myPath << ") " << " >> " << data << endl;
   delete [] data;
 } // }}}
 
@@ -178,6 +175,7 @@ void Channel_FIFO::SingleReceive(Message &msg) // {{{
   buffer[pos]='\0';
   string dataSize(buffer+data_start);
   msg.AddData(buffer+pos+1,str2int(dataSize));
+  delete [] buffer;
   DISPLAY(msg.GetData());
 } // }}}
 

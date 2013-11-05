@@ -175,17 +175,17 @@ Session *Session_MQ::ReceiveSession(int from) // {{{
 
 void Session_MQ::Close(bool unlink) // {{{
 { while (myInChannels.size()>0)
-  { //cout << "Deleting channel: " << myInChannels.back()->GetAddress() << endl;
-    //if (unlink) myInChannels.back()->Unlink();
-    //delete myInChannels.back();
-    //myInChannels.pop_back();
+  { cout << "Deleting channel: " << myInChannels.back()->GetAddress() << endl;
+    if (unlink) myInChannels.back()->Unlink();
+    delete myInChannels.back();
+    myInChannels.pop_back();
   }
-  //while (myOutChannels.size()>0)
-  //{ if (unlink) myOutChannels.back()->Unlink();
-  //  delete myOutChannels.back();
-  //  myOutChannels.pop_back();
-  //}
-  //Session::Close();
+  while (myOutChannels.size()>0)
+  { if (unlink) myOutChannels.back()->Unlink();
+    delete myOutChannels.back();
+    myOutChannels.pop_back();
+  }
+  Session::Close();
 } // }}}
 
 Session *Session_MQ::creator_del(string address, int pid, int actors) // {{{
