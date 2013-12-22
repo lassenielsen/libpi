@@ -6,6 +6,7 @@
 #include <string>
 #include <time.h>
 #include <sstream>
+#include <unistd.h>
 #include <iostream>
 
 namespace debug {

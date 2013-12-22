@@ -28,8 +28,8 @@ opt_debug = -g -DPIDEBUG
 args = -fPIC $(opt) -I./include/
 args_debug = -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-#OS_LINUXlibs = -lrt
-#OS_LINUXlibs_debug = -lrt
+#OS_LINUXlibs = -lrt -lgmp
+#OS_LINUXlibs_debug = -lrt -lgmp
 
 library_objects = \
   objects/message.o \
