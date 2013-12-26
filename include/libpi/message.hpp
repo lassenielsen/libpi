@@ -25,7 +25,7 @@ namespace libpi
       Message();
       Message(const std::string &str);
       Message(const mpz_t &val);
-      ~Message();
+      virtual ~Message();
 
       void Clear();
       const char *GetData();

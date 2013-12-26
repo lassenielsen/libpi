@@ -23,6 +23,7 @@ namespace libpi
   class Channel
   { public:
       typedef Channel *(*channel_creator)(std::string);
+      virtual ~Channel() {}
 
 // DOCUMENTATION: Create Method {{{
 /*!

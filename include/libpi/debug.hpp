@@ -44,7 +44,7 @@ class Scope // {{{
     : myName(name)
     { ENTER(myName);
     } // }}}
-    ~Scope() // {{{
+    virtual ~Scope() // {{{
     { LEAVE(myName);
     } // }}}
 
