@@ -11,7 +11,9 @@
 # - Lasse Nielsen.                                                    #
 #=====================================================================#
 name = libpi
-version = 1.0.0
+version = 3.0.0
+libname = $(name).so
+libname_debug = $(name)_debug.so
 #OS_LINUXlibname = $(name).so
 #OS_LINUXlibname_debug = $(name)_debug.so
 #OS_MAClibname = $(name).dylib
@@ -161,16 +163,16 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	echo "Maintainer: Lasse Nielsen <lasse.nielsen.dk@gmail.com>" >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Installed-Size: 1024"                                   >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Pre-Depends: dpkg (>= 1.14.12ubuntu3)"                  >> debs/$(name)_$(version)_i386/DEBIAN/control
-	echo "Depends: librcp (>= 1.5)"                               >> debs/$(name)_$(version)_i386/DEBIAN/control
+	echo "Depends: libgmp3-dev"                                   >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Recommends: apims"                                      >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Suggests: apims"                                        >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Conflicts: "                                            >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Replaces: "                                             >> debs/$(name)_$(version)_i386/DEBIAN/control
-	echo "Provides: libdpl"                                       >> debs/$(name)_$(version)_i386/DEBIAN/control
+	echo "Provides: libpi"                                        >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Section: library"                                       >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Priority: optional"                                     >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Homepage: http://www.thelas.dk"                         >> debs/$(name)_$(version)_i386/DEBIAN/control
-	echo "Description: Library for quickly writing parsers."      >> debs/$(name)_$(version)_i386/DEBIAN/control
+	echo "Description: Library providing pi-calculus operations." >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "#!/bin/sh"                                               > debs/$(name)_$(version)_i386/DEBIAN/postinst
 	echo "ldconfig -n /usr/lib"                                   >> debs/$(name)_$(version)_i386/DEBIAN/postinst
 	chmod a+x debs/$(name)_$(version)_i386/DEBIAN/postinst
