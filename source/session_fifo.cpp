@@ -49,7 +49,7 @@ Session_FIFO::Session_FIFO(vector<Channel*> &chs, int pid, int actors) // {{{
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     {
       msg.Clear();
-      //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1].GetAddress() << endl;
+      //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1]->GetAddress() << endl;
       chs[actor-1]->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
       myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
@@ -80,7 +80,7 @@ Session_FIFO::Session_FIFO(vector<Channel*> &chs, int pid, int actors) // {{{
     msg.AddData(myInChannels.front()->GetAddress().c_str(),
                 myInChannels.front()->GetAddress().size()+1);
     chs[pid-1]->SingleSend(msg);
-    //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1].GetAddress() << endl;
+    //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1]->GetAddress() << endl;
     msg.Clear();
     //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
     myInChannels.front()->SingleReceive(msg);

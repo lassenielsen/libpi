@@ -90,7 +90,7 @@ bool IntValue::operator<=(const IntValue &rhs) const // {{{
 } // }}}
 bool IntValue::operator==(const Value &rhs) const // {{{
 { const IntValue *rhsptr=dynamic_cast<const IntValue*>(&rhs);
-  if (rhsptr=NULL)
+  if (rhsptr==NULL)
     return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
   return cmp==0;
@@ -133,7 +133,7 @@ StringValue StringValue::operator+(const StringValue &rhs) const // {{{
 } // }}}
 bool StringValue::operator==(const Value &rhs) const // {{{
 { const StringValue *rhsptr=dynamic_cast<const StringValue*>(&rhs);
-  if (rhsptr=NULL)
+  if (rhsptr==NULL)
     return false;
   return myValue == rhsptr->GetValue();
 } // }}}
@@ -184,7 +184,7 @@ BoolValue BoolValue::operator!() const // {{{
 } // }}}
 bool BoolValue::operator==(const Value &rhs) const // {{{
 { const BoolValue *rhsptr=dynamic_cast<const BoolValue*>(&rhs);
-  if (rhsptr=NULL)
+  if (rhsptr==NULL)
     return false;
   return myValue==rhsptr->GetValue();
 } // }}}
