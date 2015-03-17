@@ -36,7 +36,8 @@ IntValue::IntValue(Message &msg) // {{{
 } // }}}
 IntValue::IntValue(const std::string &val) // {{{
 { mpz_init(myValue);
-  mpz_set_str(myValue,val.c_str(),10);
+  int res=mpz_set_str(myValue,val.c_str(),10);
+  if (res<0) throw string("Bad IntValue conversion of string: ") + val;
 } // }}}
 IntValue::IntValue(mpz_t &val, bool clear_arg) // {{{
 { mpz_init(myValue);

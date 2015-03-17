@@ -67,5 +67,5 @@ void Message::GetValue(StringValue &dest) // {{{
 { dest=StringValue(GetData());
 } // }}}
 void Message::GetValue(BoolValue &dest) // {{{
-{ dest=BoolValue(GetData());
+{ dest=BoolValue(*this);
 } // }}}
