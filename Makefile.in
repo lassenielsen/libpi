@@ -157,7 +157,7 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	cp -R include/$(name) debs/$(name)_$(version)_i386/usr/include/$(name)
 	echo "Making control"
 	mkdir -p debs/$(name)_$(version)_i386/DEBIAN
-	echo "Package: libdpl"                                         > debs/$(name)_$(version)_i386/DEBIAN/control
+	echo "Package: $(name)"                                        > debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Version: $(version)"                                    >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Architecture: i386"                                     >> debs/$(name)_$(version)_i386/DEBIAN/control
 	echo "Maintainer: Lasse Nielsen <lasse.nielsen.dk@gmail.com>" >> debs/$(name)_$(version)_i386/DEBIAN/control
