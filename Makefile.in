@@ -153,6 +153,8 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	mkdir -p debs/$(name)_$(version)_i386/usr/lib
 	cp $(libname)$(libversion) debs/$(name)_$(version)_i386/usr/lib/
 	cp $(libname_debug)$(libversion) debs/$(name)_$(version)_i386/usr/lib/
+	ln -f -s debs/$(name)_$(version)_i386/usr/lib/$(libname)$(libversion) debs/$(name)_$(version)_i386/usr/lib/$(libname)
+	ln -f -s debs/$(name)_$(version)_i386/usr/lib/$(libname_debug)$(libversion) debs/$(name)_$(version)_i386/usr/lib/$(libname_debug)
 	mkdir -p debs/$(name)_$(version)_i386/usr/include
 	cp -R include/$(name) debs/$(name)_$(version)_i386/usr/include/$(name)
 	echo "Making control"
