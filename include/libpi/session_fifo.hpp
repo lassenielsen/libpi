@@ -25,6 +25,7 @@ namespace libpi
 */
 // }}}
       Session_FIFO(std::vector<Channel*> &chs, int pid, int actors);
+      Session_FIFO(std::vector<Channel_FIFO*> &inChannels, std::vector<Channel_FIFO*> &outChannels, int pid, int actors);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -44,7 +45,6 @@ namespace libpi
       static Session *creator_del(std::string address, int pid, int actors);
 
     private:
-      Session_FIFO(std::vector<Channel_FIFO*> &inChannels, std::vector<Channel_FIFO*> &outChannels, int pid, int actors);
 
       std::vector<Channel_FIFO*> myInChannels;
       std::vector<Channel_FIFO*> myOutChannels;
