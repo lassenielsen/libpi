@@ -1,8 +1,11 @@
-#include <libpi/channel.hpp>
+#include <libpi/network/channel.hpp>
 #include <unistd.h>
 
-using namespace libpi;
 using namespace std;
+
+namespace libpi
+{ namespace network
+  {
 
 Channel::Channel() // {{{
 {
@@ -35,3 +38,6 @@ string Channel::str() const // {{{
   // TODO: Create result
   return result;
 } // }}}
+
+  }
+}

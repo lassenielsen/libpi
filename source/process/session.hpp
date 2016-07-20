@@ -1,25 +1,26 @@
 #include <iostream>
-#include <libpi/session_mq.hpp>
+#include <libpi/process/session.hpp>
 #include <sstream>
 
 using namespace std;
-using namespace libpi;
 
-// SessionMQ Linking documenataion {{{
+namespace libpi
+{ namespace process
+  {
+// Session(FIFO) Linking documenataion {{{
 /*!
    Session initiation (linking) implementation.
-   All messages are sent using SingleSend (and Single Receive) to avoid linearity problems.
    Protocol for linking on channels c0,,c2,...,cP-1 for participants 0,1,...,P-1:
    // P0 receives outChannels
    1-[c1]->0 s0->1
    2-[c2]->0 s0->2
    ...
-   P-[cP-1]-->0 s0->P-1
+   P-1-[cP-1]->0 s0->P-1
    // P0 sends own inChannels
    0-[s0->1]->1 s1->0
    0-[s0->2]->2 s2->0
    ...
-   0-[s0->P-1]->2 s2->0
+   0-[s0->P-1]->P-1 sP-1->0
    // participant 1 sends input channels (via participant 0)
    1-[s1->0]->0 s2->1
    0-[s0->2]->2 s2->1
@@ -34,26 +35,26 @@ using namespace libpi;
    // DONE
   */
  // }}}
-Session_MQ::Session_MQ(vector<Channel*> &chs, int pid, int actors) // {{{
+Session::Session(vector<Channel*> &chs, int pid, int actors) // {{{
 : Session(pid,actors)
 { 
-  if (pid<0 || actors<=pid) throw "Session_QM::Session_MQ: pid must be between 0 and actors-1.";
+  if (pid<0 || actors<=pid) throw "Session_QM::Session: pid must be between 0 and actors-1.";
   for (int i=0; i<actors; ++i) // Create receiving session-channels
   {
-    myInChannels.push_back(new Channel_MQ());
+    myInChannels.push_back(new Channel_FIFO());
     //cout << "Debug: PID=" << pid << ", created channel: " << myInChannels.back()->GetAddress() << endl;
   }
   Message msg;
   if (pid==0) // Orchestrate session initiation
   {
-    myOutChannels.push_back(new Channel_MQ(myInChannels[pid]->GetAddress()));
+    myOutChannels.push_back(new Channel_FIFO(myInChannels[pid]->GetAddress()));
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     {
       msg.Clear();
-      //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1].GetAddress() << endl;
+      //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1]->GetAddress() << endl;
       chs[actor-1]->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
-      myOutChannels.push_back(new Channel_MQ(msg.GetData()));
+      myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
     }
     for (int actor=1; actor<actors; ++actor) // Send own reception-channels
     {
@@ -81,11 +82,11 @@ Session_MQ::Session_MQ(vector<Channel*> &chs, int pid, int actors) // {{{
     msg.AddData(myInChannels.front()->GetAddress().c_str(),
                 myInChannels.front()->GetAddress().size()+1);
     chs[pid-1]->SingleSend(msg);
-    //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1].GetAddress() << endl;
+    //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << " on " << chs[pid-1]->GetAddress() << endl;
     msg.Clear();
     //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
     myInChannels.front()->SingleReceive(msg);
-    myOutChannels.push_back(new Channel_MQ(msg.GetData()));
+    myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
     //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
     for (int actor=1; actor<actors; ++actor) // Send remaining reception-channels
     { if (pid==actor)
@@ -98,52 +99,53 @@ Session_MQ::Session_MQ(vector<Channel*> &chs, int pid, int actors) // {{{
     }
     for (int actor=1; actor<actors; ++actor) // Receive remaining transmission-channels
     { if (pid==actor)
-      { myOutChannels.push_back(new Channel_MQ(myInChannels[pid]->GetAddress()));
+      { myOutChannels.push_back(new Channel_FIFO(myInChannels[pid]->GetAddress()));
         continue; // Skip distribution of own channel
       }
       msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
       myInChannels.front()->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
-      myOutChannels.push_back(new Channel_MQ(msg.GetData()));
+      myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
     }
     // Session has been established!
   }
 } // }}}
 
-Session_MQ::Session_MQ(vector<Channel_MQ*> &inChannels, vector<Channel_MQ*> &outChannels, int pid, int actors) // {{{
+Session::Session(vector<Channel_FIFO*> &inChannels, vector<Channel_FIFO*> &outChannels, int pid, int actors) // {{{
 : Session(pid,actors)
-, myInChannels(inChannels)
-, myOutChannels(outChannels)
 { 
+  for (vector<Channel_FIFO*>::const_iterator inCh=inChannels.begin(); inCh!=inChannels.end(); ++inCh)
+    myInChannels.push_back((*inCh)->Copy());
+  for (vector<Channel_FIFO*>::const_iterator outCh=outChannels.begin(); outCh!=outChannels.end(); ++outCh)
+    myOutChannels.push_back((*outCh)->Copy());
 } // }}}
 
-Session_MQ::~Session_MQ() // {{{
+Session::~Session() // {{{
 { Close();
 } // }}}
 
-void Session_MQ::Send(int to, Message &msg) // {{{
-{ if (Closed()) throw "Session_MQ::Send: Trying to use closed session.";
-  if (to<0 || to>=GetActors()) throw "Session_MQ::Send: to must be between 0 and actors-1";
+void Session::Send(int to, Message &msg) // {{{
+{ if (Closed()) throw string("Session::Send: Trying to use closed session.");
+  if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
   myOutChannels[to]->Send(msg);
 } //}}}
 
-void Session_MQ::Receive(int from, Message &msg) // {{{
-{ if (Closed()) throw "Session_MQ::Receive: Trying to use closed session.";
-  if (from<0 || from>=GetActors()) throw "Session_MQ::Receive: to must be between 0 and actors-1";
+void Session::Receive(int from, Message &msg) // {{{
+{ if (Closed()) throw string("Session::Receive: Trying to use closed session.");
+  if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
   myInChannels[from]->Receive(msg);
 } //}}}
 
-void Session_MQ::Delegate(int to, Session &s) // {{{
-{ if (Closed()) throw "Session_MQ::Delegate: Trying to use closed session.";
-  if (to<0 || to>=GetActors()) throw "Session::Delegate: to must be between 0 and actors-1";
+void Session::Delegate(int to, Session &s) // {{{
+{ if (Closed()) throw string("Session::Delegate: Trying to use closed session.");
+  if (to<0 || to>=GetActors()) throw string("Session::Delegate: to must be between 0 and actors-1");
   s.DelegateTo(*myOutChannels[to]);
 } //}}}
 
-// FIXME: Redesign to GetAddress
-void Session_MQ::DelegateTo(Channel &to) // {{{
+void Session::DelegateTo(Channel &to) // {{{
 { stringstream ss;
-  ss << "mqsession://";
+  ss << "fifosession://";
   for (int i=0; i<GetActors(); ++i)
   { if (i>0)
       ss << ",";
@@ -164,50 +166,50 @@ void Session_MQ::DelegateTo(Channel &to) // {{{
   Close(false);
 } // }}}
 
-Session *Session_MQ::ReceiveSession(int from) // {{{
-{ if (Closed()) throw "Session_MQ::ReceiveSession: Trying to use closed session.";
-  if (from<0 || from>=GetActors()) throw "Session::ReceiveSession: from must be between 0 and actors-1";
+Session *Session::ReceiveSession(int from) // {{{
+{ if (Closed()) throw string("Session::ReceiveSession: Trying to use closed session.");
+  if (from<0 || from>=GetActors()) throw string("Session::ReceiveSession: from must be between 0 and actors-1");
   Message addrMsg;
   myInChannels[from]->Receive(addrMsg);
   string addr=addrMsg.GetData();
   return Create(addr);
 } //}}}
 
-void Session_MQ::Close(bool unlink) // {{{
+void Session::Close(bool unlink) // {{{
 { while (myInChannels.size()>0)
-  { cout << "Deleting channel: " << myInChannels.back()->GetAddress() << endl;
-    if (unlink) myInChannels.back()->Unlink();
+  { if (unlink) myInChannels.back()->Unlink();
     delete myInChannels.back();
     myInChannels.pop_back();
   }
   while (myOutChannels.size()>0)
-  { if (unlink) myOutChannels.back()->Unlink();
-    delete myOutChannels.back();
+  { delete myOutChannels.back();
     myOutChannels.pop_back();
   }
-  Session::Close();
+  Session::Close(unlink);
 } // }}}
 
-Session *Session_MQ::creator_del(string address, int pid, int actors) // {{{
-{ vector<Channel_MQ*> inChannels;
-  vector<Channel_MQ*> outChannels;
+Session *Session::creator_del(string address, int pid, int actors) // {{{
+{ vector<Channel_FIFO*> inChannels;
+  vector<Channel_FIFO*> outChannels;
   // Create receiving channels from addresses
   for (int i=0; i<actors; ++i)
   { int pos=address.find(',');
-    if (pos<0) throw "Session_MQ::creator_del: Address bad format.";
-    inChannels.push_back(new Channel_MQ(address.substr(0,pos)));
+    if (pos<0) throw "Session::creator_del: Address bad format.";
+    inChannels.push_back(new Channel_FIFO(address.substr(0,pos)));
     address=address.substr(pos+1);
   }
   // Create sending channels from addresses
   for (int i=0; i<actors-1; ++i)
   { int pos=address.find(',');
-    if (pos<0) throw "Session_MQ::creator_del: Address bad format.";
-    outChannels.push_back(new Channel_MQ(address.substr(0,pos)));
+    if (pos<0) throw "Session::creator_del: Address bad format.";
+    outChannels.push_back(new Channel_FIFO(address.substr(0,pos)));
     address=address.substr(pos+1);
   }
-  outChannels.push_back(new Channel_MQ(address));
+  outChannels.push_back(new Channel_FIFO(address));
   // Return session with created channels
-  return new Session_MQ(inChannels,outChannels,pid,actors);
+  return new Session(inChannels,outChannels,pid,actors);
 } // }}}
 
-int _1=Session::RegisterSessionCreator("mqsession",Session_MQ::creator_del);
+int _2=Session::RegisterSessionCreator("fifosession",Session::creator_del);
+  }
+}

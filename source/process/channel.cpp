@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <libpi/channel_fifo.hpp>
+#include <libpi/process/channel.hpp>
 #include "common.cpp"
 
 #include <iostream>
@@ -12,15 +12,17 @@
 #include <sys/resource.h>
 #include <stdio.h>
 
-using namespace libpi;
 using namespace std;
 
-const int Channel_FIFO::ourMessageLength=1024*8;
+namespace libpi {
+  namespace process {
 
-Channel_FIFO::Channel_FIFO(const string &path) // {{{
+const int Channel::ourMessageLength=1024*8;
+
+Channel::Channel(const string &path) // {{{
 : myUnlink(false)
 {
-  SCOPE(string("Channel_FIFO::Channel_FIFO"));
+  SCOPE(string("Channel::Channel"));
   DISPLAY(path);
   if (path=="") // Need to create path and fifo file {{{
   {
@@ -30,7 +32,7 @@ Channel_FIFO::Channel_FIFO(const string &path) // {{{
     int success=mknod(myPath.c_str(), S_IFIFO | O_EXCL | 0666 , 0); // FIXME: Consider security
     if (success!=0)
     {
-      ERRORMSG(string("Channel_FIFO::Channel_FIFO Error - Unable to create fifo channel: ") + myPath + "\n"
+      ERRORMSG(string("Channel::Channel Error - Unable to create fifo channel: ") + myPath + "\n"
              + "Error message: " + strerror(errno));
       throw (string)"Unable to create fifo channek: " + myPath + "\n"
                   + "Error was: " + strerror(errno);
@@ -44,52 +46,52 @@ Channel_FIFO::Channel_FIFO(const string &path) // {{{
   if (!myStream.is_open()) // Unsuccessful {{{
   {
     ERRORMSG(string("Unable open path: ") + myPath);
-    throw string("Channel_FIFO::Channel_FIFO Error - Unable open path: ") + myPath;
+    throw string("Channel::Channel Error - Unable open path: ") + myPath;
   } // }}}
 } // }}}
 
-Channel_FIFO::Channel_FIFO(const Channel_FIFO &init) // {{{
+Channel::Channel(const Channel &init) // {{{
 : myUnlink(false)
 , myPath(init.GetPath())
 {
-  SCOPE(string("Channel_FIFO::Channel_FIFO"));
+  SCOPE(string("Channel::Channel"));
   DISPLAY(init.GetAddress());
   myStream.open(myPath.c_str());
 } // }}}
 
-Channel_FIFO &Channel_FIFO::operator=(const Channel_FIFO &rhs) // {{{
+Channel &Channel::operator=(const Channel &rhs) // {{{
 {
-  SCOPE(string("Channel_FIFO::operator="));
+  SCOPE(string("Channel::operator="));
   DISPLAY(rhs.GetAddress());
   myStream.close();
   myPath=rhs.GetPath();
   myStream.open(myPath.c_str());
 } // }}}
 
-Channel_FIFO *Channel_FIFO::Copy() const // {{{
-{ return new Channel_FIFO(*this);
+Channel *Channel::Copy() const // {{{
+{ return new Channel(*this);
 } // }}}
 
-Channel_FIFO::~Channel_FIFO() // {{{
+Channel::~Channel() // {{{
 {
-  SCOPE(string("Channel_FIFO::~Channel_FIFO(") + myPath + ")");
+  SCOPE(string("Channel::~Channel(") + myPath + ")");
   myStream.close();
   if (myUnlink)
     remove(myPath.c_str());
 } // }}}
 
-void Channel_FIFO::Unlink() // {{{
+void Channel::Unlink() // {{{
 {
-  SCOPE(string("Channel_FIFO::Unlink"));
+  SCOPE(string("Channel::Unlink"));
   DISPLAY(myPath);
   myUnlink=true;
 } // }}}
 
-void Channel_FIFO::Send(Message &msg) // {{{
+void Channel::Send(Message &msg) // {{{
 {
   myStream.close();
   myStream.open(myPath.c_str()); // FIXME: otherwise chanse of segfault
-  SCOPE(string("Channel_FIFO::Send"));
+  SCOPE(string("Channel::Send"));
   DISPLAY(myPath);
   DISPLAY(msg.GetData());
   myStream << msg.GetSize() << endl;
@@ -97,9 +99,9 @@ void Channel_FIFO::Send(Message &msg) // {{{
   myStream << endl;
 } // }}}
 
-void Channel_FIFO::Receive(Message &msg) // {{{
+void Channel::Receive(Message &msg) // {{{
 {
-  SCOPE(string("Channel_FIFO::Receive"));
+  SCOPE(string("Channel::Receive"));
   DISPLAY(myPath);
   long size;
   INFOMSG("RECEIVE SIZE");
@@ -120,9 +122,9 @@ void Channel_FIFO::Receive(Message &msg) // {{{
   delete [] data;
 } // }}}
 
-void Channel_FIFO::SingleSend(Message &msg) // {{{
+void Channel::SingleSend(Message &msg) // {{{
 {
-  SCOPE(string("Channel_FIFO::SingleSend"));
+  SCOPE(string("Channel::SingleSend"));
   DISPLAY(msg.GetData());
   DISPLAY(myPath);
   string msgSize=int2str(ourMessageLength-6); // FIXME: hardcoded ceil(ourMessageLength)+2
@@ -146,9 +148,9 @@ void Channel_FIFO::SingleSend(Message &msg) // {{{
   delete [] buffer;
 } // }}}
 
-void Channel_FIFO::SingleReceive(Message &msg) // {{{
+void Channel::SingleReceive(Message &msg) // {{{
 {
-  SCOPE(string("Channel_FIFO::SingleReceive"));
+  SCOPE(string("Channel::SingleReceive"));
   DISPLAY(myPath);
   char *buffer = new char[ourMessageLength];
   myStream.read(buffer,ourMessageLength);
@@ -160,7 +162,7 @@ void Channel_FIFO::SingleReceive(Message &msg) // {{{
   if (buffer[pos]!='\n')
   {
     ERRORMSG("ILL FORMATED BUFFER");
-    throw string("Channel_FIFO::SingleReceive: Ill formatted buffer");
+    throw string("Channel::SingleReceive: Ill formatted buffer");
   }
   buffer[pos]='\0';
   string msgLength(buffer);
@@ -170,7 +172,7 @@ void Channel_FIFO::SingleReceive(Message &msg) // {{{
   if (buffer[pos]!='\n')
   {
     ERRORMSG("ILL FORMATED BUFFER");
-    throw string("Channel_FIFO::SingleReceive: Ill formatted buffer");
+    throw string("Channel::SingleReceive: Ill formatted buffer");
   }
   buffer[pos]='\0';
   string dataSize(buffer+data_start);
@@ -179,10 +181,13 @@ void Channel_FIFO::SingleReceive(Message &msg) // {{{
   DISPLAY(msg.GetData());
 } // }}}
 
-string Channel_FIFO::GetAddress() const // {{{
+string Channel::GetAddress() const // {{{
 { return myPath;
 } // }}}
 
-string Channel_FIFO::GetPath() const // {{{
+string Channel::GetPath() const // {{{
 { return myPath;
 } // }}}
+
+  }
+}

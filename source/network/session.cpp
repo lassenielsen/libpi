@@ -1,4 +1,13 @@
-Session::Session(Channel &channel, int pid, int maxpid)
+#include <libpi/network/session.hpp>
+
+using namespace std;
+using namespace sdl;
+
+namespace libpi
+{ namespace network
+  {
+
+Session::Session(Channel &channel, int pid, int maxpid) // {{{
 { if (pid<0 || maxpid<=pid)
     throw "Session Constructor: pid mus be between 0 and maxpid-1";
   else
@@ -20,5 +29,8 @@ Session::Session(Channel &channel, int pid, int maxpid)
     
     // send own channels
     // receive channels for other participants
+  }
+} // }}}
+
   }
 }

@@ -38,24 +38,24 @@ library_objects = \
   objects/value.o \
   objects/channel.o \
   objects/session.o \
-  objects/channel_fifo.o \
-  objects/session_fifo.o \
-  objects/channel_mq.o \
-  objects/session_mq.o \
-#  objects/channel_tcp.o \
-#  objects/session_tcp.o \
+  objects/thread/channel.o \
+  objects/thread/session.o \
+  objects/process/channel.o \
+  objects/process/session.o \
+#  objects/network/channel.o \
+#  objects/network/session.o \
 
 library_objects_debug = \
   objects_debug/message.o \
   objects_debug/value.o \
   objects_debug/channel.o \
   objects_debug/session.o \
-  objects_debug/channel_fifo.o \
-  objects_debug/session_fifo.o \
-  objects_debug/channel_mq.o \
-  objects_debug/session_mq.o \
-#  objects_debug/channel_tcp.o \
-#  objects_debug/session_tcp.o \
+  objects_debug/thread/channel.o \
+  objects_debug/thread/session.o \
+  objects_debug/process/channel.o \
+  objects_debug/process/session.o \
+#  objects_debug/network/channel_tcp.o \
+#  objects_debug/network/session_tcp.o \
 
 default:
 	@echo "Use make config, make build, sudo make install, make clean and if you don't like it sudo make uninstall."
@@ -107,6 +107,8 @@ install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	@echo "Copying include-files"
 	mkdir -p /usr/include/$(name)
 	cp include/$(name)/*.hpp /usr/include/$(name)/
+	mkdir -p /usr/include/$(name)/thread
+	cp include/$(name)/thread/*.hpp /usr/include/$(name)/thread/
 	chmod -R a+rx /usr/include/$(name)
 #OS_LINUX	@echo "Reindexing libraries"
 #OS_LINUX	ldconfig -n /usr/lib
@@ -193,13 +195,37 @@ $(libname_debug)$(libversion): $(library_objects_debug)
 #OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
-objects/%.o: source/%.cpp include/$(name)/*.hpp  include/$(name)/config.hpp
+objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects
 	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
 
-objects_debug/%.o: source/%.cpp include/$(name)/*.hpp  include/$(name)/config.hpp
+objects/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
+	mkdir -p objects/thread
+	$(compiler) -c source/thread/$*.cpp $(args) -o objects/thread/$*.o
+
+objects/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/$(name)/process/*.hpp include/$(name)/config.hpp
+	mkdir -p objects/process
+	$(compiler) -c source/process/$*.cpp $(args) -o objects/process/$*.o
+
+objects/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/$(name)/network/*.hpp include/$(name)/config.hpp
+	mkdir -p objects/network
+	$(compiler) -c source/network/$*.cpp $(args) -o objects/network/$*.o
+
+objects_debug/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug
 	$(compiler) -c source/$*.cpp $(args_debug) -o objects_debug/$*.o
+
+objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/thread/$(name)/*.hpp include/$(name)/config.hpp
+	mkdir -p objects_debug/thread
+	$(compiler) -c source/thread/$*.cpp $(args_debug) -o objects_debug/thread/$*.o
+
+objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/process/$(name)/*.hpp include/$(name)/config.hpp
+	mkdir -p objects_debug/process
+	$(compiler) -c source/process/$*.cpp $(args_debug) -o objects_debug/process/$*.o
+
+objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/network/$(name)/*.hpp include/$(name)/config.hpp
+	mkdir -p objects_debug/network
+	$(compiler) -c source/network/$*.cpp $(args_debug) -o objects_debug/network/$*.o
 
 tags: $(name)/*.hpp $(name)/*.cpp
 	$(ctags) -a -o ~/.ctags $(PWD)/include/$(name)/*.hpp $(PWD)/source/*.cpp

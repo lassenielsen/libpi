@@ -2,13 +2,13 @@
 #define libpi_channel
 // DOCUMENTATION: channel.hpp {{{
 /*! \file
- * This file defines the cpi (pi-calculus operations for C++) channel
+ * This file defines the libpi (pi-calculus operations for C++) channel
  * structure and interface.
  */
 // }}}
 #include <string>
 #include <map>
-#include <libpi/message.hpp>
+#include <libpi/value.hpp>
 
 namespace libpi
 {
@@ -44,18 +44,32 @@ namespace libpi
 // DOCUMENTATION: Send method {{{
 /*!
  * Send transmits a message on the channel.
+ * The transmitted value is consumed.
  */
 // }}}
-      virtual void Send(Message &msg)=0;
-      virtual void SingleSend(Message &msg)=0;
+      virtual void Send(Value *msg)=0;
+// DOCUMENTATION: SingleSend method {{{
+/*!
+ * SingleSend transmits a message on the channel, ensuring the message
+ * is not broken up in multiple packets. If message size exceedes the
+ * packet limit, a string exception is thrown.
+ * The transmitted value is consumed.
+ */
+// }}}
+      virtual void SingleSend(Value *msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
- * Receive waits for a message on the channel, receives and stores the message
- * in the argument reference.
+ * Receive returns the value received on the channel.
  */
 // }}}
-      virtual void Receive(Message &msg)=0;
-      virtual void SingleReceive(Message &msg)=0;
+      virtual Value *Receive()=0;
+// DOCUMENTATION: Receive method {{{
+/*!
+ * SingleReceive receives a single packet, and returns the contained
+ * value.
+ */
+// }}}
+      virtual Value *SingleReceive()=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used
@@ -74,6 +88,8 @@ namespace libpi
  */
 // }}}
       static Channel *Create(const std::string &address);
+
+      virtual Channel *Copy() const =0;
 
     private:
 // DOCUMENTATION: ourSessionCreators field {{{
