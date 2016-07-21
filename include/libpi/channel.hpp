@@ -25,13 +25,13 @@ namespace libpi
       typedef Channel *(*channel_creator)(std::string);
       virtual ~Channel() {}
 
-// DOCUMENTATION: Create Method {{{
+// DOCUMENTATION: Copy Method {{{
 /*!
  * Copy creates a new copy of the channel.
  */
 // }}}
       virtual Channel *Copy() const=0;
-// DOCUMENTATION: Create Method {{{
+// DOCUMENTATION: Unlink Method {{{
 /*!
  * Unlink marks the channel to be removed (and its ressources freed) when the
  * object is deleted.
@@ -88,8 +88,6 @@ namespace libpi
  */
 // }}}
       static Channel *Create(const std::string &address);
-
-      virtual Channel *Copy() const =0;
 
     private:
 // DOCUMENTATION: ourSessionCreators field {{{

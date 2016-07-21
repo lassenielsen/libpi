@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <string>
 
 namespace libpi {
   class Mutex

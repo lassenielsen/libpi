@@ -43,26 +43,27 @@ namespace libpi
   
 // DOCUMENTATION: Send method {{{
 /*!
- * Send transmits a message on the channel that leads to the @to
+ * Send transmits a value on the channel that leads to the @to
  * participant of the session.
- * @param to is the number of the participant to receive the message.
+ * @param to is the index of the participant to receive the message.
  * @to should be less than the @actors of the session and not be the
  * pid of the sending process.
- * @param msg is the message to send.
+ * @param value is the value to be sent, this is transferedd to the
+ * receiving participant and can no longer be used by the sender.
  */
 // }}}
-      virtual void Send(int to, Message &msg);
+      virtual void Send(int to, Value *value);
 // DOCUMENTATION: Receive method {{{
 /*!
- * Receive waits for and receives a message on the channel from the
+ * Receive waits for and receives a value over the channel from the
  * @from participant of the session.
  * @param from is the number of the participant who sends the message.
  * @from should be less than the @actors of the session and not be the
  * pid of the receiving process.
- * @param msg is the message to send.
+ * @retuens a pointer to the received value.
  */
 // }}}
-      virtual void Receive(int from, Message &msg);
+      virtual Value *Receive(int from);
 // DOCUMENTATION: Delegate method {{{
 /*!
  * Delegate "transmits" a session to the @to participant of the session.

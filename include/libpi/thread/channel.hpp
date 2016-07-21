@@ -2,10 +2,11 @@
 #define libpi_thread_channel
 
 #include <pthread.h>
-#include <libpi/mutex.hpp>
+#include <libpi/thread/mutex.hpp>
 #include <libpi/channel.hpp>
 #include <string>
 #include <queue>
+#include <iostream>
 
 namespace libpi {
   namespace thread {
@@ -15,6 +16,9 @@ namespace libpi {
         Channel(const Channel &rhs);
         virtual ~Channel();
 
+        Channel *Copy() const;
+        void Unlink();
+
         void Send(Value *msg);
         void SingleSend(Value *msg);
         Value *Receive();
@@ -22,48 +26,11 @@ namespace libpi {
     
         std::string GetAddress() const;
     
-        Channel *Copy() const;
 
-        Channel &operator=(const Channel &rhs) // {{{
-        { Detach();
-          rhs.lock->Lock();
-          ref_count=rhs.ref_count;
-          ++(*ref_count);
-          msgs=rhs.msgs;
-          msg_count=rhs.msg_count;
-          sync=rhs.sync;
-          lock=rhs.lock;
-          rhs.lock->Release();
-          return *this;
-        } // }}}
+        Channel &operator=(const Channel &rhs);
 
       protected:
-        void Detach() // {{{
-        { lock->Lock();
-          --(*ref_count);
-          if (*ref_count<=0)
-          { delete ref_count;
-            delete msg_count;
-            sync->Release();
-            delete sync;
-            while (msgs->size()>0)
-            { std::cout << "Deleting msg: " << msgs->front()->ToString() << std::endl;
-              delete msgs->front();
-              msgs->pop();
-            }
-            delete msgs;
-            lock->Release();
-            delete lock;
-          }
-          else
-            lock->Release();
-
-          ref_count=NULL;
-          msg_count=NULL;
-          lock=NULL;
-          sync=NULL;
-          msgs=NULL;
-        } // }}}
+        void Detach();
 
       private:
         std::queue<Value*> *msgs;

@@ -14,11 +14,11 @@ name = libpi
 version = 2015
 libname = $(name).so
 libname_debug = $(name)_debug.so
-#OS_LINUXlibname = $(name).so
-#OS_LINUXlibname_debug = $(name)_debug.so
+libname = $(name).so
+libname_debug = $(name)_debug.so
 #OS_MAClibname = $(name).dylib
 #OS_MAClibname_debug = $(name)_debug.dylib
-#OS_LINUXlibversion = .$(version)
+libversion = .$(version)
 #OS_MAClibversion =
 COMMENT = OS_
 OS_AUTO = $(shell uname -s)
@@ -30,8 +30,8 @@ opt_debug = -g -DPIDEBUG
 args = -fPIC $(opt) -I./include/
 args_debug = -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-#OS_LINUXlibs = -lrt -lgmp
-#OS_LINUXlibs_debug = -lrt -lgmp
+libs = -lrt -lgmp
+libs_debug = -lrt -lgmp
 
 library_objects = \
   objects/message.o \
@@ -95,23 +95,23 @@ include/$(name)/config.hpp:
 	@echo "#define CONFIG_DPL" >> include/$(name)/config.hpp
 	@echo "#include <string>" >> include/$(name)/config.hpp
 #OS_MAC	@echo "#define OS_X" >> include/$(name)/config.hpp
-#OS_LINUX	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
+	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
 	@echo "#endif" >> include/$(name)/config.hpp
 
 install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	@echo "Copying library"
 	cp $(libname)$(libversion) /usr/lib/
 	cp $(libname_debug)$(libversion) /usr/lib/
-#OS_LINUX	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
-#OS_LINUX	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
+	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
+	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
 	@echo "Copying include-files"
 	mkdir -p /usr/include/$(name)
 	cp include/$(name)/*.hpp /usr/include/$(name)/
 	mkdir -p /usr/include/$(name)/thread
 	cp include/$(name)/thread/*.hpp /usr/include/$(name)/thread/
 	chmod -R a+rx /usr/include/$(name)
-#OS_LINUX	@echo "Reindexing libraries"
-#OS_LINUX	ldconfig -n /usr/lib
+	@echo "Reindexing libraries"
+	ldconfig -n /usr/lib
 
 uninstall:
 	@echo "Removing library"
@@ -119,8 +119,8 @@ uninstall:
 	rm -f /usr/lib/$(libname_debug)*
 	@echo "Removing include-files"
 	rm -Rf /usr/include/$(name)
-#OS_LINUX	@echo "Reindexing libraries"
-#OS_LINUX	ldconfig -n /usr/lib
+	@echo "Reindexing libraries"
+	ldconfig -n /usr/lib
 
 clean:
 	touch clean~
@@ -188,11 +188,11 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	rm -Rf debs/$(name)_$(version)_i386
 
 $(libname)$(libversion): $(library_objects)
-#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
+	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs)
 
 $(libname_debug)$(libversion): $(library_objects_debug)
-#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
+	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
 objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
