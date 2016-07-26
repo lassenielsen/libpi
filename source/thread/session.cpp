@@ -35,26 +35,26 @@ namespace libpi
    // DONE
   */
  // }}}
-Session::Session(vector<Channel*> &chs, int pid, int actors) // {{{
-: Session(pid,actors)
+Session::Session(vector<libpi::Channel*> &chs, int pid, int actors) // {{{
+: libpi::Session(pid,actors)
 { 
   if (pid<0 || actors<=pid) throw "Session_QM::Session: pid must be between 0 and actors-1.";
   for (int i=0; i<actors; ++i) // Create receiving session-channels
   {
-    myInChannels.push_back(new Channel_FIFO());
+    myInChannels.push_back(new Channel());
     //cout << "Debug: PID=" << pid << ", created channel: " << myInChannels.back()->GetAddress() << endl;
   }
   Message msg;
   if (pid==0) // Orchestrate session initiation
   {
-    myOutChannels.push_back(new Channel_FIFO(myInChannels[pid]->GetAddress()));
+    myOutChannels.push_back(new Channel(myInChannels[pid]->GetAddress()));
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     {
       msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1]->GetAddress() << endl;
       chs[actor-1]->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
-      myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
+      myOutChannels.push_back(new Channel(msg.GetData()));
     }
     for (int actor=1; actor<actors; ++actor) // Send own reception-channels
     {
@@ -86,7 +86,7 @@ Session::Session(vector<Channel*> &chs, int pid, int actors) // {{{
     msg.Clear();
     //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
     myInChannels.front()->SingleReceive(msg);
-    myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
+    myOutChannels.push_back(new Channel(msg.GetData()));
     //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
     for (int actor=1; actor<actors; ++actor) // Send remaining reception-channels
     { if (pid==actor)
@@ -99,25 +99,25 @@ Session::Session(vector<Channel*> &chs, int pid, int actors) // {{{
     }
     for (int actor=1; actor<actors; ++actor) // Receive remaining transmission-channels
     { if (pid==actor)
-      { myOutChannels.push_back(new Channel_FIFO(myInChannels[pid]->GetAddress()));
+      { myOutChannels.push_back(new Channel(myInChannels[pid]->GetAddress()));
         continue; // Skip distribution of own channel
       }
       msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << myInChannels.front()->GetAddress() << endl;
       myInChannels.front()->SingleReceive(msg);
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
-      myOutChannels.push_back(new Channel_FIFO(msg.GetData()));
+      myOutChannels.push_back(new Channel(msg.GetData()));
     }
     // Session has been established!
   }
 } // }}}
 
-Session::Session(vector<Channel_FIFO*> &inChannels, vector<Channel_FIFO*> &outChannels, int pid, int actors) // {{{
+Session::Session(vector<libpi::Channel*> &inChannels, vector<lkbpi::Channel*> &outChannels, int pid, int actors) // {{{
 : Session(pid,actors)
 { 
-  for (vector<Channel_FIFO*>::const_iterator inCh=inChannels.begin(); inCh!=inChannels.end(); ++inCh)
+  for (vector<Channel*>::const_iterator inCh=inChannels.begin(); inCh!=inChannels.end(); ++inCh)
     myInChannels.push_back((*inCh)->Copy());
-  for (vector<Channel_FIFO*>::const_iterator outCh=outChannels.begin(); outCh!=outChannels.end(); ++outCh)
+  for (vector<Channel*>::const_iterator outCh=outChannels.begin(); outCh!=outChannels.end(); ++outCh)
     myOutChannels.push_back((*outCh)->Copy());
 } // }}}
 
@@ -189,23 +189,23 @@ void Session::Close(bool unlink) // {{{
 } // }}}
 
 Session *Session::creator_del(string address, int pid, int actors) // {{{
-{ vector<Channel_FIFO*> inChannels;
-  vector<Channel_FIFO*> outChannels;
+{ vector<Channel*> inChannels;
+  vector<Channel*> outChannels;
   // Create receiving channels from addresses
   for (int i=0; i<actors; ++i)
   { int pos=address.find(',');
     if (pos<0) throw "Session::creator_del: Address bad format.";
-    inChannels.push_back(new Channel_FIFO(address.substr(0,pos)));
+    inChannels.push_back(new Channel(address.substr(0,pos)));
     address=address.substr(pos+1);
   }
   // Create sending channels from addresses
   for (int i=0; i<actors-1; ++i)
   { int pos=address.find(',');
     if (pos<0) throw "Session::creator_del: Address bad format.";
-    outChannels.push_back(new Channel_FIFO(address.substr(0,pos)));
+    outChannels.push_back(new Channel(address.substr(0,pos)));
     address=address.substr(pos+1);
   }
-  outChannels.push_back(new Channel_FIFO(address));
+  outChannels.push_back(new Channel(address));
   // Return session with created channels
   return new Session(inChannels,outChannels,pid,actors);
 } // }}}

@@ -1,8 +1,10 @@
 #include <libpi/session.hpp>
 #include "common.cpp"
 
-using namespace libpi;
 using namespace std;
+
+namespace libpi
+{
 
 Session::Session(int pid, int actors) // {{{
 : myPid(pid),
@@ -14,11 +16,11 @@ Session::~Session() // {{{
 {
 } // }}}
 
-void Session::Send(int to, Message &msg) // {{{
+void Session::Send(int to, Value *msg) // {{{
 { throw "Session::Send: Trying to send on dummy session.";
 } //}}}
 
-void Session::Receive(int from, Message &msg) // {{{
+Value *Session::Receive(int from) // {{{
 { throw "Session::Receive: Trying to receive on dummy session.";
 } //}}}
 
@@ -75,4 +77,6 @@ Session *Session::Create(const string &address) // {{{
 } // }}}
 int Session::RegisterSessionCreator(string protocol,session_creator creator) // {{{
 { ourSessionCreators[protocol]=creator;
+}
+
 }

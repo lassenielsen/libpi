@@ -195,10 +195,6 @@ $(libname_debug)$(libversion): $(library_objects_debug)
 #OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
-objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
-	mkdir -p objects
-	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
-
 objects/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects/thread
 	$(compiler) -c source/thread/$*.cpp $(args) -o objects/thread/$*.o
@@ -211,9 +207,9 @@ objects/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/$(name)/
 	mkdir -p objects/network
 	$(compiler) -c source/network/$*.cpp $(args) -o objects/network/$*.o
 
-objects_debug/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
-	mkdir -p objects_debug
-	$(compiler) -c source/$*.cpp $(args_debug) -o objects_debug/$*.o
+objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
+	mkdir -p objects
+	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
 
 objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/thread/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/thread
@@ -226,6 +222,10 @@ objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/pr
 objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/network/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/network
 	$(compiler) -c source/network/$*.cpp $(args_debug) -o objects_debug/network/$*.o
+
+objects_debug/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
+	mkdir -p objects_debug
+	$(compiler) -c source/$*.cpp $(args_debug) -o objects_debug/$*.o
 
 tags: $(name)/*.hpp $(name)/*.cpp
 	$(ctags) -a -o ~/.ctags $(PWD)/include/$(name)/*.hpp $(PWD)/source/*.cpp
