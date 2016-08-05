@@ -35,7 +35,7 @@ namespace libpi
   // }}}
         virtual ~Session();
     
-        void Send(int to, Value *value);
+        void Send(int to, libpi::Value *value);
         Value *Receive(int from);
         void Delegate(int to, libpi::Session &s);
         void DelegateTo(libpi::Channel &to);

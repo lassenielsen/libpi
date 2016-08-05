@@ -20,9 +20,9 @@ namespace libpi
  * or indeed any means of establishing communication.
  */
 // }}}
-  class Channel
+  class Channel : Value
   { public:
-      typedef Channel *(*channel_creator)(std::string);
+      typedef Channel *(*channel_creator)(const std::string &);
       virtual ~Channel() {}
 
 // DOCUMENTATION: Copy Method {{{

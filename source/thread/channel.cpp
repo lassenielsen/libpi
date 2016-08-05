@@ -10,8 +10,8 @@ Channel::Channel() // {{{
 : msgs(new std::queue<libpi::Value*>())
 , sync(new Mutex(true))
 , lock(new Mutex())
-, msg_count(new int(0))
-, ref_count(new int(1))
+, msg_count(new atomic<int>(0))
+, ref_count(new atomic<int>(1))
 {
 } // }}}
 
@@ -38,7 +38,7 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(Value *msg) // {{{
+void Channel::Send(libpi::Value *msg) // {{{
 { lock->Lock();
   ++(*msg_count);
   msgs->push(msg);
@@ -47,11 +47,11 @@ void Channel::Send(Value *msg) // {{{
   lock->Release();
 } // }}}
 
-void Channel::SingleSend(Value *msg) // {{{
+void Channel::SingleSend(libpi::Value *msg) // {{{
 { Send(msg);
 } // }}}
 
-Value *Channel::Receive() // {{{
+libpi::Value *Channel::Receive() // {{{
 { lock->Lock();
   --(*msg_count);
   if (*msg_count<0)
@@ -60,13 +60,13 @@ Value *Channel::Receive() // {{{
     lock->Lock();
   }
 
-  Value *result=msgs->front();
+  libpi::Value *result=msgs->front();
   msgs->pop();
   lock->Release();
   return result;
 } // }}}
 
-Value *Channel::SingleReceive() // {{{
+libpi::Value *Channel::SingleReceive() // {{{
 { return Receive();
 } // }}}
 

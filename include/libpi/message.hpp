@@ -9,7 +9,6 @@
 
 #include <vector>
 #include <string>
-#include <libpi/value.hpp>
 #include <gmp.h>
 
 namespace libpi
@@ -31,9 +30,6 @@ namespace libpi
       const char *GetData();
       int GetSize();
       void AddData(const char *data, int size);
-      void GetValue(IntValue &dest);
-      void GetValue(StringValue &dest);
-      void GetValue(BoolValue &dest);
 
     private:
       std::vector<std::pair<char*,int> > myData;

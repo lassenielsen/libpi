@@ -6,6 +6,7 @@
 #include <libpi/channel.hpp>
 #include <string>
 #include <queue>
+#include <atomic>
 #include <iostream>
 
 namespace libpi {
@@ -19,13 +20,12 @@ namespace libpi {
         Channel *Copy() const;
         void Unlink();
 
-        void Send(Value *msg);
-        void SingleSend(Value *msg);
-        Value *Receive();
-        Value *SingleReceive();
+        void Send(libpi::Value *msg);
+        void SingleSend(libpi::Value *msg);
+        libpi::Value *Receive();
+        libpi::Value *SingleReceive();
     
         std::string GetAddress() const;
-    
 
         Channel &operator=(const Channel &rhs);
 
@@ -33,11 +33,11 @@ namespace libpi {
         void Detach();
 
       private:
-        std::queue<Value*> *msgs;
+        std::queue<libpi::Value*> *msgs;
         Mutex *sync;
         Mutex *lock;
-        int *msg_count;
-        int *ref_count;
+        std::atomic<int> *msg_count;
+        std::atomic<int> *ref_count;
     };
   }
 }

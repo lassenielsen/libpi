@@ -27,8 +27,8 @@ compiler = g++
 ctags = ctags
 opt = -O3
 opt_debug = -g -DPIDEBUG
-args = -fPIC $(opt) -I./include/
-args_debug = -fPIC $(opt_debug) -I./include/
+args = -std=c++11 -fPIC $(opt) -I./include/
+args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
 #OS_LINUXlibs = -lrt -lgmp
 #OS_LINUXlibs_debug = -lrt -lgmp
@@ -36,6 +36,9 @@ args_debug = -fPIC $(opt_debug) -I./include/
 library_objects = \
   objects/message.o \
   objects/value.o \
+  objects/boolvalue.o \
+  objects/intvalue.o \
+  objects/stringvalue.o \
   objects/channel.o \
   objects/session.o \
   objects/thread/channel.o \
@@ -48,6 +51,9 @@ library_objects = \
 library_objects_debug = \
   objects_debug/message.o \
   objects_debug/value.o \
+  objects_debug/boolvalue.o \
+  objects_debug/intvalue.o \
+  objects_debug/stringvalue.o \
   objects_debug/channel.o \
   objects_debug/session.o \
   objects_debug/thread/channel.o \

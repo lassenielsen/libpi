@@ -16,7 +16,7 @@ Session::~Session() // {{{
 {
 } // }}}
 
-void Session::Send(int to, Value *msg) // {{{
+void Session::Send(int to, const Value &msg) // {{{
 { throw "Session::Send: Trying to send on dummy session.";
 } //}}}
 

@@ -44,24 +44,21 @@ Session::Session(vector<libpi::Channel*> &chs, int pid, int actors) // {{{
     myInChannels.push_back(new Channel());
     //cout << "Debug: PID=" << pid << ", created channel: " << myInChannels.back()->GetAddress() << endl;
   }
-  Message msg;
   if (pid==0) // Orchestrate session initiation
   {
-    myOutChannels.push_back(new Channel(myInChannels[pid]->GetAddress()));
+    myOutChannels.push_back(myInChannels[pid]->Copy());
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     {
-      msg.Clear();
       //cout << "Debug: PID=" << pid << ", receiving on channel: " << chs[actor-1]->GetAddress() << endl;
-      chs[actor-1]->SingleReceive(msg);
+      Value *val=chs[actor-1]->SingleReceive();
+      Channel *ch=dynamic_cast<Channel*>(val);
+      if (ch==NULL)
+        throw string("libpi::thread::Session Received non-channel during linking");
       //cout << "Debug: PID=" << pid << ", received outChannel: " << msg.GetData() << endl;
-      myOutChannels.push_back(new Channel(msg.GetData()));
+      myOutChannels.push_back(ch);
     }
     for (int actor=1; actor<actors; ++actor) // Send own reception-channels
-    {
-      msg.Clear();
-      msg.AddData(myInChannels[actor]->GetAddress().c_str(),
-                  myInChannels[actor]->GetAddress().size()+1);
-      myOutChannels[actor]->SingleSend(msg);
+    { myOutChannels[actor]->SingleSend(*myInChannels[actor]);
       //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << endl;
     }
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
@@ -125,16 +122,16 @@ Session::~Session() // {{{
 { Close();
 } // }}}
 
-void Session::Send(int to, Message &msg) // {{{
+void Session::Send(int to, const libpi::Value &value) // {{{
 { if (Closed()) throw string("Session::Send: Trying to use closed session.");
   if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
-  myOutChannels[to]->Send(msg);
+  myOutChannels[to]->Send(value);
 } //}}}
 
-void Session::Receive(int from, Message &msg) // {{{
+libpi::Value *Session::Receive(int from) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
-  myInChannels[from]->Receive(msg);
+  return myInChannels[from]->Receive();
 } //}}}
 
 void Session::Delegate(int to, Session &s) // {{{
@@ -160,7 +157,7 @@ void Session::DelegateTo(Channel &to) // {{{
   ss << ",";
   ss << GetActors();
   ss << ")";
-  Message msg;
+  libpi::Message msg;
   msg.AddData(ss.str().c_str(),ss.str().size()+1);
   to.Send(msg);
   Close(false);
@@ -169,7 +166,7 @@ void Session::DelegateTo(Channel &to) // {{{
 Session *Session::ReceiveSession(int from) // {{{
 { if (Closed()) throw string("Session::ReceiveSession: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::ReceiveSession: from must be between 0 and actors-1");
-  Message addrMsg;
+  libpi::Message addrMsg;
   myInChannels[from]->Receive(addrMsg);
   string addr=addrMsg.GetData();
   return Create(addr);
