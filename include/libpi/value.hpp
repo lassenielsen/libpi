@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <memory>
 
 namespace libpi
 {
@@ -20,7 +21,6 @@ class Value // {{{
     virtual std::string GetType() const;
     virtual std::string ToString() const;
     virtual std::string Serialize() const;
-    virtual Value *Copy() const;
     virtual bool operator==(const Value &rhs) const;
 
     static Value *Parse(const std::string &str);

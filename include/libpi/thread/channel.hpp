@@ -11,33 +11,43 @@
 
 namespace libpi {
   namespace thread {
+// DOCUMENTATION: Channel class {{{
+/*!
+ * libpi::thread::Channel implements a thread-level channel.
+ * This allows threads to send and receive messages in an efficient
+ * way.
+ * This is because the transmitted values are not serialized and
+ * re-parsed as is necessary for process level channels and network
+ * level channels.
+ * Thread level channels are implemented via a
+ * std::queue<std::shared_ptr<const Value> > structure,
+ * synchronized using mutexes.
+ */
+// }}}
     class Channel : public libpi::Channel
     { public:
         Channel();
         Channel(const Channel &rhs);
         virtual ~Channel();
 
-        Channel *Copy() const;
         void Unlink();
 
-        void Send(libpi::Value *msg);
-        void SingleSend(libpi::Value *msg);
-        libpi::Value *Receive();
-        libpi::Value *SingleReceive();
+        void Send(std::shared_ptr<const libpi::Value> msg);
+        void SingleSend(std::shared_ptr<const libpi::Value> msg);
+        std::shared_ptr<const libpi::Value> Receive();
+        std::shared_ptr<const libpi::Value> SingleReceive();
     
         std::string GetAddress() const;
 
         Channel &operator=(const Channel &rhs);
 
-      protected:
-        void Detach();
+        // Thread channels are not serialized or parsed
 
       private:
-        std::queue<libpi::Value*> *msgs;
-        Mutex *sync;
-        Mutex *lock;
-        std::atomic<int> *msg_count;
-        std::atomic<int> *ref_count;
+        std::queue<std::shared_ptr<const libpi::Value> > msgs;
+        Mutex sync;
+        Mutex lock;
+        std::atomic<int> msg_count;
     };
   }
 }

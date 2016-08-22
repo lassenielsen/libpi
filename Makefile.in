@@ -36,15 +36,16 @@ args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 library_objects = \
   objects/message.o \
   objects/value.o \
-  objects/boolvalue.o \
-  objects/intvalue.o \
-  objects/stringvalue.o \
+  objects/bool.o \
+  objects/int.o \
+  objects/string.o \
   objects/channel.o \
   objects/session.o \
+  objects/thread/link.o \
   objects/thread/channel.o \
   objects/thread/session.o \
-  objects/process/channel.o \
-  objects/process/session.o \
+#  objects/process/channel.o \
+#  objects/process/session.o \
 #  objects/network/channel.o \
 #  objects/network/session.o \
 
@@ -56,10 +57,11 @@ library_objects_debug = \
   objects_debug/stringvalue.o \
   objects_debug/channel.o \
   objects_debug/session.o \
+  objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
   objects_debug/thread/session.o \
-  objects_debug/process/channel.o \
-  objects_debug/process/session.o \
+#  objects_debug/process/channel.o \
+#  objects_debug/process/session.o \
 #  objects_debug/network/channel_tcp.o \
 #  objects_debug/network/session_tcp.o \
 

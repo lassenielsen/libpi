@@ -26,13 +26,10 @@ std::string Value::GetType() const // {{{
 { return "unt";
 } // }}}
 std::string Value::ToString() const // {{{
-{ return "()";
+{ return "";
 } // }}}
 std::string Value::Serialize() const // {{{
 { return GetType() + ":" + ToString();
-} // }}}
-Value *Value::Copy() const // {{{
-{ return new Value();
 } // }}}
 bool Value::operator==(const Value &rhs) const // {{{
 { return typeid(rhs)==typeid(*this); 

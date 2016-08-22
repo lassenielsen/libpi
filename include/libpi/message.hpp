@@ -1,5 +1,4 @@
-#ifndef libpi_message
-#define libpi_message
+#pragma once
 // DOCUMENTATION: message.hpp {{{
 /*! \file
  * This file defines the cpi (pi-calculus operations for C++) message
@@ -35,5 +34,3 @@ namespace libpi
       std::vector<std::pair<char*,int> > myData;
   };
 }
-
-#endif

@@ -3,30 +3,29 @@
 
 namespace libpi
 {
-// DOCUMENTATION: BoolValue class {{{
+// DOCUMENTATION: Bool class {{{
 /*!
- * BoolValue implements boolean operations.
+ * Bool implements boolean operations.
  * This allows a straight forward and uniform syntax for performing all
  * operations.
  */
 // }}}
-class BoolValue : public Value // {{{
+class Bool : public Value // {{{
 { public:
     // Copy constructor and assignment
-    BoolValue(const BoolValue &val);
-    BoolValue &operator=(const BoolValue &rhs);
-    BoolValue *Copy() const;
+    Bool(const Bool &val);
+    Bool &operator=(const Bool &rhs);
 
     // Constructors
-    BoolValue(const std::string &str);
-    BoolValue(bool val=false);
-    virtual ~BoolValue();
+    Bool(const std::string &str);
+    Bool(bool val=false);
+    virtual ~Bool();
 
     std::string GetType() const { return "boo"; }
     std::string ToString() const;
-    BoolValue operator&&(const BoolValue &rhs) const;
-    BoolValue operator||(const BoolValue &rhs) const;
-    BoolValue operator!() const;
+    Bool operator&&(const Bool &rhs) const;
+    Bool operator||(const Bool &rhs) const;
+    Bool operator!() const;
     bool operator==(const Value &rhs) const;
 
     bool GetValue() const;

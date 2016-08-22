@@ -35,10 +35,10 @@ namespace libpi
    // DONE
   */
  // }}}
-Session::Session(vector<libpi::Channel*> &chs, int pid, int actors) // {{{
+Session::Session(vector<shared_ptr<libpi::Channel> > &chs, int pid, int actors) // {{{
 : libpi::Session(pid,actors)
 { 
-  if (pid<0 || actors<=pid) throw "Session_QM::Session: pid must be between 0 and actors-1.";
+  if (pid<0 || actors<=pid) throw string("Session_QM::Session: pid must be between 0 and actors-1.");
   for (int i=0; i<actors; ++i) // Create receiving session-channels
   {
     myInChannels.push_back(new Channel());
@@ -58,7 +58,7 @@ Session::Session(vector<libpi::Channel*> &chs, int pid, int actors) // {{{
       myOutChannels.push_back(ch);
     }
     for (int actor=1; actor<actors; ++actor) // Send own reception-channels
-    { myOutChannels[actor]->SingleSend(*myInChannels[actor]);
+    { myOutChannels[actor]->SingleSend(myInChannels[actor]);
       //cout << "Debug: PID=" << pid << ", sent inChannel: " << msg.GetData() << endl;
     }
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors

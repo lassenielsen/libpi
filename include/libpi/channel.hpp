@@ -1,5 +1,4 @@
-#ifndef libpi_channel
-#define libpi_channel
+#pragma once
 // DOCUMENTATION: channel.hpp {{{
 /*! \file
  * This file defines the libpi (pi-calculus operations for C++) channel
@@ -25,12 +24,6 @@ namespace libpi
       typedef Channel *(*channel_creator)(const std::string &);
       virtual ~Channel() {}
 
-// DOCUMENTATION: Copy Method {{{
-/*!
- * Copy creates a new copy of the channel.
- */
-// }}}
-      virtual Channel *Copy() const=0;
 // DOCUMENTATION: Unlink Method {{{
 /*!
  * Unlink marks the channel to be removed (and its ressources freed) when the
@@ -39,7 +32,10 @@ namespace libpi
 // }}}
       virtual void Unlink()=0;
 
-      bool operator==(const Channel &rhs) {return GetAddress()==rhs.GetAddress(); }
+      bool operator==(const Value &rhs) // {{{
+      { const Channel *rhsptr=dynamic_cast<const Channel*>(&rhs);
+        return rhsptr!=NULL && GetAddress()==rhsptr->GetAddress();
+      } // }}}
 
 // DOCUMENTATION: Send method {{{
 /*!
@@ -47,7 +43,7 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void Send(Value *msg)=0;
+      virtual void Send(std::shared_ptr<const Value> msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -56,20 +52,20 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void SingleSend(Value *msg)=0;
+      virtual void SingleSend(std::shared_ptr<const Value>msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
  */
 // }}}
-      virtual Value *Receive()=0;
+      virtual std::shared_ptr<const Value> Receive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
 // }}}
-      virtual Value *SingleReceive()=0;
+      virtual std::shared_ptr<const Value> SingleReceive()=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used
@@ -101,4 +97,3 @@ namespace libpi
       static std::map<std::string,channel_creator> ourChannelCreators;
   };
 }
-#endif

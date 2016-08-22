@@ -1,5 +1,4 @@
-#ifndef DEBUG_HPP
-#define DEBUG_HPP
+#pragma once
 
 #include <map>
 #include <pthread.h>
@@ -63,5 +62,3 @@ class Scope // {{{
 #define SCOPE(name)
 #endif
 }
-
-#endif

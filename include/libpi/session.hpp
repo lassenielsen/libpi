@@ -1,5 +1,4 @@
-#ifndef libpi_session
-#define libpi_session
+#pragma once
 // DOCUMENTATION: session.hpp {{{
 /*! \file
  * This file denines the cpi (pi-calculus operations for C++) session
@@ -12,14 +11,16 @@
 // }}}
 #include <string>
 #include <vector>
+#include <memory>
 #include <libpi/channel.hpp>
 #include <libpi/value.hpp>
+#include <libpi/link.hpp>
 
 namespace libpi
 {
   class Session
   { public:
-      typedef Session *(*session_creator)(std::string address, int pid, int actors);
+      typedef Session *(*session_creator)(std::shared_ptr<Link> link, int pid, int actors);
 
 // DOCUMENTATION: Session constructor {{{
 /*!
@@ -52,7 +53,7 @@ namespace libpi
  * receiving participant and can no longer be used by the sender.
  */
 // }}}
-      virtual void Send(int to, Value *value);
+      virtual void Send(int to, std::shared_ptr<Value> value)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -63,34 +64,7 @@ namespace libpi
  * @retuens a pointer to the received value.
  */
 // }}}
-      virtual Value *Receive(int from);
-// DOCUMENTATION: Delegate method {{{
-/*!
- * Delegate "transmits" a session to the @to participant of the session.
- * In practice this can be performed in different ways depending on the
- * underlying technology, but they all include sending the session
- * information to the receiver, and closing the local copy of the
- * session.
- * @param to is the number of the participant to receive the message.
- * @to should be less than the @actors of the session and not be the
- * pid of the sending process.
- * @s the session to transmit.
- */
-// }}}
-      virtual void Delegate(int to, Session &s);
-      virtual void DelegateTo(Channel &to);
-// DOCUMENTATION: ReceiveSession method {{{
-/*!
- * ReceiveSession "receives" a session on the channel from the
- * The session is received through a message containing a session address where
- * the received session can be created in the same way as creating a new
- * session.
- * @param from is the number of the participant who sends the message.
- * @from should be less than the @actors of the session and not be the
- * pid of the receiving process.
- */
-// }}}
-      virtual Session *ReceiveSession(int from);
+      virtual std::shared_ptr<Value> Receive(int from)=0;
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
 // DOCUMENTATION: Close method {{{
@@ -134,8 +108,8 @@ namespace libpi
  * session.
  */
 // }}}
-      static Session *Create(const std::string &address);
-      static int RegisterSessionCreator(std::string protocol,session_creator creator);
+      //static Session *Create(const std::string &address);
+      //static int RegisterSessionCreator(std::string protocol,session_creator creator);
 
     private:
       int myPid;
@@ -149,7 +123,6 @@ namespace libpi
  * greating sessions.
  */
 // }}}
-      static std::map<std::string,session_creator> ourSessionCreators;
+      //static std::map<std::string,session_creator> ourSessionCreators;
   };
 }
-#endif
