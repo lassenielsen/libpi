@@ -43,27 +43,25 @@ library_objects = \
   objects/session.o \
   objects/thread/link.o \
   objects/thread/channel.o \
-  objects/thread/session.o \
+#  objects/process/link.o \
 #  objects/process/channel.o \
-#  objects/process/session.o \
+#  objects/network/link.o \
 #  objects/network/channel.o \
-#  objects/network/session.o \
 
 library_objects_debug = \
   objects_debug/message.o \
   objects_debug/value.o \
-  objects_debug/boolvalue.o \
-  objects_debug/intvalue.o \
-  objects_debug/stringvalue.o \
+  objects_debug/bool.o \
+  objects_debug/int.o \
+  objects_debug/string.o \
   objects_debug/channel.o \
   objects_debug/session.o \
   objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
-  objects_debug/thread/session.o \
+#  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
-#  objects_debug/process/session.o \
-#  objects_debug/network/channel_tcp.o \
-#  objects_debug/network/session_tcp.o \
+#  objects_debug/network/link.o \
+#  objects_debug/network/channel.o \
 
 default:
 	@echo "Use make config, make build, sudo make install, make clean and if you don't like it sudo make uninstall."
@@ -219,15 +217,15 @@ objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects
 	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
 
-objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/thread/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/thread
 	$(compiler) -c source/thread/$*.cpp $(args_debug) -o objects_debug/thread/$*.o
 
-objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/process/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/$(name)/process/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/process
 	$(compiler) -c source/process/$*.cpp $(args_debug) -o objects_debug/process/$*.o
 
-objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/network/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/$(name)/network/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/network
 	$(compiler) -c source/network/$*.cpp $(args_debug) -o objects_debug/network/$*.o
 

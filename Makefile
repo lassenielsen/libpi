@@ -14,11 +14,11 @@ name = libpi
 version = 2015
 libname = $(name).so
 libname_debug = $(name)_debug.so
-libname = $(name).so
-libname_debug = $(name)_debug.so
+#OS_LINUXlibname = $(name).so
+#OS_LINUXlibname_debug = $(name)_debug.so
 #OS_MAClibname = $(name).dylib
 #OS_MAClibname_debug = $(name)_debug.dylib
-libversion = .$(version)
+#OS_LINUXlibversion = .$(version)
 #OS_MAClibversion =
 COMMENT = OS_
 OS_AUTO = $(shell uname -s)
@@ -30,8 +30,8 @@ opt_debug = -g -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-libs = -lrt -lgmp
-libs_debug = -lrt -lgmp
+#OS_LINUXlibs = -lrt -lgmp
+#OS_LINUXlibs_debug = -lrt -lgmp
 
 library_objects = \
   objects/message.o \
@@ -43,27 +43,25 @@ library_objects = \
   objects/session.o \
   objects/thread/link.o \
   objects/thread/channel.o \
-  objects/thread/session.o \
+#  objects/process/link.o \
 #  objects/process/channel.o \
-#  objects/process/session.o \
+#  objects/network/link.o \
 #  objects/network/channel.o \
-#  objects/network/session.o \
 
 library_objects_debug = \
   objects_debug/message.o \
   objects_debug/value.o \
-  objects_debug/boolvalue.o \
-  objects_debug/intvalue.o \
-  objects_debug/stringvalue.o \
+  objects_debug/bool.o \
+  objects_debug/int.o \
+  objects_debug/string.o \
   objects_debug/channel.o \
   objects_debug/session.o \
   objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
-  objects_debug/thread/session.o \
+#  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
-#  objects_debug/process/session.o \
-#  objects_debug/network/channel_tcp.o \
-#  objects_debug/network/session_tcp.o \
+#  objects_debug/network/link.o \
+#  objects_debug/network/channel.o \
 
 default:
 	@echo "Use make config, make build, sudo make install, make clean and if you don't like it sudo make uninstall."
@@ -103,23 +101,23 @@ include/$(name)/config.hpp:
 	@echo "#define CONFIG_DPL" >> include/$(name)/config.hpp
 	@echo "#include <string>" >> include/$(name)/config.hpp
 #OS_MAC	@echo "#define OS_X" >> include/$(name)/config.hpp
-	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
+#OS_LINUX	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
 	@echo "#endif" >> include/$(name)/config.hpp
 
 install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	@echo "Copying library"
 	cp $(libname)$(libversion) /usr/lib/
 	cp $(libname_debug)$(libversion) /usr/lib/
-	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
-	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
+#OS_LINUX	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
+#OS_LINUX	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
 	@echo "Copying include-files"
 	mkdir -p /usr/include/$(name)
 	cp include/$(name)/*.hpp /usr/include/$(name)/
 	mkdir -p /usr/include/$(name)/thread
 	cp include/$(name)/thread/*.hpp /usr/include/$(name)/thread/
 	chmod -R a+rx /usr/include/$(name)
-	@echo "Reindexing libraries"
-	ldconfig -n /usr/lib
+#OS_LINUX	@echo "Reindexing libraries"
+#OS_LINUX	ldconfig -n /usr/lib
 
 uninstall:
 	@echo "Removing library"
@@ -127,8 +125,8 @@ uninstall:
 	rm -f /usr/lib/$(libname_debug)*
 	@echo "Removing include-files"
 	rm -Rf /usr/include/$(name)
-	@echo "Reindexing libraries"
-	ldconfig -n /usr/lib
+#OS_LINUX	@echo "Reindexing libraries"
+#OS_LINUX	ldconfig -n /usr/lib
 
 clean:
 	touch clean~
@@ -196,11 +194,11 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	rm -Rf debs/$(name)_$(version)_i386
 
 $(libname)$(libversion): $(library_objects)
-	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
+#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs)
 
 $(libname_debug)$(libversion): $(library_objects_debug)
-	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
+#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
 objects/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
@@ -219,15 +217,15 @@ objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects
 	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
 
-objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/thread/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/thread
 	$(compiler) -c source/thread/$*.cpp $(args_debug) -o objects_debug/thread/$*.o
 
-objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/process/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/process/%.o: source/process/%.cpp include/$(name)/*.hpp include/$(name)/process/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/process
 	$(compiler) -c source/process/$*.cpp $(args_debug) -o objects_debug/process/$*.o
 
-objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/network/$(name)/*.hpp include/$(name)/config.hpp
+objects_debug/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/$(name)/network/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/network
 	$(compiler) -c source/network/$*.cpp $(args_debug) -o objects_debug/network/$*.o
 

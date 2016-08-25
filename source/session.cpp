@@ -6,15 +6,29 @@ using namespace std;
 namespace libpi
 {
 
-Session::Session(int pid, int actors) // {{{
+Session::Session(int pid, int actors, std::vector<std::shared_ptr<Channel> > &inChannels, std::vector<std::shared_ptr<Channel> > &outChannels) // {{{
 : myPid(pid),
-  myActors(actors)
+  myActors(actors),
+  myInChannels(inChannels),
+  myOutChannels(outChannels)
 {
 } // }}}
 
 Session::~Session() // {{{
 {
 } // }}}
+
+void Session::Send(int to, shared_ptr<libpi::Value> value) // {{{
+{ if (Closed()) throw string("Session::Send: Trying to use closed session.");
+  if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
+  myOutChannels[to]->Send(value);
+} //}}}
+
+shared_ptr<libpi::Value> Session::Receive(int from) // {{{
+{ if (Closed()) throw string("Session::Receive: Trying to use closed session.");
+  if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
+  return myInChannels[from]->Receive();
+} //}}}
 
 void Session::Close(bool unlink) // {{{
 { myActors=0;

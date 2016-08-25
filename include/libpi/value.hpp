@@ -20,7 +20,7 @@ class Value // {{{
     virtual ~Value();
     virtual std::string GetType() const;
     virtual std::string ToString() const;
-    virtual std::string Serialize() const;
+    std::string Serialize() const;
     virtual bool operator==(const Value &rhs) const;
 
     static Value *Parse(const std::string &str);

@@ -14,13 +14,12 @@
 #include <memory>
 #include <libpi/channel.hpp>
 #include <libpi/value.hpp>
-#include <libpi/link.hpp>
 
 namespace libpi
 {
   class Session
   { public:
-      typedef Session *(*session_creator)(std::shared_ptr<Link> link, int pid, int actors);
+      //typedef Session *(*session_creator)(std::shared_ptr<Link> link, int pid, int actors);
 
 // DOCUMENTATION: Session constructor {{{
 /*!
@@ -29,11 +28,15 @@ namespace libpi
 * The @pid's 0 through @actors-1 are used, where pid=0 waits for
 * processes with pid 1 to @actors -1 to connect on the channel to
 * create a joint session.
-* @param actors the number of required processes in the created
-* session.
+* @param actors in the session. This must correspond to the number of
+* channels in each of the provided vectors.
+* @param inChannels the channel objects used to receive values from
+* participants in the session.
+* @param outChannels the channel objects used to send values to
+* participants in the session.
 */
 // }}}
-      Session(int pid, int actors);
+      Session(int pid, int actors, std::vector<std::shared_ptr<Channel> > &inChannels, std::vector<std::shared_ptr<Channel> > &outChannels);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -53,7 +56,7 @@ namespace libpi
  * receiving participant and can no longer be used by the sender.
  */
 // }}}
-      virtual void Send(int to, std::shared_ptr<Value> value)=0;
+      virtual void Send(int to, std::shared_ptr<Value> value);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -64,7 +67,7 @@ namespace libpi
  * @retuens a pointer to the received value.
  */
 // }}}
-      virtual std::shared_ptr<Value> Receive(int from)=0;
+      virtual std::shared_ptr<Value> Receive(int from);
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
 // DOCUMENTATION: Close method {{{
@@ -115,6 +118,8 @@ namespace libpi
       int myPid;
       int myActors;
 
+      std::vector<std::shared_ptr<Channel> > myInChannels;
+      std::vector<std::shared_ptr<Channel> > myOutChannels;
 // DOCUMENTATION: ourSessionCreators field {{{
 /*!
  * Maps all session protocols to methods that can create a session from an

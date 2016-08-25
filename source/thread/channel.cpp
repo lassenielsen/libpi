@@ -26,11 +26,11 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(shared_ptr<const libpi::Value> val) // {{{
+void Channel::Send(shared_ptr<libpi::Value> val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(shared_ptr<const libpi::Value> val) // {{{
+void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
 { lock.Lock();
   msgs.push(val);
   ++(msg_count);
@@ -39,11 +39,11 @@ void Channel::SingleSend(shared_ptr<const libpi::Value> val) // {{{
   lock.Release();
 } // }}}
 
-shared_ptr<const libpi::Value> Channel::Receive() // {{{
+shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
-shared_ptr<const libpi::Value> Channel::SingleReceive() // {{{
+shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { lock.Lock();
   --(msg_count);
   if (msg_count<0)
@@ -52,7 +52,7 @@ shared_ptr<const libpi::Value> Channel::SingleReceive() // {{{
     lock.Lock();
   }
 
-  shared_ptr<const libpi::Value> result=msgs.front();
+  shared_ptr<libpi::Value> result=msgs.front();
   msgs.pop();
   lock.Release();
   return result;

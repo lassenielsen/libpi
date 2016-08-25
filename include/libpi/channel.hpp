@@ -19,7 +19,7 @@ namespace libpi
  * or indeed any means of establishing communication.
  */
 // }}}
-  class Channel : Value
+  class Channel : public Value
   { public:
       typedef Channel *(*channel_creator)(const std::string &);
       virtual ~Channel() {}
@@ -43,7 +43,7 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void Send(std::shared_ptr<const Value> msg)=0;
+      virtual void Send(std::shared_ptr<Value> msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -52,20 +52,20 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void SingleSend(std::shared_ptr<const Value>msg)=0;
+      virtual void SingleSend(std::shared_ptr<Value>msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
  */
 // }}}
-      virtual std::shared_ptr<const Value> Receive()=0;
+      virtual std::shared_ptr<Value> Receive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
 // }}}
-      virtual std::shared_ptr<const Value> SingleReceive()=0;
+      virtual std::shared_ptr<Value> SingleReceive()=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

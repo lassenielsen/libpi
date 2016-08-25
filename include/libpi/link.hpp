@@ -11,11 +11,10 @@
 // }}}
 #include <memory>
 #include <libpi/value.hpp>
+#include <libpi/session.hpp>
 
 namespace libpi
 {
-  class Session;
-
   class Link : public Value
   { public:
       virtual std::shared_ptr<Session> Connect(int pid, int actors) = 0;

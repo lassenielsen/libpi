@@ -32,10 +32,10 @@ namespace libpi {
 
         void Unlink();
 
-        void Send(std::shared_ptr<const libpi::Value> msg);
-        void SingleSend(std::shared_ptr<const libpi::Value> msg);
-        std::shared_ptr<const libpi::Value> Receive();
-        std::shared_ptr<const libpi::Value> SingleReceive();
+        void Send(std::shared_ptr<libpi::Value> msg);
+        void SingleSend(std::shared_ptr<libpi::Value> msg);
+        std::shared_ptr<libpi::Value> Receive();
+        std::shared_ptr<libpi::Value> SingleReceive();
     
         std::string GetAddress() const;
 
@@ -44,7 +44,7 @@ namespace libpi {
         // Thread channels are not serialized or parsed
 
       private:
-        std::queue<std::shared_ptr<const libpi::Value> > msgs;
+        std::queue<std::shared_ptr<libpi::Value> > msgs;
         Mutex sync;
         Mutex lock;
         std::atomic<int> msg_count;
