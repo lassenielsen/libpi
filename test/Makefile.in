@@ -3,8 +3,8 @@ name = libpi-test
 version = 2.5.0
 compiler = g++
 opt = -g
-args = $(opt) `sdl-config --cflags`
-libs = -lpi -lgmp
+args = -std=c++11 -L../ -I../include/ $(opt) `sdl-config --cflags`
+libs = -lpi -lgmp -lpthread
 OS_AUTO = $(shell uname -s)
 COMMENT = _
 
