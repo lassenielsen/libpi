@@ -35,19 +35,19 @@ shared_ptr<Session> Link::Connect(int pid, int actors) // {{{
     throw string("libpi::thread::Link::Connect: pid must be between 0 and actors-1.");
 
   // Create vectors for session channels
-  vector<shared_ptr<Channel> > inChannels;
-  vector<shared_ptr<Channel> > outChannels;
+  vector<shared_ptr<libpi::Channel> > inChannels;
+  vector<shared_ptr<libpi::Channel> > outChannels;
 
   // Create receiving session-channels
   for (int i=0; i<actors; ++i)
-  { inChannels.push_back(shared_ptr<Channel>(new Channel()));
+  { inChannels.push_back(shared_ptr<libpi::Channel>(new Channel()));
   }
 
   if (pid==0) // Orchestrate session initiation
   { outChannels.push_back(inChannels[pid]);
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     { shared_ptr<Value> val=myChannels[actor-1]->SingleReceive();
-      shared_ptr<Channel> ch=dynamic_pointer_cast<Channel>(val);
+      shared_ptr<libpi::Channel> ch=dynamic_pointer_cast<libpi::Channel>(val);
       if (!ch)
         throw string("libpi::thread::Link Received non-channel during connecting");
       outChannels.push_back(ch);
@@ -63,11 +63,12 @@ shared_ptr<Session> Link::Connect(int pid, int actors) // {{{
         outChannels[actor2]->SingleSend(val);
       }
     }
+    // Session channels has been established!
   }
   else
   { myChannels[pid-1]->SingleSend(inChannels.front());
     shared_ptr<Value> val=inChannels.front()->SingleReceive();
-    shared_ptr<Channel> ch=dynamic_pointer_cast<Channel>(val);
+    shared_ptr<libpi::Channel> ch=dynamic_pointer_cast<libpi::Channel>(val);
     if (!ch)
       throw string("libpi::thread::Link Received non-channel during connecting");
     outChannels.push_back(ch);
@@ -82,13 +83,14 @@ shared_ptr<Session> Link::Connect(int pid, int actors) // {{{
         continue; // Skip distribution of own channel
       }
       shared_ptr<Value> val=inChannels.front()->SingleReceive();
-      shared_ptr<Channel> ch=dynamic_pointer_cast<Channel>(val);
+      shared_ptr<libpi::Channel> ch=dynamic_pointer_cast<libpi::Channel>(val);
       if (!ch)
         throw string("libpi::thread::Link Received non-channel during connecting");
       outChannels.push_back(ch);
     }
-    // Session has been established!
+    // Session channels has been established!
   }
+  return shared_ptr<Session>(new Session(pid,actors,inChannels,outChannels));
 } // }}}
   }
 }
