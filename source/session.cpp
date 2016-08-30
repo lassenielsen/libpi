@@ -39,38 +39,41 @@ bool Session::Closed() // {{{
 { return myActors==0;
 } // }}}
 
-int Session::GetActors() // {{{
+int Session::GetActors() const // {{{
 { return myActors;
 } // }}}
 
-int Session::GetPid() // {{{
+int Session::GetPid() const // {{{
 { return myPid;
 } // }}}
 
-//map<string,Session::session_creator> Session::ourSessionCreators;
+string Session::GetType() const // {{{
+{ return "ses";
+} // }}}
 
-//Session *Session::Create(const string &address) // {{{
-//{ // Split address into its components
-//  int pos=address.find("://");
-//  if (pos<0) throw "Session::Create: address is not formatted correctly, missing ://";
-//  string protocol=address.substr(0,pos);
-//  string addr=address.substr(pos+3);
-//  pos=addr.find('@');
-//  if (pos<0) throw "Session::Create: address is not formatted correctly, missing @";
-//  string meta=addr.substr(pos+2,addr.size()-pos-3);
-//  addr=addr.substr(0,pos);
-//  pos=meta.find(',');
-//  if (pos<0) throw "Session::Create: address is not formatted correctly, missing , in metadata";
-//  string pid_str=meta.substr(0,pos);
-//  string actors_str=meta.substr(pos+1);
-//  int pid=str2int(pid_str);
-//  int actors=str2int(actors_str);
-//  session_creator create=ourSessionCreators[protocol];
-//  if (create==NULL) throw (string)"Session::Create: Unknown protocol: " + protocol;
-//  return create(addr,pid,actors);
-//} // }}}
-//int Session::RegisterSessionCreator(string protocol,session_creator creator) // {{{
-//{ ourSessionCreators[protocol]=creator;
-//}
-//
+string Session::ToString() const // {{{
+{ stringstream ss;
+  ss << myPid << ":" << myActors;
+  for (auto ch=myInChannels.begin(); ch!=myInChannels.end(); ++ch)
+    ss << (*ch)->Serialize() << ":";
+  for (auto ch=myOutChannels.begin(); ch!=myOutChannels.end(); ++ch)
+    ss << (*ch)->Serialize() << ":";
+  return ss.str();
+} // }}}
+
+bool Session::operator==(const Value &rhs) const // {{{
+{ const Session *rhsptr=dynamic_cast<const Session*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  if (rhsptr->GetPid()!=GetPid())
+    return false;
+  if (rhsptr->GetActors()!=GetActors())
+    return false;
+  if (rhsptr->myInChannels!=myInChannels)
+    return false;
+  if (rhsptr->myOutChannels!=myOutChannels)
+    return false;
+  return true;
+} // }}}
+
 }

@@ -51,25 +51,100 @@ void *proc_send(void *arg) // {{{
   return NULL;
 } // }}}
 
+void *proc_receive(void *arg) // {{{
+{ try
+  { stringstream ss;
+    procarg *parg=(procarg*)arg;
+    if (parg->wait>0)
+    { stringstream ss;
+      ss << "Receiver waiting...\n";
+      cout << ss.str() << flush;
+      usleep(parg->wait);
+    }
+    { stringstream ss;
+      ss << "Receiving value...\n";
+      cout << ss.str() << flush;
+    }
+    shared_ptr<Value> rv=parg->chan->Receive();
+    { stringstream ss;
+      ss << "Receiver done.\n";
+      cout << ss.str() << flush;
+    }
+    if (rv!=parg->val)
+      throw string("Received value ") + rv->ToString() + " differs from expected " + parg->val->ToString();
+  }
+  catch (string s)
+  { cout << "Error in sender: " << s << endl;
+    return (void*)1;
+  }
+  return NULL;
+} // }}}
+
 int main(int argc, char **argv)
 { try
-  { pthread_t t1;
-    shared_ptr<Value> boolValue(new Bool(true));
-    shared_ptr<Value> intValue(new Int(1337));
-    shared_ptr<Value> stringValue(new String("Hello World"));
-    shared_ptr<Value> channelValue(new thread::Channel());
-    vector<shared_ptr<Channel> > chVector;
-    chVector.push_back(channelValue);
-    shared_ptr<Value> sessionValue(new Session(1,1,chVector,chVector));
+  { pthread_t t1, t2;
 
-    void *r1;
+    void *r1, *r2;
     cout << "- Testing transmission of Bool value\n" << flush;
-    shared_ptr<Channel> ch1=new thread::Channel();
-    procarg arg(ch1,boolValue,0);
-    pthread_create(&t1,NULL,proc_send,&arg);
-    shared_ptr<Value> v=ch1->Receive();
+    shared_ptr<Channel> ch1(new thread::Channel());
+    procarg argBool(ch1,shared_ptr<Value>(new Bool(true)),0);
+    pthread_create(&t1,NULL,proc_send,&argBool);
+    pthread_create(&t2,NULL,proc_receive,&argBool);
     pthread_join(t1,&r1);
-    if (r1==NULL && v->ToString()==boolValue->ToString())
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
+
+    cout << "- Testing transmission of Int value\n" << flush;
+    shared_ptr<Channel> ch2(new thread::Channel());
+    procarg argInt(ch2,shared_ptr<Value>(new Int(1337)),0);
+    pthread_create(&t1,NULL,proc_send,&argInt);
+    pthread_create(&t2,NULL,proc_receive,&argInt);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
+
+    cout << "- Testing transmission of String value\n" << flush;
+    shared_ptr<Channel> ch3(new thread::Channel());
+    procarg argString(ch3,shared_ptr<Value>(new String("Hello World")),0);
+    pthread_create(&t1,NULL,proc_send,&argString);
+    pthread_create(&t2,NULL,proc_receive,&argString);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
+
+    cout << "- Testing transmission of Channel value\n" << flush;
+    shared_ptr<Value> channelValue(new thread::Channel());
+    shared_ptr<Channel> ch4(new thread::Channel());
+    procarg argChannel(ch4,channelValue,0);
+    pthread_create(&t1,NULL,proc_send,&argChannel);
+    pthread_create(&t2,NULL,proc_receive,&argChannel);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
+
+    cout << "- Testing transmission of Session value\n" << flush;
+    vector<shared_ptr<Channel> > chVector;
+    chVector.push_back(dynamic_pointer_cast<Channel>(channelValue));
+    shared_ptr<Value> sessionValue(new Session(1,1,chVector,chVector));
+    shared_ptr<Channel> ch5(new thread::Channel());
+    procarg argSession(ch5,sessionValue,0);
+    pthread_create(&t1,NULL,proc_send,&argSession);
+    pthread_create(&t2,NULL,proc_receive,&argSession);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
       cout << "SUCCESS\n" << flush;
     else
       cout << "FAILURE\n" << flush;

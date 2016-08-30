@@ -17,10 +17,8 @@
 
 namespace libpi
 {
-  class Session
+  class Session : public Value
   { public:
-      //typedef Session *(*session_creator)(std::shared_ptr<Link> link, int pid, int actors);
-
 // DOCUMENTATION: Session constructor {{{
 /*!
 * The constructor initiates a session over the given connection.
@@ -88,31 +86,20 @@ namespace libpi
  * GetActors returns the number of actors/participants in the session.
  */
 // }}}
-      int GetActors();
+      int GetActors() const;
 // DOCUMENTATION: GetPid method {{{
 /*!
  * GetPid returns process id of the current process in the session.
  */
 // }}}
-      int GetPid();
+      int GetPid() const;
 
-// DOCUMENTATION: Create method {{{
-/*!
- * Create is a static method that provides a unified method of creating sessions
- * of all the supported protocol types.
- * @param address has the form protocol://address@(pid,actors).
- * Protocol identifies the protocol of the session.
- * Address is the address of the channel where the session channels can be exchanged.
- * In practice this can be performed in different ways depending on the
- * underlying protocol, but they all include receiving the the session
- * information from the sender, and opening a connection to the session.
- * Pid and Actor are integers defining the number of actors in the protocol and
- * what process id the received session has.
- * session.
- */
-// }}}
-      //static Session *Create(const std::string &address);
-      //static int RegisterSessionCreator(std::string protocol,session_creator creator);
+      // Value methods
+      std::string GetType() const;
+      std::string ToString() const;
+      bool operator==(const Value &rhs) const;
+
+      static Value *ParseSession(const std::string &str);
 
     private:
       int myPid;

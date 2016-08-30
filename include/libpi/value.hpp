@@ -30,35 +30,6 @@ class Value // {{{
     static std::map<std::string,value_creator> ourParsers;
 }; // }}}
 
-//// DOCUMENTATION: ChannelsValue class {{{
-///*!
-// * ChannelsValue wraps a channnel vector.
-// * This allows a straight forward and uniform syntax for performing all
-// * operations.
-// */
-//// }}}
-//class ChannelsValue : public Value // {{{
-//{ public:
-//    // Copy constructor and assignment
-//    ChannelsValue(const ChannelsValue &val);
-//    ChannelsValue &operator=(const ChannelsValue &rhs);
-//    ChannelsValue *Copy() const;
-//
-//    // Constructors
-//    ChannelsValue(Message &msg);
-//    ChannelsValue(const std::vector<Channel*> &chs);
-//    ChannelsValue();
-//    virtual ~ChannelsValue();
-//
-//    std::string ToString() const;
-//    bool operator==(const Value &rhs) const;
-//
-//    const std::vector<Channel*> &GetValues() const;
-//    std::vector<Channel*> &GetValues();
-//  private:
-//    std::vector<Channel*> myChannels;
-//}; // }}}
-//
 //// DOCUMENTATION: TupleValue class {{{
 ///*!
 // * TupleValue is used to represent tuples, but is implemented as a
