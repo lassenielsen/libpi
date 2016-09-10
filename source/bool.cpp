@@ -27,11 +27,11 @@ Bool::~Bool() // {{{
 {
 } // }}}
 
-string Bool::ToString() const // {{{
+void Bool::ToString(ostream &dest) const // {{{
 { if (myValue)
-    return "true";
+    dest << "true";
   else
-    return "false";
+    dest << "false";
 } // }}}
 Bool Bool::operator&&(const Bool &rhs) const // {{{
 { return Bool(GetValue() && rhs.GetValue());
@@ -53,8 +53,11 @@ bool Bool::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *Bool::ParseBool(const string &str) // {{{
-{ return new Bool(str);
+Value *Bool::ParseBool(istream &in) // {{{
+{ char delimiter=':';
+  string str;
+  std::getline(in,str,delimiter);
+  return new Bool(str);
 } // }}}
 
 namespace boolvalue

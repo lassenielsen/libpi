@@ -26,7 +26,7 @@ class Int : public Value // {{{
     virtual ~Int();
 
     std::string GetType() const { return "int"; }
-    std::string ToString() const;
+    void ToString(std::ostream &dest) const;
     Int operator+(const Int &rhs) const;
     Int operator-(const Int &rhs) const;
     Int operator*(const Int &rhs) const;
@@ -36,7 +36,7 @@ class Int : public Value // {{{
 
     const mpz_t &GetValue() const;
 
-    static Value *ParseInt(const std::string &str);
+    static Value *ParseInt(std::istream &in);
   private:
     mpz_t myValue;
 }; // }}}

@@ -5,27 +5,21 @@ using namespace std;
 namespace libpi
 {
 
-// String Implementation
-String::String(const String &rhs) // {{{
-{ myValue=rhs.GetValue();
-} // }}}
-String &String::operator=(const String &rhs) // {{{
-{ myValue=rhs.GetValue();
+String::String() // {{{
+{
 } // }}}
 
-String::String(const std::string &val) // {{{
-{ myValue=val;
-} // }}}
-String::String() // {{{
-{ myValue="";
+String::String(const string &val) // {{{
+: myValue(val)
+{
 } // }}}
 
 String::~String() // {{{
 {
 } // }}}
 
-string String::ToString() const // {{{
-{ return myValue;
+void String::ToString(ostream &dest) const // {{{
+{ dest << myValue;
 } // }}}
 
 String String::operator+(const String &rhs) const // {{{
@@ -41,8 +35,11 @@ const std::string &String::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *String::ParseString(const string &str) // {{{
-{ return new String(str);
+Value *String::ParseString(istream &in) // {{{
+{ char delimiter=':';
+  string str;
+  std::getline(in,str,delimiter);
+  return new String(str);
 } // }}}
 
 namespace stringvalue

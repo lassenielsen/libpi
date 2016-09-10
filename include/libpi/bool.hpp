@@ -22,7 +22,7 @@ class Bool : public Value // {{{
     virtual ~Bool();
 
     std::string GetType() const { return "boo"; }
-    std::string ToString() const;
+    void ToString(std::ostream &dest) const;
     Bool operator&&(const Bool &rhs) const;
     Bool operator||(const Bool &rhs) const;
     Bool operator!() const;
@@ -30,7 +30,7 @@ class Bool : public Value // {{{
 
     bool GetValue() const;
 
-    static Value *ParseBool(const std::string &str);
+    static Value *ParseBool(std::istream &in);
 
   private:
     bool myValue;

@@ -14,23 +14,19 @@ namespace libpi
 // }}}
 class String : public Value // {{{
 { public:
-    // Copy constructor and assignment
-    String(const String &val);
-    String &operator=(const String &rhs);
-
     // Constructors
     String(const std::string &val);
     String();
     virtual ~String();
 
     std::string GetType() const { return "str"; }
-    std::string ToString() const;
+    void ToString(std::ostream &dest) const;
     String operator+(const String &rhs) const;
     bool operator==(const Value &rhs) const;
 
     const std::string &GetValue() const;
 
-    static Value *ParseString(const std::string &str);
+    static Value *ParseString(std::istream &in);
 
   private:
     std::string myValue;
