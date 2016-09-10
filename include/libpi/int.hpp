@@ -27,10 +27,10 @@ class Int : public Value // {{{
 
     std::string GetType() const { return "int"; }
     void ToString(std::ostream &dest) const;
-    Int operator+(const Int &rhs) const;
-    Int operator-(const Int &rhs) const;
-    Int operator*(const Int &rhs) const;
-    Int operator/(const Int &rhs) const;
+    std::shared_ptr<Int> operator+(const Int &rhs) const;
+    std::shared_ptr<Int> operator-(const Int &rhs) const;
+    std::shared_ptr<Int> operator*(const Int &rhs) const;
+    std::shared_ptr<Int> operator/(const Int &rhs) const;
     bool operator<=(const Int &rhs) const;
     bool operator==(const Value &rhs) const;
 

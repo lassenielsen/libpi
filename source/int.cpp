@@ -40,29 +40,29 @@ void Int::ToString(ostream &dest) const // {{{
   dest << string(str);
   free(str);
 } // }}}
-Int Int::operator+(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator+(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_add(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator-(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator-(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_sub(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator*(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator*(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_mul(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator/(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator/(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_tdiv_q(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
 bool Int::operator<=(const Int &rhs) const // {{{
 { int cmp = mpz_cmp(myValue,rhs.GetValue());
