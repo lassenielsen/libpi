@@ -27,6 +27,14 @@ int main(int argc, char **argv)
     Compare(b1->Serialize(),"boo:true","Serialize");
     Compare((!(*b0))->Serialize(),"boo:true","Negation");
     Compare((!(*b1))->Serialize(),"boo:false","Negation");
+    Compare(((*b1)&&(*b1))->Serialize(),"boo:true","Conjunction");
+    Compare(((*b0)&&(*b1))->Serialize(),"boo:false","Conjunction");
+    Compare(((*b1)&&(*b0))->Serialize(),"boo:false","Conjunction");
+    Compare(((*b0)&&(*b0))->Serialize(),"boo:false","Conjunction");
+    Compare(((*b1)||(*b1))->Serialize(),"boo:true","Disjunction");
+    Compare(((*b0)||(*b1))->Serialize(),"boo:true","Disjunction");
+    Compare(((*b1)||(*b0))->Serialize(),"boo:true","Disjunction");
+    Compare(((*b0)||(*b0))->Serialize(),"boo:false","Disjunction");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;

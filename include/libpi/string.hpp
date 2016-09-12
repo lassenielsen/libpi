@@ -21,7 +21,7 @@ class String : public Value // {{{
 
     std::string GetType() const { return "str"; }
     void ToString(std::ostream &dest) const;
-    String operator+(const String &rhs) const;
+    std::shared_ptr<String> operator+(const String &rhs) const;
     bool operator==(const Value &rhs) const;
 
     const std::string &GetValue() const;

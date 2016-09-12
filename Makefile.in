@@ -30,8 +30,8 @@ opt_debug = -g -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-#OS_LINUXlibs = -lrt -lgmp
-#OS_LINUXlibs_debug = -lrt -lgmp
+#OS_LINUXlibs = -lrt -lgmp -lb64
+#OS_LINUXlibs_debug = -lrt -lgmp -lb64
 
 library_objects = \
   objects/message.o \

@@ -23,6 +23,9 @@ int main(int argc, char **argv)
 { try
   { shared_ptr<Int> x1(new Int(1));
     Compare(x1->Serialize(),"int:1","Serialize");
+    { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("int:1"));
+      Compare(parsed->Serialize(),"int:1","Parse");
+    }
     shared_ptr<Int> x2=(*x1)+(*x1);
     Compare(x2->Serialize(),"int:2","Sum");
     shared_ptr<Int> x4=(*x2)*(*x2);
