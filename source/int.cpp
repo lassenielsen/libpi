@@ -35,35 +35,34 @@ Int::~Int() // {{{
   mpz_clear(myValue);
 } // }}}
 
-string Int::ToString() const // {{{
+void Int::ToString(ostream &dest) const // {{{
 { char *str=mpz_get_str(NULL,10,myValue);
-  string result=str;
+  dest << string(str);
   free(str);
-  return result;
 } // }}}
-Int Int::operator+(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator+(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_add(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator-(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator-(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_sub(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator*(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator*(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_mul(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
-Int Int::operator/(const Int &rhs) const // {{{
+shared_ptr<Int> Int::operator/(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_tdiv_q(res,myValue,rhs.GetValue());
-  return Int(res,true);
+  return shared_ptr<Int>(new Int(res,true));
 } // }}}
 bool Int::operator<=(const Int &rhs) const // {{{
 { int cmp = mpz_cmp(myValue,rhs.GetValue());
@@ -80,8 +79,11 @@ const mpz_t &Int::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *Int::ParseInt(const string &str) // {{{
-{ return new Int(str);
+Value *Int::ParseInt(std::istream &in) // {{{
+{ char delimiter=':';
+  string str;
+  std::getline(in,str,delimiter);
+  return new Int(str);
 } // }}}
 
 namespace intvalue

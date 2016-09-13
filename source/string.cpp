@@ -1,35 +1,47 @@
 #include <libpi/string.hpp>
+#include <sstream>
+#include <b64/encode.h>
+#include <b64/decode.h>
 
 using namespace std;
 
 namespace libpi
 {
 
-// String Implementation
-String::String(const String &rhs) // {{{
-{ myValue=rhs.GetValue();
-} // }}}
-String &String::operator=(const String &rhs) // {{{
-{ myValue=rhs.GetValue();
+String::String() // {{{
+{
 } // }}}
 
-String::String(const std::string &val) // {{{
-{ myValue=val;
-} // }}}
-String::String() // {{{
-{ myValue="";
+String::String(const string &val) // {{{
+: myValue(val)
+{
 } // }}}
 
 String::~String() // {{{
 {
 } // }}}
 
-string String::ToString() const // {{{
-{ return myValue;
+void String::ToString(ostream &dest) const // {{{
+{ //stringstream ss;
+  //ss << myValue;
+  //base64::encoder enc;
+  //enc.encode(ss,dest);
+  // All this to get rid of a newline
+  base64::encoder e;
+  char* code = new char[2*myValue.length()];
+  int codelength;
+
+  codelength = e.encode(myValue.c_str(), myValue.length(), code);
+  dest.write(code, codelength);
+
+  codelength = e.encode_end(code);
+  if (codelength>1)
+    dest.write(code, codelength-1); // Skip newline
+  delete [] code;
 } // }}}
 
-String String::operator+(const String &rhs) const // {{{
-{ return String(myValue+rhs.GetValue());
+shared_ptr<String> String::operator+(const String &rhs) const // {{{
+{ return shared_ptr<String>(new String(myValue+rhs.GetValue()));
 } // }}}
 bool String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
@@ -41,8 +53,16 @@ const std::string &String::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *String::ParseString(const string &str) // {{{
-{ return new String(str);
+Value *String::ParseString(istream &in) // {{{
+{ char delimiter=':';
+  string str;
+  std::getline(in,str,delimiter);
+  stringstream enc;
+  stringstream dec;
+  enc << str;
+  base64::decoder d;
+  d.decode(enc,dec);
+  return new String(dec.str());
 } // }}}
 
 namespace stringvalue

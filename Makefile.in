@@ -30,8 +30,8 @@ opt_debug = -g -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-#OS_LINUXlibs = -lrt -lgmp
-#OS_LINUXlibs_debug = -lrt -lgmp
+#OS_LINUXlibs = -lrt -lgmp -lb64
+#OS_LINUXlibs_debug = -lrt -lgmp -lb64
 
 library_objects = \
   objects/message.o \
@@ -41,6 +41,7 @@ library_objects = \
   objects/string.o \
   objects/channel.o \
   objects/session.o \
+  objects/tuple.o \
   objects/thread/link.o \
   objects/thread/channel.o \
 #  objects/process/link.o \
@@ -56,6 +57,7 @@ library_objects_debug = \
   objects_debug/string.o \
   objects_debug/channel.o \
   objects_debug/session.o \
+  objects_debug/tuple.o \
   objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
 #  objects_debug/process/link.o \

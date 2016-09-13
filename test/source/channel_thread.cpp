@@ -3,6 +3,7 @@
 #include <libpi/bool.hpp>
 #include <libpi/int.hpp>
 #include <libpi/string.hpp>
+#include <libpi/tuple.hpp>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
@@ -142,6 +143,22 @@ int main(int argc, char **argv)
     procarg argSession(ch5,sessionValue,0);
     pthread_create(&t1,NULL,proc_send,&argSession);
     pthread_create(&t2,NULL,proc_receive,&argSession);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
+
+    cout << "- Testing transmission of Tuple value\n" << flush;
+    shared_ptr<Tuple> tplVal=shared_ptr<Tuple>(new Tuple());
+    tplVal->AddValue(shared_ptr<Value>(new String("Hello")));
+    tplVal->AddValue(shared_ptr<Value>(new Int(123)));
+    tplVal->AddValue(shared_ptr<Value>(new String("World")));
+    shared_ptr<Channel> ch6(new thread::Channel());
+    procarg argTuple(ch6,tplVal,0);
+    pthread_create(&t1,NULL,proc_send,&argTuple);
+    pthread_create(&t2,NULL,proc_receive,&argTuple);
     pthread_join(t1,&r1);
     pthread_join(t2,&r2);
     if (r1==NULL && r2==NULL)

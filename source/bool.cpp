@@ -9,9 +9,6 @@ namespace libpi
 Bool::Bool(const Bool &val) // {{{
 { myValue = val.GetValue();
 } // }}}
-Bool &Bool::operator=(const Bool &rhs) // {{{
-{ myValue = rhs.GetValue();
-} // }}}
 
 Bool::Bool(const string &str) // {{{
 { if (str=="true")
@@ -27,20 +24,20 @@ Bool::~Bool() // {{{
 {
 } // }}}
 
-string Bool::ToString() const // {{{
+void Bool::ToString(ostream &dest) const // {{{
 { if (myValue)
-    return "true";
+    dest << "true";
   else
-    return "false";
+    dest << "false";
 } // }}}
-Bool Bool::operator&&(const Bool &rhs) const // {{{
-{ return Bool(GetValue() && rhs.GetValue());
+shared_ptr<Bool> Bool::operator&&(const Bool &rhs) const // {{{
+{ return shared_ptr<Bool>(new Bool(GetValue() && rhs.GetValue()));
 } // }}}
-Bool Bool::operator||(const Bool &rhs) const // {{{
-{ return Bool(GetValue() || rhs.GetValue());
+shared_ptr<Bool> Bool::operator||(const Bool &rhs) const // {{{
+{ return shared_ptr<Bool>(new Bool(GetValue() || rhs.GetValue()));
 } // }}}
-Bool Bool::operator!() const // {{{
-{ return Bool(!GetValue());
+shared_ptr<Bool> Bool::operator!() const // {{{
+{ return shared_ptr<Bool>(new Bool(!GetValue()));
 } // }}}
 bool Bool::operator==(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
@@ -53,8 +50,11 @@ bool Bool::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *Bool::ParseBool(const string &str) // {{{
-{ return new Bool(str);
+Value *Bool::ParseBool(istream &in) // {{{
+{ char delimiter=':';
+  string str;
+  std::getline(in,str,delimiter);
+  return new Bool(str);
 } // }}}
 
 namespace boolvalue

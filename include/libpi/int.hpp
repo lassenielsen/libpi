@@ -26,17 +26,17 @@ class Int : public Value // {{{
     virtual ~Int();
 
     std::string GetType() const { return "int"; }
-    std::string ToString() const;
-    Int operator+(const Int &rhs) const;
-    Int operator-(const Int &rhs) const;
-    Int operator*(const Int &rhs) const;
-    Int operator/(const Int &rhs) const;
+    void ToString(std::ostream &dest) const;
+    std::shared_ptr<Int> operator+(const Int &rhs) const;
+    std::shared_ptr<Int> operator-(const Int &rhs) const;
+    std::shared_ptr<Int> operator*(const Int &rhs) const;
+    std::shared_ptr<Int> operator/(const Int &rhs) const;
     bool operator<=(const Int &rhs) const;
     bool operator==(const Value &rhs) const;
 
     const mpz_t &GetValue() const;
 
-    static Value *ParseInt(const std::string &str);
+    static Value *ParseInt(std::istream &in);
   private:
     mpz_t myValue;
 }; // }}}

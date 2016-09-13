@@ -51,14 +51,16 @@ string Session::GetType() const // {{{
 { return "ses";
 } // }}}
 
-string Session::ToString() const // {{{
-{ stringstream ss;
-  ss << myPid << ":" << myActors;
+void Session::ToString(ostream &dest) const // {{{
+{ dest << myPid << ":" << myActors;
   for (auto ch=myInChannels.begin(); ch!=myInChannels.end(); ++ch)
-    ss << (*ch)->Serialize() << ":";
+  { dest  << ":";
+    (*ch)->Serialize(dest);
+  }
   for (auto ch=myOutChannels.begin(); ch!=myOutChannels.end(); ++ch)
-    ss << (*ch)->Serialize() << ":";
-  return ss.str();
+  { dest << ":";
+    (*ch)->Serialize(dest);
+  }
 } // }}}
 
 bool Session::operator==(const Value &rhs) const // {{{

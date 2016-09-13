@@ -96,7 +96,7 @@ namespace libpi
 
       // Value methods
       std::string GetType() const;
-      std::string ToString() const;
+      void ToString(std::ostream &dest) const;
       bool operator==(const Value &rhs) const;
 
       static Value *ParseSession(const std::string &str);
