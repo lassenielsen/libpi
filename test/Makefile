@@ -39,6 +39,9 @@ endif
 
 build: $(programs)
 
+test: $(programs)
+	for p in $(programs); do ./$$p; done
+
 install: $(programs)
 	cp $(programs) /usr/local/bin/
 
