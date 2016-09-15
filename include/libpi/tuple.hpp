@@ -22,11 +22,14 @@ class Tuple : public Value // {{{
 
     std::string GetType() const { return "tpl"; }
     void  ToString(std::ostream &dest) const;
-    const Value &GetValue(const Int &index) const;
-    const Value &GetValue(int index) const;
+    const std::shared_ptr<Value> &GetValue(const Int &index) const;
+    std::shared_ptr<Value> &GetValue(const Int &index);
+    const std::shared_ptr<Value> &GetValue(int index) const;
+    std::shared_ptr<Value> &GetValue(int index);
     bool operator==(const Value &rhs) const;
 
     const std::vector<std::shared_ptr<Value> > &GetValues() const;
+    std::vector<std::shared_ptr<Value> > &GetValues();
     void AddValue(std::shared_ptr<Value> val);
 
     static Value *ParseTuple(std::istream &in);

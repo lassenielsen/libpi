@@ -26,11 +26,17 @@ void Tuple::ToString(ostream &dest) const // {{{
     (*it)->Serialize(dest);
   }
 } // }}}
-const Value &Tuple::GetValue(const Int &index) const // {{{
+const shared_ptr<Value> &Tuple::GetValue(const Int &index) const // {{{
 { return GetValue(mpz_get_ui(index.GetValue()));
 } // }}}
-const Value &Tuple::GetValue(int index) const // {{{
-{ return *(myValues[index]);
+shared_ptr<Value> &Tuple::GetValue(const Int &index) // {{{
+{ return GetValue(mpz_get_ui(index.GetValue()));
+} // }}}
+const shared_ptr<Value> &Tuple::GetValue(int index) const // {{{
+{ return myValues[index];
+} // }}}
+shared_ptr<Value> &Tuple::GetValue(int index) // {{{
+{ return myValues[index];
 } // }}}
 bool Tuple::operator==(const Value &rhs) const // {{{
 { const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
@@ -44,6 +50,9 @@ bool Tuple::operator==(const Value &rhs) const // {{{
   return true;
 } // }}}
 const vector<shared_ptr<Value> > &Tuple::GetValues() const // {{{
+{ return myValues;
+} // }}}
+vector<shared_ptr<Value> > &Tuple::GetValues() // {{{
 { return myValues;
 } // }}}
 void Tuple::AddValue(shared_ptr<Value> val) // {{{

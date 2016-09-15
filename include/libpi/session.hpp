@@ -21,11 +21,7 @@ namespace libpi
   { public:
 // DOCUMENTATION: Session constructor {{{
 /*!
-* The constructor initiates a session over the given connection.
-* The connection requires @actors processes to create a session.
-* The @pid's 0 through @actors-1 are used, where pid=0 waits for
-* processes with pid 1 to @actors -1 to connect on the channel to
-* create a joint session.
+* The constructor initiates a session using the provided sessionchannels.
 * @param actors in the session. This must correspond to the number of
 * channels in each of the provided vectors.
 * @param inChannels the channel objects used to receive values from

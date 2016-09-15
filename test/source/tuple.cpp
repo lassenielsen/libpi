@@ -29,19 +29,10 @@ int main(int argc, char **argv)
     { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("tpl:2:boo:true:boo:false"));
       Compare(parsed->Serialize(),"tpl:2:boo:true:boo:false","Parse");
     }
-    //shared_ptr<Int> x2=(*x1)+(*x1);
-    //Compare(x2->Serialize(),"int:2","Sum");
-    //shared_ptr<Int> x4=(*x2)*(*x2);
-    //Compare(x4->Serialize(),"int:4","Product");
-    //shared_ptr<Int> x3=(*x4)-(*x1);
-    //Compare(x3->Serialize(),"int:3","Difference");
-    //shared_ptr<Int> y2=(*x4)/(*x2);
-    //Compare(y2->Serialize(),"int:2","Quotient");
-    //Compare((*x1)<=(*x2),true,"LEQ");
-    //Compare((*x3)<=(*x2),false,"LEQ");
-    //Compare((*x2)==(*y2),true,"EQ");
-    //Compare((*x3)==(*y2),false,"EQ");
-    //Compare((*y2)==(*x3),false,"EQ");
+    Compare(x1->GetValue(0)->Serialize(),"boo:true","GetValue");
+    Compare(x1->GetValue(1)->Serialize(),"boo:false","GetValue");
+    x1->AddValue(shared_ptr<Value>(Value::Parse("int:123")));
+    Compare(x1->Serialize(),"tpl:3:boo:true:boo:false:int:123","AddValue");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;
