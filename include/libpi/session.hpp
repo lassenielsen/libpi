@@ -3,10 +3,6 @@
 /*! \file
  * This file denines the cpi (pi-calculus operations for C++) session
  * interface.
- * These operations are only C++ typed, thus all the nasty things that
- * are avoided using various pi-calculus type-systems will occur unless
- * the programs are well written.
- * Upon errors, exceptions will be thrown!
  */
 // }}}
 #include <string>
@@ -17,6 +13,19 @@
 
 namespace libpi
 {
+// DOCUMENTATION: Session class {{{
+/*!
+ * A Session is a collection of channels used to exchange messages between a
+ * closed group of participants.
+ * The session constructor requires the channels for exchanging messages to be
+ * provided. One way to create the necessary channels and initiate a Session is
+ * using the Link class and subclasses.
+ * Once the channels are provided, the Session class provides the Send and
+ * Receive operations.  These operations are only C++ typed, thus all the nasty
+ * things that are avoided using various pi-calculus type-systems will occur
+ * unless the programs are well written.
+ */
+// }}}
   class Session : public Value
   { public:
 // DOCUMENTATION: Session constructor {{{

@@ -27,11 +27,17 @@ class Int : public Value // {{{
 
     std::string GetType() const { return "int"; }
     void ToString(std::ostream &dest) const;
+    //! Integer addition
     std::shared_ptr<Int> operator+(const Int &rhs) const;
+    //! Integer subtraction
     std::shared_ptr<Int> operator-(const Int &rhs) const;
+    //! Integer multiplication
     std::shared_ptr<Int> operator*(const Int &rhs) const;
+    //! Integer division
     std::shared_ptr<Int> operator/(const Int &rhs) const;
+    //! Integer comparison
     bool operator<=(const Int &rhs) const;
+    //! Integer comparison
     bool operator==(const Value &rhs) const;
 
     const mpz_t &GetValue() const;

@@ -13,7 +13,7 @@ namespace libpi
 {
 // DOCUMENTATION: Channel class {{{
 /*!
- * Channel is a communication point that is used to initiate sessions.
+ * Channel is a communication medium that is used to initiate sessions.
  * This can be a TCP port (used in Channel_TCP),
  * memory queue key (used in Channel_MQ)
  * or indeed any means of establishing communication.

@@ -3,10 +3,6 @@
 /*! \file
  * This file defines the libpi (pi-calculus operations for C++) link
  * interface (sometimes known as channels used for linking).
- * Only important extension to being a Value,
- * is the Connect function used to create a
- * Session, whick is implemented by each
- * type of link.
  */
 // }}}
 #include <memory>
@@ -15,6 +11,18 @@
 
 namespace libpi
 {
+// DOCUMENTATION: Link class {{{
+/*!
+ * Link is a value used to create sessions.
+ * Using channels a session is negotiated, and the necessary session channels
+ * are exchanged.
+ *
+ * Only important extension to being a Value,
+ * is the Connect function used to create a
+ * Session, which is implemented by each
+ * type of link.
+ */
+// }}}
   class Link : public Value
   { public:
       virtual std::shared_ptr<Session> Connect(int pid, int actors) = 0;
