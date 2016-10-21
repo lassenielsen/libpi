@@ -7,7 +7,7 @@ namespace libpi
 
 // Float Implementation
 Float::Float(const Float &val) // {{{
-{ mpf_init(myValue);
+{ mpf_init2(myValue,256);
   mpf_set(myValue,val.GetValue());
 } // }}}
 Float &Float::operator=(const Float &rhs) // {{{
@@ -15,18 +15,18 @@ Float &Float::operator=(const Float &rhs) // {{{
 } // }}}
 
 Float::Float(const std::string &val) // {{{
-{ mpf_init(myValue);
+{ mpf_init2(myValue,256);
   int res=mpf_set_str(myValue,val.c_str(),10);
   if (res<0) throw string("Bad Float conversion of string: ") + val;
 } // }}}
 Float::Float(mpf_t &val, bool clear_arg) // {{{
-{ mpf_init(myValue);
+{ mpf_init2(myValue,256);
   mpf_set(myValue,val);
   if (clear_arg)
     mpf_clear(val);
 } // }}}
 Float::Float(double val) // {{{
-{ mpf_init(myValue);
+{ mpf_init2(myValue,256);
   mpf_set_d(myValue,val);
 } // }}}
 
@@ -45,25 +45,25 @@ void Float::ToString(ostream &dest) const // {{{
 } // }}}
 shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{
 { mpf_t res;
-  mpf_init(res);
+  mpf_init2(res,256);
   mpf_add(res,myValue,rhs.GetValue());
   return shared_ptr<Float>(new Float(res,true));
 } // }}}
 shared_ptr<Float> Float::operator-(const Float &rhs) const // {{{
 { mpf_t res;
-  mpf_init(res);
+  mpf_init2(res,256);
   mpf_sub(res,myValue,rhs.GetValue());
   return shared_ptr<Float>(new Float(res,true));
 } // }}}
 shared_ptr<Float> Float::operator*(const Float &rhs) const // {{{
 { mpf_t res;
-  mpf_init(res);
+  mpf_init2(res,256);
   mpf_mul(res,myValue,rhs.GetValue());
   return shared_ptr<Float>(new Float(res,true));
 } // }}}
 shared_ptr<Float> Float::operator/(const Float &rhs) const // {{{
 { mpf_t res;
-  mpf_init(res);
+  mpf_init2(res,256);
   mpf_div(res,myValue,rhs.GetValue());
   return shared_ptr<Float>(new Float(res,true));
 } // }}}
