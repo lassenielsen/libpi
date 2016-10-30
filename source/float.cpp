@@ -42,6 +42,7 @@ void Float::ToString(ostream &dest) const // {{{
     dest << string(str,exp) << "." << string(str+exp);
   else
     dest << "0." << string(-exp,'0') << string(str);
+  free(str);
 } // }}}
 shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{
 { mpf_t res;

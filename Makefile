@@ -39,6 +39,7 @@ library_objects = \
   objects/bool.o \
   objects/int.o \
   objects/float.o \
+  objects/quotient.o \
   objects/string.o \
   objects/channel.o \
   objects/session.o \
@@ -56,6 +57,7 @@ library_objects_debug = \
   objects_debug/bool.o \
   objects_debug/int.o \
   objects_debug/float.o \
+  objects_debug/quotient.o \
   objects_debug/string.o \
   objects_debug/channel.o \
   objects_debug/session.o \

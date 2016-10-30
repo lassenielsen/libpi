@@ -21,8 +21,10 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { shared_ptr<Float> x1(new Float("3.1415"));
-    Compare(x1->Serialize(),"flt:3.1415","Serialize");
+  { shared_ptr<Float> x0(new Float(3.1415));
+    Compare(x0->Serialize().substr(0,10),"flt:3.1415","Serialize");
+    shared_ptr<Float> x1(new Float("3.1415"));
+    Compare(x1->Serialize(),"flt:3.1415","Initialize");
     { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("flt:3.1415"));
       Compare(parsed->Serialize(),"flt:3.1415","Parse");
     }
