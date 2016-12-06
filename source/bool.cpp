@@ -24,7 +24,7 @@ Bool::~Bool() // {{{
 {
 } // }}}
 
-void Bool::ToString(ostream &dest) const // {{{
+void Bool::ToStream(ostream &dest) const // {{{
 { if (myValue)
     dest << "true";
   else

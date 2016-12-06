@@ -21,7 +21,7 @@ class Tuple : public Value // {{{
     virtual ~Tuple();
 
     std::string GetType() const { return "tpl"; }
-    void  ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     const std::shared_ptr<Value> &GetValue(const Int &index) const;
     std::shared_ptr<Value> &GetValue(const Int &index);
     const std::shared_ptr<Value> &GetValue(int index) const;

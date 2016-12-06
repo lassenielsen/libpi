@@ -21,7 +21,7 @@ String::~String() // {{{
 {
 } // }}}
 
-void String::ToString(ostream &dest) const // {{{
+void String::ToStream(ostream &dest) const // {{{
 { //stringstream ss;
   //ss << myValue;
   //base64::encoder enc;

@@ -18,7 +18,7 @@ class Link : public libpi::Link // {{{
     Link(int actors);
     virtual ~Link();
     virtual std::string GetType() const;
-    virtual std::string ToString() const;
+    virtual void ToStream(std::ostream &dest) const;
     virtual bool operator==(const Value &rhs) const;
     virtual std::shared_ptr<Session> Connect(int pid, int actors);
 

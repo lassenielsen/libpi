@@ -20,7 +20,7 @@ class Value // {{{
     Value(const std::string &str);
     virtual ~Value();
     virtual std::string GetType() const;
-    virtual void ToString(std::ostream &dest) const;
+    virtual void ToStream(std::ostream &dest) const;
     std::string ToString() const;
     void Serialize(std::ostream &dest) const;
     std::string Serialize() const;

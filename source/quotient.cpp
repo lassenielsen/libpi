@@ -58,7 +58,7 @@ Quotient::~Quotient() // {{{
   mpq_clear(myValue);
 } // }}}
 
-void Quotient::ToString(ostream &dest) const // {{{
+void Quotient::ToStream(ostream &dest) const // {{{
 { char *str=mpq_get_str(NULL,10,myValue);
   dest << str;
   free(str);
