@@ -38,10 +38,12 @@ Float::~Float() // {{{
 void Float::ToString(ostream &dest) const // {{{
 { mp_exp_t exp;
   char *str=mpf_get_str(NULL,&exp,10,0,myValue);
-  if (exp>0)
+  if (exp+1>=strlen(str))
+    dest << str << string(1+exp-strlen(str),'0');
+  else if (exp>=0)
     dest << string(str,exp) << "." << string(str+exp);
   else
-    dest << "0." << string(-exp,'0') << string(str);
+    dest << "0." << string(1-exp,'0') << string(str);
   free(str);
 } // }}}
 shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{
