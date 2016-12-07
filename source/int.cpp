@@ -35,7 +35,7 @@ Int::~Int() // {{{
   mpz_clear(myValue);
 } // }}}
 
-void Int::ToString(ostream &dest) const // {{{
+void Int::ToStream(ostream &dest) const // {{{
 { char *str=mpz_get_str(NULL,10,myValue);
   dest << string(str);
   free(str);

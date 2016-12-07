@@ -20,7 +20,7 @@ class String : public Value // {{{
     virtual ~String();
 
     std::string GetType() const { return "str"; }
-    void ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     std::shared_ptr<String> operator+(const String &rhs) const;
     bool operator==(const Value &rhs) const;
 

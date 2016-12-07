@@ -51,7 +51,7 @@ string Session::GetType() const // {{{
 { return "ses";
 } // }}}
 
-void Session::ToString(ostream &dest) const // {{{
+void Session::ToStream(ostream &dest) const // {{{
 { dest << myPid << ":" << myActors;
   for (auto ch=myInChannels.begin(); ch!=myInChannels.end(); ++ch)
   { dest  << ":";

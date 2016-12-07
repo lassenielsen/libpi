@@ -26,7 +26,7 @@ class Float : public Value // {{{
     virtual ~Float();
 
     std::string GetType() const { return "flt"; }
-    void ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     //! Floateger addition
     std::shared_ptr<Float> operator+(const Float &rhs) const;
     //! Floateger subtraction

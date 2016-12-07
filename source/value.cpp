@@ -25,17 +25,17 @@ Value::~Value() // {{{
 std::string Value::GetType() const // {{{
 { return "unt";
 } // }}}
-void Value::ToString(ostream &dest) const // {{{
+void Value::ToStream(ostream &dest) const // {{{
 { return;
 } // }}}
 std::string Value::ToString() const // {{{
 { stringstream ss;
-  ToString(ss);
+  ToStream(ss);
   return ss.str();
 } // }}}
 void Value::Serialize(ostream &dest) const // {{{
 { dest << GetType() << ":";
-  ToString(dest);
+  ToStream(dest);
 } // }}}
 std::string Value::Serialize() const // {{{
 { stringstream ss;

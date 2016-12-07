@@ -30,6 +30,7 @@ int main(int argc, char **argv)
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;
+    return 1;
   }
   return 0;
 }

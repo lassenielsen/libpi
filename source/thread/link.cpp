@@ -20,7 +20,7 @@ string Link::GetType() const // {{{
 { throw "libpi::thread::Link is not serializable";
 } // }}}
 
-string Link::ToString() const // {{{
+void Link::ToStream(ostream &dest) const // {{{
 { throw "libpi::thread::Link is not serializable";
 } // }}}
 

@@ -26,7 +26,7 @@ class Int : public Value // {{{
     virtual ~Int();
 
     std::string GetType() const { return "int"; }
-    void ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     //! Integer addition
     std::shared_ptr<Int> operator+(const Int &rhs) const;
     //! Integer subtraction

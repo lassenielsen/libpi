@@ -35,7 +35,7 @@ Float::~Float() // {{{
   mpf_clear(myValue);
 } // }}}
 
-void Float::ToString(ostream &dest) const // {{{
+void Float::ToStream(ostream &dest) const // {{{
 { mp_exp_t exp;
   char *str=mpf_get_str(NULL,&exp,10,0,myValue);
   if (exp+1>=strlen(str))

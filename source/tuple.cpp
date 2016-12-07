@@ -18,7 +18,7 @@ Tuple::~Tuple() // {{{
 {
 } // }}}
 
-void Tuple::ToString(ostream &dest) const // {{{
+void Tuple::ToStream(ostream &dest) const // {{{
 { dest << myValues.size();
   for (vector<shared_ptr<Value> >::const_iterator it=myValues.begin();
        it!=myValues.end(); ++it)

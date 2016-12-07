@@ -27,7 +27,7 @@ class Quotient : public Value // {{{
     virtual ~Quotient();
 
     std::string GetType() const { return "qrt"; }
-    void ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     //! Quotienteger addition
     std::shared_ptr<Quotient> operator+(const Quotient &rhs) const;
     //! Quotienteger subtraction

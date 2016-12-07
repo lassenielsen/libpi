@@ -21,7 +21,7 @@ class Bool : public Value // {{{
     virtual ~Bool();
 
     std::string GetType() const { return "boo"; }
-    void ToString(std::ostream &dest) const;
+    void ToStream(std::ostream &dest) const;
     //! Boolean conjunction
     std::shared_ptr<Bool> operator&&(const Bool &rhs) const;
     //! Boolean disjunction
