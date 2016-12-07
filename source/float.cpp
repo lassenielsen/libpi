@@ -1,4 +1,5 @@
 #include <libpi/float.hpp>
+#include <string.h>
 
 using namespace std;
 
