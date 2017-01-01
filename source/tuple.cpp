@@ -1,4 +1,5 @@
 #include <libpi/tuple.hpp>
+#include <libpi/bool.hpp>
 #include <libpi/common.hpp>
 #include <string>
 
@@ -38,22 +39,82 @@ const shared_ptr<Value> &Tuple::GetValue(int index) const // {{{
 shared_ptr<Value> &Tuple::GetValue(int index) // {{{
 { return myValues[index];
 } // }}}
-bool Tuple::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Tuple::operator==(const Value &rhs) const // {{{
 { const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   if (rhsptr->GetValues().size()!=myValues.size())
-    return false;
+    return Bool::GetInstance(false);
   for (int i=0; i<myValues.size(); ++i)
-    if (!(GetValue(i)==rhsptr->GetValue(i)))
-      return false;
-  return true;
+  { shared_ptr<Bool> eltResult=(*GetValue(i))==(*rhsptr->GetValue(i));
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
 } // }}}
-const vector<shared_ptr<Value> > &Tuple::GetValues() const // {{{
-{ return myValues;
+shared_ptr<Bool> Tuple::operator<=(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  for (int i=0; true; ++i)
+  { if (i>=GetValues().size() && i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(true);
+    if (i>=GetValues().size())
+      return Bool::GetInstance(true);
+    if (i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(false);
+    shared_ptr<Bool> eltResult=(*GetValue(i))<=(*rhsptr->GetValue(i));
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
 } // }}}
-vector<shared_ptr<Value> > &Tuple::GetValues() // {{{
-{ return myValues;
+shared_ptr<Bool> Tuple::operator<(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  for (int i=0; true; ++i)
+  { if (i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(false);
+    if (i>=GetValues().size())
+      return Bool::GetInstance(true);
+    shared_ptr<Bool> eltResult=(*GetValue(i))<(*rhsptr->GetValue(i));
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
+} // }}}
+shared_ptr<Bool> Tuple::operator>=(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  for (int i=0; true; ++i)
+  { if (i>=GetValues().size() && i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(true);
+    if (i>=GetValues().size())
+      return Bool::GetInstance(false);
+    if (i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(true);
+    shared_ptr<Bool> eltResult=(*GetValue(i))>=(*rhsptr->GetValue(i));
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
+} // }}}
+shared_ptr<Bool> Tuple::operator>(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  for (int i=0; true; ++i)
+  { if (i>=GetValues().size())
+      return Bool::GetInstance(false);
+    if (i>=rhsptr->GetValues().size())
+      return Bool::GetInstance(true);
+    shared_ptr<Bool> eltResult=(*GetValue(i))>(*rhsptr->GetValue(i));
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
 } // }}}
 void Tuple::AddValue(shared_ptr<Value> val) // {{{
 { myValues.push_back(val);

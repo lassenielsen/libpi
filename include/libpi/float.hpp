@@ -35,12 +35,14 @@ class Float : public Value // {{{
     std::shared_ptr<Float> operator*(const Float &rhs) const;
     //! Floateger division
     std::shared_ptr<Float> operator/(const Float &rhs) const;
-    //! Floateger comparison
-    bool operator<=(const Float &rhs) const;
-    //! Floateger comparison
-    bool operator==(const Value &rhs) const;
+    //! Float comparison
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-    const mpf_t &GetValue() const;
+    const mpf_t &GetValue() const { return myValue; }
 
     static Value *ParseFloat(std::istream &in);
   private:

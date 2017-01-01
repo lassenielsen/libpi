@@ -10,13 +10,6 @@ Bool::Bool(const Bool &val) // {{{
 { myValue = val.GetValue();
 } // }}}
 
-Bool::Bool(const string &str) // {{{
-{ if (str=="true")
-    myValue = true;
-  else if (str=="false")
-    myValue=false;
-  else throw (string)"Bool::Bool: Bad message value: " + str;
-} // }}}
 Bool::Bool(bool val) // {{{
 { myValue=val;
 } // }}}
@@ -31,31 +24,54 @@ void Bool::ToStream(ostream &dest) const // {{{
     dest << "false";
 } // }}}
 shared_ptr<Bool> Bool::operator&&(const Bool &rhs) const // {{{
-{ return shared_ptr<Bool>(new Bool(GetValue() && rhs.GetValue()));
+{ return GetInstance(GetValue() && rhs.GetValue());
 } // }}}
 shared_ptr<Bool> Bool::operator||(const Bool &rhs) const // {{{
-{ return shared_ptr<Bool>(new Bool(GetValue() || rhs.GetValue()));
+{ return GetInstance(GetValue() || rhs.GetValue());
 } // }}}
 shared_ptr<Bool> Bool::operator!() const // {{{
-{ return shared_ptr<Bool>(new Bool(!GetValue()));
+{ return GetInstance(!GetValue());
 } // }}}
-bool Bool::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Bool::operator==(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
     return false;
-  return myValue==rhsptr->GetValue();
+  return GetInstance(myValue==rhsptr->GetValue());
 } // }}}
-
-bool Bool::GetValue() const // {{{
-{ return myValue;
+shared_ptr<Bool> Bool::operator<=(const Value &rhs) const // {{{
+{ const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
+  if (rhsptr==NULL)
+    return GetInstance(false);
+  return GetInstance(rhsptr->GetValue() || !myValue);
+} // }}}
+shared_ptr<Bool> Bool::operator<(const Value &rhs) const // {{{
+{ const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
+  if (rhsptr==NULL)
+    return GetInstance(false);
+  return GetInstance(rhsptr->GetValue() && !myValue);
+} // }}}
+shared_ptr<Bool> Bool::operator>=(const Value &rhs) const // {{{
+{ const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
+  if (rhsptr==NULL)
+    return GetInstance(false);
+  return GetInstance(myValue || !rhsptr->GetValue());
+} // }}}
+shared_ptr<Bool> Bool::operator>(const Value &rhs) const // {{{
+{ const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
+  if (rhsptr==NULL)
+    return GetInstance(false);
+  return GetInstance(myValue && !rhsptr->GetValue());
 } // }}}
 
 Value *Bool::ParseBool(istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return new Bool(str);
+  return &(*GetInstance(str));
 } // }}}
+
+shared_ptr<Bool> Bool::trueInstance(new Bool(true));
+shared_ptr<Bool> Bool::falseInstance(new Bool(false));
 
 namespace boolvalue
 { int _init=Value::RegisterParser("boo",&Bool::ParseBool);

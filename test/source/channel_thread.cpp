@@ -88,7 +88,7 @@ int main(int argc, char **argv)
     void *r1, *r2;
     cout << "- Testing transmission of Bool value\n" << flush;
     shared_ptr<Channel> ch1(new thread::Channel());
-    procarg argBool(ch1,shared_ptr<Value>(new Bool(true)),0);
+    procarg argBool(ch1,Bool::GetInstance(true),0);
     pthread_create(&t1,NULL,proc_send,&argBool);
     pthread_create(&t2,NULL,proc_receive,&argBool);
     pthread_join(t1,&r1);

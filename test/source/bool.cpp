@@ -21,9 +21,9 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { shared_ptr<Bool> b0(new Bool(false));
+  { shared_ptr<Bool> b0=Bool::GetInstance(false);
     Compare(b0->Serialize(),"boo:false","Serialize");
-    shared_ptr<Bool> b1(new Bool(true));
+    shared_ptr<Bool> b1=Bool::GetInstance(true);
     Compare(b1->Serialize(),"boo:true","Serialize");
     Compare((!(*b0))->Serialize(),"boo:true","Negation");
     Compare((!(*b1))->Serialize(),"boo:false","Negation");

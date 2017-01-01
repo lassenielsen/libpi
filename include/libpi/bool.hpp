@@ -16,7 +16,6 @@ class Bool : public Value // {{{
     Bool(const Bool &val);
 
     // Constructors
-    Bool(const std::string &str);
     Bool(bool val=false);
     virtual ~Bool();
 
@@ -28,14 +27,33 @@ class Bool : public Value // {{{
     std::shared_ptr<Bool> operator||(const Bool &rhs) const;
     //! Boolean negation
     std::shared_ptr<Bool> operator!() const;
-    bool operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-    bool GetValue() const;
+    bool GetValue() const { return myValue; }
 
     static Value *ParseBool(std::istream &in);
+    static std::shared_ptr<Bool> GetInstance(bool val) // {{{
+    { if (val)
+        return trueInstance;
+      else
+        return falseInstance;
+    } // }}}
+    static std::shared_ptr<Bool> GetInstance(const std::string &val) // {{{
+    { if (val=="true")
+        return trueInstance;
+      else if (val=="false")
+        return falseInstance;
+      else throw (std::string)"Bool::GetInstance: Bad message value: " + val;
+    } // }}}
 
   private:
     bool myValue;
+    static std::shared_ptr<Bool> trueInstance;
+    static std::shared_ptr<Bool> falseInstance;
 }; // }}}
 
 }

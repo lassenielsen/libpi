@@ -1,4 +1,5 @@
 #include <libpi/float.hpp>
+#include <libpi/bool.hpp>
 #include <string.h>
 
 using namespace std;
@@ -71,19 +72,40 @@ shared_ptr<Float> Float::operator/(const Float &rhs) const // {{{
   mpf_div(res,myValue,rhs.GetValue());
   return shared_ptr<Float>(new Float(res,true));
 } // }}}
-bool Float::operator<=(const Float &rhs) const // {{{
-{ int cmp = mpf_cmp(myValue,rhs.GetValue());
-  return cmp<=0;
-} // }}}
-bool Float::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Float::operator==(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return cmp==0;
+  return Bool::GetInstance(cmp==0);
 } // }}}
-const mpf_t &Float::GetValue() const // {{{
-{ return myValue;
+shared_ptr<Bool> Float::operator<=(const Value &rhs) const // {{{
+{ const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpf_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp<=0);
+} // }}}
+shared_ptr<Bool> Float::operator<(const Value &rhs) const // {{{
+{ const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpf_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp<0);
+} // }}}
+shared_ptr<Bool> Float::operator>=(const Value &rhs) const // {{{
+{ const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpf_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp>=0);
+} // }}}
+shared_ptr<Bool> Float::operator>(const Value &rhs) const // {{{
+{ const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpf_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp>0);
 } // }}}
 
 Value *Float::ParseFloat(std::istream &in) // {{{

@@ -1,4 +1,5 @@
 #include <libpi/int.hpp>
+#include <libpi/bool.hpp>
 
 using namespace std;
 
@@ -64,16 +65,40 @@ shared_ptr<Int> Int::operator/(const Int &rhs) const // {{{
   mpz_tdiv_q(res,myValue,rhs.GetValue());
   return shared_ptr<Int>(new Int(res,true));
 } // }}}
-bool Int::operator<=(const Int &rhs) const // {{{
-{ int cmp = mpz_cmp(myValue,rhs.GetValue());
-  return cmp<=0;
-} // }}}
-bool Int::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Int::operator==(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return cmp==0;
+  return Bool::GetInstance(cmp==0);
+} // }}}
+shared_ptr<Bool> Int::operator<=(const Value &rhs) const // {{{
+{ const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpz_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp<=0);
+} // }}}
+shared_ptr<Bool> Int::operator<(const Value &rhs) const // {{{
+{ const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpz_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp<0);
+} // }}}
+shared_ptr<Bool> Int::operator>=(const Value &rhs) const // {{{
+{ const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpz_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp>=0);
+} // }}}
+shared_ptr<Bool> Int::operator>(const Value &rhs) const // {{{
+{ const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  int cmp = mpz_cmp(myValue,rhsptr->GetValue());
+  return Bool::GetInstance(cmp>0);
 } // }}}
 const mpz_t &Int::GetValue() const // {{{
 { return myValue;

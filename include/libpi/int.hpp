@@ -36,9 +36,11 @@ class Int : public Value // {{{
     //! Integer division
     std::shared_ptr<Int> operator/(const Int &rhs) const;
     //! Integer comparison
-    bool operator<=(const Int &rhs) const;
-    //! Integer comparison
-    bool operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
     const mpz_t &GetValue() const;
 

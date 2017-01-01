@@ -1,4 +1,5 @@
 #include <libpi/float.hpp>
+#include <libpi/bool.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -36,11 +37,11 @@ int main(int argc, char **argv)
     Compare(x3->Serialize().substr(0,14),"flt:36.3345889","Difference");
     shared_ptr<Float> y2=(*x4)/(*x2);
     Compare(y2->Serialize().substr(0,10),"flt:6.2829","Quotient");
-    Compare((*x1)<=(*x2),true,"LEQ");
-    Compare((*x3)<=(*x2),false,"LEQ");
-    //Error due to inaccuracy Compare((*x2)==(*y2),true,"EQ");
-    Compare((*x3)==(*y2),false,"EQ");
-    Compare((*y2)==(*x3),false,"EQ");
+    Compare(((*x1)<=(*x2))->GetValue(),true,"LEQ");
+    Compare(((*x3)<=(*x2))->GetValue(),false,"LEQ");
+    //Error due to inaccuracy Compare(((*x2)==(*y2))->GetValue(),true,"EQ");
+    Compare(((*x3)==(*y2))->GetValue(),false,"EQ");
+    Compare(((*y2)==(*x3))->GetValue(),false,"EQ");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;

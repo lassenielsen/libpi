@@ -102,7 +102,11 @@ namespace libpi
       // Value methods
       std::string GetType() const;
       void ToStream(std::ostream &dest) const;
-      bool operator==(const Value &rhs) const;
+      std::shared_ptr<Bool> operator==(const Value &rhs) const;
+      std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+      std::shared_ptr<Bool> operator<(const Value &rhs) const;
+      std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+      std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
       static Value *ParseSession(const std::string &str);
 

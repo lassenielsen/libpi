@@ -1,4 +1,5 @@
 #include <libpi/thread/link.hpp>
+#include <libpi/bool.hpp>
 
 using namespace std;
 
@@ -24,8 +25,30 @@ void Link::ToStream(ostream &dest) const // {{{
 { throw "libpi::thread::Link is not serializable";
 } // }}}
 
-bool Link::operator==(const Value &rhs) const // {{{
-{ return (&rhs)==this;
+std::shared_ptr<Bool> Link::operator==(const Value &rhs) const // {{{
+{ const Link *rhsptr=dynamic_cast<const Link*>(&rhs);
+  if (rhsptr==NULL)
+    return Bool::GetInstance(false);
+  if (rhsptr->GetChannels().size()!=GetChannels().size())
+    return Bool::GetInstance(false);
+  for (int i=0; i<GetChannels().size(); ++i)
+  { shared_ptr<Bool> eltResult=(*GetChannels()[i])==(*rhsptr->GetChannels()[i]);
+    if (!(eltResult->GetValue()))
+      return Bool::GetInstance(false);
+  }
+  return Bool::GetInstance(true);
+} // }}}
+std::shared_ptr<Bool> Link::operator<=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+std::shared_ptr<Bool> Link::operator<(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
+} // }}}
+std::shared_ptr<Bool> Link::operator>=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+std::shared_ptr<Bool> Link::operator>(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
 } // }}}
 
 shared_ptr<Session> Link::Connect(int pid, int actors) // {{{

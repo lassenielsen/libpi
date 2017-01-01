@@ -1,4 +1,5 @@
 #include <libpi/session.hpp>
+#include <libpi/bool.hpp>
 #include "common.cpp"
 
 using namespace std;
@@ -63,19 +64,32 @@ void Session::ToStream(ostream &dest) const // {{{
   }
 } // }}}
 
-bool Session::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Session::operator==(const Value &rhs) const // {{{
 { const Session *rhsptr=dynamic_cast<const Session*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   if (rhsptr->GetPid()!=GetPid())
-    return false;
+    return Bool::GetInstance(false);
   if (rhsptr->GetActors()!=GetActors())
-    return false;
+    return Bool::GetInstance(false);
   if (rhsptr->myInChannels!=myInChannels)
-    return false;
+    return Bool::GetInstance(false);
   if (rhsptr->myOutChannels!=myOutChannels)
-    return false;
-  return true;
+    return Bool::GetInstance(false);
+  return Bool::GetInstance(true);
+
+} // }}}
+shared_ptr<Bool> Session::operator<=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+shared_ptr<Bool> Session::operator<(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
+} // }}}
+shared_ptr<Bool> Session::operator>=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+shared_ptr<Bool> Session::operator>(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
 } // }}}
 
 }

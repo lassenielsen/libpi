@@ -1,4 +1,5 @@
 #include <libpi/string.hpp>
+#include <libpi/bool.hpp>
 #include <sstream>
 #include <b64/encode.h>
 #include <b64/decode.h>
@@ -43,14 +44,35 @@ void String::ToStream(ostream &dest) const // {{{
 shared_ptr<String> String::operator+(const String &rhs) const // {{{
 { return shared_ptr<String>(new String(myValue+rhs.GetValue()));
 } // }}}
-bool String::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return false;
-  return myValue == rhsptr->GetValue();
+  return Bool::GetInstance(myValue == rhsptr->GetValue());
 } // }}}
-const std::string &String::GetValue() const // {{{
-{ return myValue;
+shared_ptr<Bool> String::operator<=(const Value &rhs) const // {{{
+{ const String *rhsptr=dynamic_cast<const String*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  return Bool::GetInstance(myValue <= rhsptr->GetValue());
+} // }}}
+shared_ptr<Bool> String::operator<(const Value &rhs) const // {{{
+{ const String *rhsptr=dynamic_cast<const String*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  return Bool::GetInstance(myValue < rhsptr->GetValue());
+} // }}}
+shared_ptr<Bool> String::operator>=(const Value &rhs) const // {{{
+{ const String *rhsptr=dynamic_cast<const String*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  return Bool::GetInstance(myValue >= rhsptr->GetValue());
+} // }}}
+shared_ptr<Bool> String::operator>(const Value &rhs) const // {{{
+{ const String *rhsptr=dynamic_cast<const String*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 
 Value *String::ParseString(istream &in) // {{{

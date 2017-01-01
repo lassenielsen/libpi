@@ -1,5 +1,6 @@
 #include <libpi/quotient.hpp>
-#include <iostream>
+#include <libpi/bool.hpp>
+//#include <iostream>
 
 using namespace std;
 
@@ -83,16 +84,40 @@ shared_ptr<Quotient> Quotient::operator/(const Quotient &rhs) const // {{{
   mpq_div(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-bool Quotient::operator<=(const Quotient &rhs) const // {{{
-{ int cmp = mpq_cmp(GetValue(),rhs.GetValue());
-  return cmp<=0;
-} // }}}
-bool Quotient::operator==(const Value &rhs) const // {{{
+shared_ptr<Bool> Quotient::operator==(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return cmp==0;
+  return Bool::GetInstance(cmp==0);
+} // }}}
+shared_ptr<Bool> Quotient::operator<=(const Value &rhs) const // {{{
+{ const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
+  return Bool::GetInstance(cmp<=0);
+} // }}}
+shared_ptr<Bool> Quotient::operator<(const Value &rhs) const // {{{
+{ const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
+  return Bool::GetInstance(cmp<0);
+} // }}}
+shared_ptr<Bool> Quotient::operator>=(const Value &rhs) const // {{{
+{ const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
+  return Bool::GetInstance(cmp>=0);
+} // }}}
+shared_ptr<Bool> Quotient::operator>(const Value &rhs) const // {{{
+{ const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
+  return Bool::GetInstance(cmp>0);
 } // }}}
 
 Value *Quotient::ParseQuotient(std::istream &in) // {{{

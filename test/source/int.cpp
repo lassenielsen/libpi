@@ -1,4 +1,5 @@
 #include <libpi/int.hpp>
+#include <libpi/bool.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -34,11 +35,11 @@ int main(int argc, char **argv)
     Compare(x3->Serialize(),"int:3","Difference");
     shared_ptr<Int> y2=(*x4)/(*x2);
     Compare(y2->Serialize(),"int:2","Quotient");
-    Compare((*x1)<=(*x2),true,"LEQ");
-    Compare((*x3)<=(*x2),false,"LEQ");
-    Compare((*x2)==(*y2),true,"EQ");
-    Compare((*x3)==(*y2),false,"EQ");
-    Compare((*y2)==(*x3),false,"EQ");
+    Compare(((*x1)<=(*x2))->GetValue(),true,"LEQ");
+    Compare(((*x3)<=(*x2))->GetValue(),false,"LEQ");
+    Compare(((*x2)==(*y2))->GetValue(),true,"EQ");
+    Compare(((*x3)==(*y2))->GetValue(),false,"EQ");
+    Compare(((*y2)==(*x3))->GetValue(),false,"EQ");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;

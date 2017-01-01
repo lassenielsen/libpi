@@ -1,4 +1,5 @@
 #include <libpi/value.hpp>
+#include <libpi/bool.hpp>
 #include <string.h>
 #include "common.cpp"
 #include <stdlib.h>
@@ -42,8 +43,20 @@ std::string Value::Serialize() const // {{{
   Serialize(ss);
   return ss.str();
 } // }}}
-bool Value::operator==(const Value &rhs) const // {{{
-{ return typeid(rhs)==typeid(*this); 
+shared_ptr<Bool> Value::operator==(const Value &rhs) const // {{{
+{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+} // }}}
+shared_ptr<Bool> Value::operator<=(const Value &rhs) const // {{{
+{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+} // }}}
+shared_ptr<Bool> Value::operator<(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false); 
+} // }}}
+shared_ptr<Bool> Value::operator>=(const Value &rhs) const // {{{
+{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+} // }}}
+shared_ptr<Bool> Value::operator>(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false); 
 } // }}}
 Value *Value::Parse(const string &str) // {{{
 { stringstream ss;

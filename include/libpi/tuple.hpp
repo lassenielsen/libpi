@@ -26,10 +26,14 @@ class Tuple : public Value // {{{
     std::shared_ptr<Value> &GetValue(const Int &index);
     const std::shared_ptr<Value> &GetValue(int index) const;
     std::shared_ptr<Value> &GetValue(int index);
-    bool operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-    const std::vector<std::shared_ptr<Value> > &GetValues() const;
-    std::vector<std::shared_ptr<Value> > &GetValues();
+    const std::vector<std::shared_ptr<Value> > &GetValues() const {return myValues; }
+    std::vector<std::shared_ptr<Value> > &GetValues() { return myValues; }
     void AddValue(std::shared_ptr<Value> val);
 
     static Value *ParseTuple(std::istream &in);

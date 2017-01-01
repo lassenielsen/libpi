@@ -19,23 +19,24 @@ namespace libpi
  * or indeed any means of establishing communication.
  */
 // }}}
-  class Channel : public Value
-  { public:
-      typedef Channel *(*channel_creator)(const std::string &);
-      virtual ~Channel() {}
+class Channel : public Value
+{ public:
+    typedef Channel *(*channel_creator)(const std::string &);
+    virtual ~Channel() {}
 
-// DOCUMENTATION: Unlink Method {{{
+//* DOCUMENTATION: Unlink Method {{{
 /*!
  * Unlink marks the channel to be removed (and its ressources freed) when the
  * object is deleted.
  */
 // }}}
-      virtual void Unlink()=0;
+    virtual void Unlink()=0;
 
-      bool operator==(const Value &rhs) // {{{
-      { const Channel *rhsptr=dynamic_cast<const Channel*>(&rhs);
-        return rhsptr!=NULL && GetAddress()==rhsptr->GetAddress();
-      } // }}}
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
 // DOCUMENTATION: Send method {{{
 /*!
@@ -43,7 +44,7 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void Send(std::shared_ptr<Value> msg)=0;
+    virtual void Send(std::shared_ptr<Value> msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -52,20 +53,20 @@ namespace libpi
  * The transmitted value is consumed.
  */
 // }}}
-      virtual void SingleSend(std::shared_ptr<Value>msg)=0;
+    virtual void SingleSend(std::shared_ptr<Value>msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
  */
 // }}}
-      virtual std::shared_ptr<Value> Receive()=0;
+    virtual std::shared_ptr<Value> Receive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
 // }}}
-      virtual std::shared_ptr<Value> SingleReceive()=0;
+    virtual std::shared_ptr<Value> SingleReceive()=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used
@@ -75,7 +76,7 @@ namespace libpi
  * key.
  */
 // }}}
-      virtual std::string GetAddress() const=0;
+    virtual std::string GetAddress() const=0;
 
 // DOCUMENTATION: Create Method {{{
 /*!
@@ -83,9 +84,9 @@ namespace libpi
  * of all the supported protocol types.
  */
 // }}}
-      static Channel *Create(const std::string &address);
+    static Channel *Create(const std::string &address);
 
-    private:
+  private:
 // DOCUMENTATION: ourSessionCreators field {{{
 /*!
  * Maps all channel protocols to methods that can create a channel from an
@@ -94,6 +95,6 @@ namespace libpi
  * greating sessions.
  */
 // }}}
-      static std::map<std::string,channel_creator> ourChannelCreators;
-  };
+    static std::map<std::string,channel_creator> ourChannelCreators;
+};
 }

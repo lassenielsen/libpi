@@ -1,4 +1,5 @@
 #include <libpi/channel.hpp>
+#include <libpi/bool.hpp>
 #include <unistd.h>
 
 using namespace libpi;
@@ -15,4 +16,21 @@ Channel *Channel::Create(const string &address) // {{{
   channel_creator create=ourChannelCreators[protocol];
   if (create==NULL) throw (string)"Channel::Create: Unknown protocol: " + protocol;
   return create(address);
+} // }}}
+
+shared_ptr<Bool> Channel::operator==(const Value &rhs) const // {{{
+{ const Channel *rhsptr=dynamic_cast<const Channel*>(&rhs);
+  return Bool::GetInstance(rhsptr!=NULL && GetAddress()==rhsptr->GetAddress());
+} // }}}
+shared_ptr<Bool> Channel::operator<=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+shared_ptr<Bool> Channel::operator<(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
+} // }}}
+shared_ptr<Bool> Channel::operator>=(const Value &rhs) const // {{{
+{ return (*this)==rhs;
+} // }}}
+shared_ptr<Bool> Channel::operator>(const Value &rhs) const // {{{
+{ return Bool::GetInstance(false);
 } // }}}

@@ -7,6 +7,8 @@
 
 namespace libpi
 {
+class Bool;
+
 // DOCUMENTATION: Value class {{{
 /*!
  * Value defines the common interface for all value, and also represents the unit values.
@@ -24,7 +26,11 @@ class Value // {{{
     std::string ToString() const;
     void Serialize(std::ostream &dest) const;
     std::string Serialize() const;
-    virtual bool operator==(const Value &rhs) const;
+    virtual std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    virtual std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    virtual std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    virtual std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
     static Value *Parse(const std::string &str);
     static Value *Parse(std::istream &in);

@@ -28,18 +28,20 @@ class Quotient : public Value // {{{
 
     std::string GetType() const { return "qrt"; }
     void ToStream(std::ostream &dest) const;
-    //! Quotienteger addition
+    //! Quotient addition
     std::shared_ptr<Quotient> operator+(const Quotient &rhs) const;
-    //! Quotienteger subtraction
+    //! Quotient subtraction
     std::shared_ptr<Quotient> operator-(const Quotient &rhs) const;
-    //! Quotienteger multiplication
+    //! Quotient multiplication
     std::shared_ptr<Quotient> operator*(const Quotient &rhs) const;
-    //! Quotienteger division
+    //! Quotient division
     std::shared_ptr<Quotient> operator/(const Quotient &rhs) const;
     //! Quotienteger comparison
-    bool operator<=(const Quotient &rhs) const;
-    //! Quotienteger comparison
-    bool operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator==(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator<(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
+    std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
     const mpq_t &GetValue() const {return myValue;}
     mpq_t &GetValue() {return myValue;}
