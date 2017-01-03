@@ -108,7 +108,7 @@ namespace libpi
       std::shared_ptr<Bool> operator>=(const Value &rhs) const;
       std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-      static Value *ParseSession(const std::string &str);
+      static std::shared_ptr<Value> ParseSession(const std::string &str);
 
     private:
       int myPid;

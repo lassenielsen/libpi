@@ -44,7 +44,7 @@ class Int : public Value // {{{
 
     const mpz_t &GetValue() const;
 
-    static Value *ParseInt(std::istream &in);
+    static std::shared_ptr<Value> ParseInt(std::istream &in);
   private:
     mpz_t myValue;
 }; // }}}

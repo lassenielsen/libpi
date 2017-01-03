@@ -104,11 +104,11 @@ const mpz_t &Int::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-Value *Int::ParseInt(std::istream &in) // {{{
+shared_ptr<Value> Int::ParseInt(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return new Int(str);
+  return shared_ptr<Int>(new Int(str));
 } // }}}
 
 namespace intvalue

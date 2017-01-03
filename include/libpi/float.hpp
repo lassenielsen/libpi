@@ -44,7 +44,7 @@ class Float : public Value // {{{
 
     const mpf_t &GetValue() const { return myValue; }
 
-    static Value *ParseFloat(std::istream &in);
+    static std::shared_ptr<Value> ParseFloat(std::istream &in);
   private:
     mpf_t myValue;
 }; // }}}

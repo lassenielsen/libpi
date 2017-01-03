@@ -119,7 +119,7 @@ shared_ptr<Bool> Tuple::operator>(const Value &rhs) const // {{{
 void Tuple::AddValue(shared_ptr<Value> val) // {{{
 { myValues.push_back(val);
 } // }}}
-Value *Tuple::ParseTuple(istream &in) // {{{
+shared_ptr<Value> Tuple::ParseTuple(istream &in) // {{{
 { char delimiter=':';
   string num_str;
   std::getline(in,num_str,delimiter);
@@ -129,7 +129,7 @@ Value *Tuple::ParseTuple(istream &in) // {{{
   for (int i=0; i<num; ++i)
     dst.push_back(shared_ptr<Value>(Value::Parse(in)));
 
-  return new Tuple(dst);
+  return shared_ptr<Tuple>(new Tuple(dst));
 } // }}}
 
 namespace tuplevalue

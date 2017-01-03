@@ -120,11 +120,11 @@ shared_ptr<Bool> Quotient::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-Value *Quotient::ParseQuotient(std::istream &in) // {{{
+shared_ptr<Value> Quotient::ParseQuotient(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return new Quotient(str);
+  return shared_ptr<Quotient>(new Quotient(str));
 } // }}}
 
 namespace quotientvalue

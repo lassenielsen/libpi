@@ -63,11 +63,11 @@ shared_ptr<Bool> Bool::operator>(const Value &rhs) const // {{{
   return GetInstance(myValue && !rhsptr->GetValue());
 } // }}}
 
-Value *Bool::ParseBool(istream &in) // {{{
+shared_ptr<Value> Bool::ParseBool(istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return &(*GetInstance(str));
+  return GetInstance(str);
 } // }}}
 
 shared_ptr<Bool> Bool::trueInstance(new Bool(true));

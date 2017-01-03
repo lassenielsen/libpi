@@ -36,7 +36,7 @@ class Tuple : public Value // {{{
     std::vector<std::shared_ptr<Value> > &GetValues() { return myValues; }
     void AddValue(std::shared_ptr<Value> val);
 
-    static Value *ParseTuple(std::istream &in);
+    static std::shared_ptr<Value> ParseTuple(std::istream &in);
 
   private:
     std::vector<std::shared_ptr<Value> > myValues;

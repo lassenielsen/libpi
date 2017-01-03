@@ -58,12 +58,12 @@ shared_ptr<Bool> Value::operator>=(const Value &rhs) const // {{{
 shared_ptr<Bool> Value::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false); 
 } // }}}
-Value *Value::Parse(const string &str) // {{{
+shared_ptr<Value> Value::Parse(const string &str) // {{{
 { stringstream ss;
   ss << str;
   return Parse(ss);
 } // }}}
-Value *Value::Parse(istream &in) // {{{
+shared_ptr<Value> Value::Parse(istream &in) // {{{
 { char delimiter=':';
   string type;
   std::getline(in,type,delimiter);

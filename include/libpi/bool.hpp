@@ -35,7 +35,7 @@ class Bool : public Value // {{{
 
     bool GetValue() const { return myValue; }
 
-    static Value *ParseBool(std::istream &in);
+    static std::shared_ptr<Value> ParseBool(std::istream &in);
     static std::shared_ptr<Bool> GetInstance(bool val) // {{{
     { if (val)
         return trueInstance;

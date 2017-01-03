@@ -30,7 +30,7 @@ class String : public Value // {{{
 
     const std::string &GetValue() const { return myValue; }
 
-    static Value *ParseString(std::istream &in);
+    static std::shared_ptr<Value> ParseString(std::istream &in);
 
   private:
     std::string myValue;

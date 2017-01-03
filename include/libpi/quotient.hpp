@@ -46,7 +46,7 @@ class Quotient : public Value // {{{
     const mpq_t &GetValue() const {return myValue;}
     mpq_t &GetValue() {return myValue;}
 
-    static Value *ParseQuotient(std::istream &in);
+    static std::shared_ptr<Value> ParseQuotient(std::istream &in);
 
   private:
     mpq_t myValue;

@@ -75,7 +75,7 @@ shared_ptr<Bool> String::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 
-Value *String::ParseString(istream &in) // {{{
+shared_ptr<Value> String::ParseString(istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
@@ -84,7 +84,7 @@ Value *String::ParseString(istream &in) // {{{
   enc << str;
   base64::decoder d;
   d.decode(enc,dec);
-  return new String(dec.str());
+  return shared_ptr<String>(new String(dec.str()));
 } // }}}
 
 namespace stringvalue

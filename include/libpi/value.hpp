@@ -16,7 +16,7 @@ class Bool;
 // }}}
 class Value // {{{
 { public:
-    typedef Value *(*value_creator)(std::istream &);
+    typedef std::shared_ptr<Value> (*value_creator)(std::istream &);
   public:
     Value();
     Value(const std::string &str);
@@ -32,8 +32,8 @@ class Value // {{{
     virtual std::shared_ptr<Bool> operator>=(const Value &rhs) const;
     virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-    static Value *Parse(const std::string &str);
-    static Value *Parse(std::istream &in);
+    static std::shared_ptr<Value> Parse(const std::string &str);
+    static std::shared_ptr<Value> Parse(std::istream &in);
     static int RegisterParser(const std::string &type, value_creator p);
 
   private:

@@ -21,7 +21,7 @@ namespace libpi
 // }}}
 class Channel : public Value
 { public:
-    typedef Channel *(*channel_creator)(const std::string &);
+    typedef std::shared_ptr<Channel> (*channel_creator)(const std::string &);
     virtual ~Channel() {}
 
 //* DOCUMENTATION: Unlink Method {{{
@@ -84,7 +84,7 @@ class Channel : public Value
  * of all the supported protocol types.
  */
 // }}}
-    static Channel *Create(const std::string &address);
+    static std::shared_ptr<Channel> Create(const std::string &address);
 
   private:
 // DOCUMENTATION: ourSessionCreators field {{{

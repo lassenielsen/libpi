@@ -108,11 +108,11 @@ shared_ptr<Bool> Float::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-Value *Float::ParseFloat(std::istream &in) // {{{
+shared_ptr<Value> Float::ParseFloat(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return new Float(str);
+  return shared_ptr<Float>(new Float(str));
 } // }}}
 
 namespace floatvalue
