@@ -165,6 +165,34 @@ int main(int argc, char **argv)
       cout << "SUCCESS\n" << flush;
     else
       cout << "FAILURE\n" << flush;
+
+    cout << "- Testing concurrency\n" << flush;
+    shared_ptr<Channel> ch7(new thread::Channel());
+    for (size_t i=0; i<99; ++i)
+    { pthread_t x;
+      pthread_attr_t y;
+      pthread_attr_init(&y);
+      pthread_attr_setstacksize(&y,16384);
+      pthread_attr_setdetachstate(&y,PTHREAD_CREATE_DETACHED);
+      pthread_create(&x,&y,proc_send,&argInt);
+    }
+    pthread_create(&t1,NULL,proc_send,&argInt);
+    for (size_t i=0; i<99; ++i)
+    { pthread_t x;
+      pthread_attr_t y;
+      pthread_attr_init(&y);
+      pthread_attr_setstacksize(&y,16384);
+      pthread_attr_setdetachstate(&y,PTHREAD_CREATE_DETACHED);
+      pthread_create(&x,&y,proc_receive,&argInt);
+    }
+    usleep(1000);
+    pthread_create(&t2,NULL,proc_receive,&argInt);
+    pthread_join(t1,&r1);
+    pthread_join(t2,&r2);
+    if (r1==NULL && r2==NULL)
+      cout << "SUCCESS\n" << flush;
+    else
+      cout << "FAILURE\n" << flush;
   }
   catch (string s)
   { cout << "Error in main: " << s << endl;
