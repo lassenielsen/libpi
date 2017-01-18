@@ -34,7 +34,7 @@ void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
 { lock.Lock();
   msgs.push(val);
   ++(msg_count);
-  if (msg_count<=0)
+  if (msg_count==1)
     sync.Release();
   lock.Release();
 } // }}}
@@ -44,16 +44,14 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 } // }}}
 
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
-{ lock.Lock();
+{ sync.Lock();
+  lock.Lock();
   --(msg_count);
-  if (msg_count<0)
-  { lock.Release();
-    sync.Lock();
-    lock.Lock();
-  }
-
   shared_ptr<libpi::Value> result=msgs.front();
   msgs.pop();
+  if (msg_count>0)
+    sync.Release();
+
   lock.Release();
   return result;
 } // }}}
