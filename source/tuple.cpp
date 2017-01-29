@@ -28,10 +28,14 @@ void Tuple::ToStream(ostream &dest) const // {{{
   }
 } // }}}
 const shared_ptr<Value> &Tuple::GetValue(const Int &index) const // {{{
-{ return GetValue(mpz_get_ui(index.GetValue()));
+{ size_t i;
+  conv(i,index.GetValue());
+  return GetValue(i);
 } // }}}
 shared_ptr<Value> &Tuple::GetValue(const Int &index) // {{{
-{ return GetValue(mpz_get_ui(index.GetValue()));
+{ size_t i;
+  conv(i,index.GetValue());
+  return GetValue(i);
 } // }}}
 const shared_ptr<Value> &Tuple::GetValue(int index) const // {{{
 { return myValues[index];

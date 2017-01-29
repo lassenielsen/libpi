@@ -15,13 +15,21 @@ void *proc1(void *arg) // {{{
   { stringstream ss;
     thread::Link *link=(thread::Link*)arg;
     usleep(1000000);
+#ifdef PIDEBUG
     cout << "P1: Connecting\n" << flush;
+#endif
     shared_ptr<Session> s=link->Connect(0,2);
+#ifdef PIDEBUG
     cout << "P1: Connecting complete\n" << flush;
+#endif
     shared_ptr<Value> intval=shared_ptr<Value>(Value::Parse("int:1337"));
+#ifdef PIDEBUG
     cout << "P1: Sending simple value\n" << flush;
+#endif
     s->Send(1,intval);
+#ifdef PIDEBUG
     cout << "P1: Creating local session\n" << flush;
+#endif
     shared_ptr<Session> t1;
     shared_ptr<Session> t2;
     { vector<shared_ptr<Channel> > chsIn1;
@@ -39,9 +47,13 @@ void *proc1(void *arg) // {{{
       chsOut2.push_back(chsIn2[1]);
       t2=shared_ptr<Session>(new Session(1,2,chsIn2,chsOut2));
     }
+#ifdef PIDEBUG
     cout << "P1: Delegating local session\n" << flush;
+#endif
     s->Send(1,t2);
+#ifdef PIDEBUG
     cout << "P1: Using delegated session\n" << flush;
+#endif
     t1->Send(1,intval);
   }
   catch (string s)
@@ -55,20 +67,30 @@ void *proc2(void *arg) // {{{
   { stringstream ss;
     thread::Link *link=(thread::Link*)arg;
     usleep(1000000);
+#ifdef PIDEBUG
     cout << "P2: Connecting\n" << flush;
+#endif
     shared_ptr<Session> s=link->Connect(1,2);
+#ifdef PIDEBUG
     cout << "P2: Connecting complete\n" << flush;
+#endif
     shared_ptr<Int> intval1 = dynamic_pointer_cast<Int>(s->Receive(0));
     if (intval1->Serialize()!="int:1337")
       throw string("Received wrong value: ")+intval1->Serialize();
+#ifdef PIDEBUG
     cout << "P2: Recieved correct value\n" << flush;
+#endif
     shared_ptr<Session> t= dynamic_pointer_cast<Session>(s->Receive(0));
+#ifdef PIDEBUG
     cout << "P2: Recieved session\n" << flush;
     cout << "P2: Using delegated session\n" << flush;
+#endif
     shared_ptr<Int> intval2 = dynamic_pointer_cast<Int>(t->Receive(0));
     if (intval2->Serialize()!="int:1337")
       throw string("Received wrong value: ")+intval2->Serialize();
+#ifdef PIDEBUG
     cout << "P2: Received correct value\n" << flush;
+#endif
   }
   catch (string s)
   { cout << "Error in proc1: " << s << endl;

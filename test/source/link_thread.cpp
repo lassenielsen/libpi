@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <memory.h>
 
+//#define PIDEBUG
+
 using namespace libpi;
 using namespace std;
 
@@ -29,53 +31,72 @@ void *proc(void *arg) // {{{
     procarg *parg=(procarg*)arg;
     if (parg->wait>0)
     { stringstream ss;
+#ifdef PIDEBUG
       ss << "Participant " << parg->pid+1 << " of " << parg->actors << " waiting...\n";
       cout << ss.str() << flush;
+#endif
       usleep(parg->wait);
     }
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Participant " << parg->pid+1 << " of " << parg->actors << " connecting...\n";
       cout << ss.str() << flush;
     }
+#endif
     shared_ptr<Session> s=parg->link->Connect(parg->pid,parg->actors);
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Participant " << parg->pid+1 << " of " << parg->actors << " connected.\n";
       cout << ss.str() << flush;
     }
+#endif
     // Test session
     shared_ptr<Value> val;
     if (parg->pid==0)
     { val=shared_ptr<Value>(new Int(1));
+#ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " sending.\n";
         cout << ss.str() << flush;
       }
+#endif
       s->Send(1,val);
+#ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " receiving.\n";
         cout << ss.str() << flush;
       }
+#endif
       val=s->Receive(parg->actors-1);
+#ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " finished.\n";
         cout << ss.str() << flush;
       }
+#endif
     }
     else
-    { { stringstream ss;
+    {
+#ifdef PIDEBUG
+      { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " receiving.\n";
         cout << ss.str() << flush;
       }
+#endif
       val=s->Receive(parg->pid-1);
+#ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " sending.\n";
         cout << ss.str() << flush;
       }
+#endif
       s->Send((parg->pid+1)%parg->actors,val);
+#ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " finished.\n";
         cout << ss.str() << flush;
       }
+#endif
     }
     if (val->ToString()!="1")
       throw string("Bad value received: ")+val->ToString();

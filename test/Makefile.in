@@ -40,7 +40,7 @@ endif
 build: $(programs)
 
 test: $(programs)
-	for p in $(programs); do ./$$p; done
+	for p in $(programs); do echo "\n********************************\n******** Testing $$p ********\n********************************"; ./$$p; done
 
 install: $(programs)
 	cp $(programs) /usr/local/bin/

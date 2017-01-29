@@ -13,6 +13,8 @@
 using namespace libpi;
 using namespace std;
 
+//#define PIDEBUG
+
 class procarg
 { public:
     procarg(shared_ptr<Channel> c, shared_ptr<Value> v, int w)
@@ -30,20 +32,27 @@ void *proc_send(void *arg) // {{{
   { stringstream ss;
     procarg *parg=(procarg*)arg;
     if (parg->wait>0)
-    { stringstream ss;
+    {
+#ifdef PIDEBUG
+      stringstream ss;
       ss << "Sender waiting...\n";
       cout << ss.str() << flush;
+#endif
       usleep(parg->wait);
     }
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Sender sending value...\n";
       cout << ss.str() << flush;
     }
+#endif
     parg->chan->Send(parg->val);
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Sender done.\n";
       cout << ss.str() << flush;
     }
+#endif
   }
   catch (string s)
   { cout << "Error in sender: " << s << endl;
@@ -54,23 +63,29 @@ void *proc_send(void *arg) // {{{
 
 void *proc_receive(void *arg) // {{{
 { try
-  { stringstream ss;
-    procarg *parg=(procarg*)arg;
+  { procarg *parg=(procarg*)arg;
     if (parg->wait>0)
-    { stringstream ss;
+    {
+#ifdef PIDEBUG
+      stringstream ss;
       ss << "Receiver waiting...\n";
       cout << ss.str() << flush;
+#endif
       usleep(parg->wait);
     }
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Receiving value...\n";
       cout << ss.str() << flush;
     }
+#endif
     shared_ptr<Value> rv=parg->chan->Receive();
+#ifdef PIDEBUG
     { stringstream ss;
       ss << "Receiver done.\n";
       cout << ss.str() << flush;
     }
+#endif
     if (rv!=parg->val)
       throw string("Received value ") + rv->ToString() + " differs from expected " + parg->val->ToString();
   }

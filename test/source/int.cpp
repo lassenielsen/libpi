@@ -22,7 +22,10 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { shared_ptr<Int> x1(new Int(1));
+  { shared_ptr<Int> x0(new Int("1"));
+    cout << "x0=" << x0->ToString() << endl;
+ 
+    shared_ptr<Int> x1(new Int(1));
     Compare(x1->Serialize(),"int:1","Serialize");
     { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("int:1"));
       Compare(parsed->Serialize(),"int:1","Parse");
