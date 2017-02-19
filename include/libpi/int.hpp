@@ -1,7 +1,7 @@
 #pragma once
 
 #include <libpi/value.hpp>
-#include <NTL/ZZ.h>
+#include <gmp.h>
 
 namespace libpi
 {
@@ -21,7 +21,7 @@ class Int : public Value // {{{
 
     // Constructors
     Int(const std::string &val);
-    Int(NTL::ZZ &val);
+    Int(mpz_t &val, bool clear_arg=false);
     Int(long val=0);
     virtual ~Int();
 
@@ -42,11 +42,11 @@ class Int : public Value // {{{
     std::shared_ptr<Bool> operator>=(const Value &rhs) const;
     std::shared_ptr<Bool> operator>(const Value &rhs) const;
 
-    const NTL::ZZ &GetValue() const;
+    const mpz_t &GetValue() const;
 
     static std::shared_ptr<Value> ParseInt(std::istream &in);
   private:
-    NTL::ZZ myValue;
+    mpz_t myValue;
 }; // }}}
 
 }
