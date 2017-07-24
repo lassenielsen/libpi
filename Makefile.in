@@ -46,6 +46,9 @@ library_objects = \
   objects/tuple.o \
   objects/thread/link.o \
   objects/thread/channel.o \
+  objects/task/task.o \
+  objects/task/channel.o \
+  objects/task/link.o \
 #  objects/process/link.o \
 #  objects/process/channel.o \
 #  objects/network/link.o \
@@ -64,6 +67,9 @@ library_objects_debug = \
   objects_debug/tuple.o \
   objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
+  objects_debug/task/task.o \
+  objects_debug/task/channel.o \
+  objects_debug/task/link.o \
 #  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
 #  objects_debug/network/link.o \
@@ -207,6 +213,10 @@ $(libname_debug)$(libversion): $(library_objects_debug)
 #OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
+objects/task/%.o: source/task/%.cpp include/$(name)/*.hpp include/$(name)/task/*.hpp include/$(name)/config.hpp
+	mkdir -p objects/task
+	$(compiler) -c source/task/$*.cpp $(args) -o objects/task/$*.o
+
 objects/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects/thread
 	$(compiler) -c source/thread/$*.cpp $(args) -o objects/thread/$*.o
@@ -222,6 +232,10 @@ objects/network/%.o: source/network/%.cpp include/$(name)/*.hpp include/$(name)/
 objects/%.o: source/%.cpp include/$(name)/*.hpp include/$(name)/config.hpp
 	mkdir -p objects
 	$(compiler) -c source/$*.cpp $(args) -o objects/$*.o
+
+objects_debug/task/%.o: source/task/%.cpp include/$(name)/*.hpp include/$(name)/task/*.hpp include/$(name)/config.hpp
+	mkdir -p objects_debug/task
+	$(compiler) -c source/task/$*.cpp $(args_debug) -o objects_debug/task/$*.o
 
 objects_debug/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects_debug/thread
