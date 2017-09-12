@@ -26,10 +26,11 @@ class Link : public libpi::Link // {{{
     virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
     virtual std::shared_ptr<Session> Connect(int pid, int actors);
 
-    const std::vector<std::shared_ptr<libpi::thread::Channel> > GetChannels() const { return myChannels; }
-    std::vector<std::shared_ptr<libpi::thread::Channel> > GetChannels() { return myChannels; }
+    const std::vector<std::shared_ptr<Channel> > &GetChannels() const { return myChannels; }
+    std::vector<std::shared_ptr<Channel> > &GetChannels() { return myChannels; }
+
   private:
-    std::vector<std::shared_ptr<libpi::thread::Channel> > myChannels;
+    std::vector<std::shared_ptr<Channel> > myChannels;
 }; // }}}
   }
 }

@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <libpi/value.hpp>
+#include <libpi/task/task.hpp>
 
 namespace libpi
 {
@@ -60,6 +61,7 @@ class Channel : public Value
  */
 // }}}
     virtual std::shared_ptr<Value> Receive()=0;
+    virtual void Receive(std::shared_ptr<task::Task> receiver, std::string dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
@@ -67,6 +69,7 @@ class Channel : public Value
  */
 // }}}
     virtual std::shared_ptr<Value> SingleReceive()=0;
+    virtual void SingleReceive(std::shared_ptr<task::Task> receiver, std::string dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

@@ -37,5 +37,20 @@ namespace libpi
         size_t mySteps;
     }; // }}}
 
+    // Define Task-level Events
+    class TaskEvent {};
+    
+    class TaskPauseEvent: public TaskEvent
+    {
+    };
+    
+    class TaskResumeEvent: public TaskEvent, std::shared_ptr<Task>
+    { public:
+        TaskResumeEvent(const std::shared_ptr<Task> &task) // {{{
+        : std::shared_ptr<Task>(task)
+        {
+        } // }}}
+    };
+
   }
 }

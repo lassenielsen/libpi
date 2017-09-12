@@ -4,24 +4,19 @@
 
 using namespace std;
 
-extern libpi::thread::Channel _tasks;
-
 namespace libpi
 { namespace task
   {
 Channel::Channel() // {{{
-: msgs()
-, tasks()
-, lock()
-{
+{ pthread_mutex_init(&myLock,NULL);
 } // }}}
 
 Channel::Channel(const Channel &rhs) // {{{
-{ throw string("Error: Trying to copy a libpi::thread::Channel object which cannot be cloned or copied");
+{ throw string("Error: Trying to copy a libpi::task::Channel object which cannot be cloned or copied");
 } // }}}
 
 Channel::~Channel() // {{{
-{
+{ pthread_mutex_destroy(&myLock);
 } // }}}
 
 void Channel::Unlink() // {{{
@@ -33,52 +28,53 @@ void Channel::Send(shared_ptr<libpi::Value> val) // {{{
 } // }}}
 
 void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
-{ lock.Lock();
-  if (tasks.size()>0) // Pop task
-  { shared_ptr<Task> t=tasks.front().first;
-    string dst=tasks.front().second;
-    tasks.pop();
+{ pthread_mutex_lock(&myLock);
+  if (myTasks.size()>0) // Pop task
+  { shared_ptr<Task> t=myTasks.front().first;
+    string dst=myTasks.front().second;
+    myTasks.pop();
     t->Values()[dst]=val;
-    _tasks.Send(t);
+    pthread_mutex_lock(&myLock);
+    throw TaskResumeEvent(t);
   }
-  else
-    msgs.push(val);
-  lock.Release();
+  else // Store in myMsgs
+  { myMsgs.push(val);
+    pthread_mutex_lock(&myLock);
+  }
 } // }}}
 
 shared_ptr<libpi::Value> Channel::Receive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-shared_ptr<libpi::Value> Channel::Receive(shared_ptr<Task> task, string dest) // {{{
+void Channel::Receive(shared_ptr<Task> task, string dest) // {{{
 { return SingleReceive(task,dest);
 } // }}}
 
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { throw string("Using original receive on task level channel");
-}
+} // }}}
 
-shared_ptr<libpi::Value> Channel::SingleReceive(shared_ptr<Task> task, string dest) // {{{
-{ shared_ptr<Value> result;
-  lock.Lock();
-  if (msgs.size()>0)
-  { result=msgs.front();
-    msgs.pop();
+void Channel::SingleReceive(shared_ptr<Task> task, string dest) // {{{
+{ pthread_mutex_lock(&myLock);
+  if (myMsgs.size()>0) // Pop msg
+  { task->Values()[dest]=myMsgs.front();
+    myMsgs.pop();
+    pthread_mutex_unlock(&myLock);
   }
-  else
-  { tasks.push(pair<shared_ptr<Task>,string>(task,dest));
-    // NULL WILL BE RETURNED -- MUST BE HANDLED BY CALLER
+  else // Task waits in queue
+  { myTasks.push(pair<shared_ptr<Task>,std::string>(task,dest));
+    pthread_mutex_unlock(&myLock);
+    throw TaskPauseEvent();
   }
-  lock.Release();
-  return result;
 } // }}}
 
 std::string Channel::GetAddress() const // {{{
-{ throw string("Error: libpi::thread::Channel is cannot be serialized.");
+{ throw string("Error: libpi::task::Channel is cannot be serialized.");
 } // }}}
 
 Channel &Channel::operator=(const Channel &rhs) // {{{
-{ throw string("Error: libpi::thread::Channel cannot be copied.");
+{ throw string("Error: libpi::task::Channel cannot be copied.");
 } // }}}
 
   }

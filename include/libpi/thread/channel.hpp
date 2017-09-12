@@ -35,7 +35,9 @@ namespace libpi {
         void Send(std::shared_ptr<libpi::Value> msg);
         void SingleSend(std::shared_ptr<libpi::Value> msg);
         std::shared_ptr<libpi::Value> Receive();
+        void Receive(std::shared_ptr<task::Task> receiver, std::string dest);
         std::shared_ptr<libpi::Value> SingleReceive();
+        void SingleReceive(std::shared_ptr<task::Task> receiver, std::string dest);
     
         std::string GetAddress() const;
 

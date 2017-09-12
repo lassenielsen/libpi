@@ -10,6 +10,7 @@
 #include <memory>
 #include <libpi/channel.hpp>
 #include <libpi/value.hpp>
+#include <libpi/task/task.hpp>
 
 namespace libpi
 {
@@ -71,6 +72,8 @@ namespace libpi
  */
 // }}}
       virtual std::shared_ptr<Value> Receive(int from);
+      virtual void Receive(int from, std::shared_ptr<task::Task> receiver, std::string dest);
+
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
 // DOCUMENTATION: Close method {{{

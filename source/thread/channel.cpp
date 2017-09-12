@@ -43,6 +43,10 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
+void Channel::Receive(std::shared_ptr<task::Task> receiver, std::string dest) // {{{
+{ return SingleReceive(receiver,dest);
+} // }}}
+
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { sync.Lock();
   lock.Lock();
@@ -53,6 +57,11 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   if (currentCount>0)
     sync.Release();
   return result;
+} // }}}
+
+void Channel::SingleReceive(std::shared_ptr<task::Task> receiver, std::string dest) // {{{
+{ receiver->Values()[dest]=SingleReceive();
+  return;
 } // }}}
 
 std::string Channel::GetAddress() const // {{{
