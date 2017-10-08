@@ -38,7 +38,9 @@ namespace libpi {
             isLocked=false;
           pthread_mutex_unlock(&myLock);
           if (nextTask)
-            throw TaskResumeEvent(nextTask);
+          { ++(*Task::ActiveTasks);
+            Task::Tasks.Send(nextTask);
+          }
         }
   
       private:

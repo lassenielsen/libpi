@@ -32,12 +32,12 @@ namespace libpi {
 
         void Unlink();
 
-        void Send(std::shared_ptr<libpi::Value> msg);
-        void SingleSend(std::shared_ptr<libpi::Value> msg);
+        void Send(const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
         std::shared_ptr<libpi::Value> Receive();
-        void Receive(std::shared_ptr<task::Task> receiver, std::string dest);
+        void Receive(const std::shared_ptr<task::Task> &receiver, size_t dest);
         std::shared_ptr<libpi::Value> SingleReceive();
-        void SingleReceive(std::shared_ptr<task::Task> receiver, std::string dest);
+        void SingleReceive(const std::shared_ptr<task::Task> &receiver, size_t dest);
     
         std::string GetAddress() const;
 

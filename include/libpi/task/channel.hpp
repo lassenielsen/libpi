@@ -1,5 +1,5 @@
-#ifndef libpi_thread_channel
-#define libpi_thread_channel
+#ifndef libpi_task_channel
+#define libpi_task_channel
 
 #include <pthread.h>
 #include <libpi/thread/mutex.hpp>
@@ -39,10 +39,10 @@ namespace libpi {
         std::shared_ptr<Value> SingleReceive();
 
         // Actual methods
-        void Send(std::shared_ptr<libpi::Value> msg);
-        void SingleSend(std::shared_ptr<libpi::Value> msg);
-        void Receive(std::shared_ptr<Task> receiver, std::string dest);
-        void SingleReceive(std::shared_ptr<Task> receiver, std::string dest);
+        void Send(const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
+        void Receive(const std::shared_ptr<Task> &receiver, size_t dest);
+        void SingleReceive(const std::shared_ptr<Task> &receiver, size_t dest);
     
         std::string GetAddress() const;
 
@@ -52,7 +52,7 @@ namespace libpi {
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<std::shared_ptr<Task>,std::string> > myTasks;
+        std::queue<std::pair<std::shared_ptr<Task>,size_t> > myTasks;
         std::queue<std::shared_ptr<libpi::Value> > myMsgs;
     };
   }

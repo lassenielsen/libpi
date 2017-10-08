@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <libpi/value.hpp>
-#include <libpi/task/task.hpp>
+namespace libpi { namespace task { class Task; } }
 
 namespace libpi
 {
@@ -45,7 +45,7 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void Send(std::shared_ptr<Value> msg)=0;
+    virtual void Send(const std::shared_ptr<Value> &msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -54,14 +54,14 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void SingleSend(std::shared_ptr<Value>msg)=0;
+    virtual void SingleSend(const std::shared_ptr<Value> &msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
  */
 // }}}
     virtual std::shared_ptr<Value> Receive()=0;
-    virtual void Receive(std::shared_ptr<task::Task> receiver, std::string dest)=0;
+    virtual void Receive(const std::shared_ptr<task::Task> &receiver, size_t dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
@@ -69,7 +69,7 @@ class Channel : public Value
  */
 // }}}
     virtual std::shared_ptr<Value> SingleReceive()=0;
-    virtual void SingleReceive(std::shared_ptr<task::Task> receiver, std::string dest)=0;
+    virtual void SingleReceive(const std::shared_ptr<task::Task> &receiver, size_t dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

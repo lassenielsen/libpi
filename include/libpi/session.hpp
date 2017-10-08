@@ -60,7 +60,7 @@ namespace libpi
  * receiving participant and can no longer be used by the sender.
  */
 // }}}
-      virtual void Send(int to, std::shared_ptr<Value> value);
+      virtual void Send(int to, const std::shared_ptr<Value> &value);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -72,7 +72,7 @@ namespace libpi
  */
 // }}}
       virtual std::shared_ptr<Value> Receive(int from);
-      virtual void Receive(int from, std::shared_ptr<task::Task> receiver, std::string dest);
+      virtual void Receive(int from, const std::shared_ptr<task::Task> &receiver, size_t dest);
 
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 

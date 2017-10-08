@@ -3,7 +3,6 @@
 #include <sstream>
 
 using namespace std;
-
 namespace libpi
 { namespace task
   {
@@ -23,23 +22,24 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(shared_ptr<libpi::Value> val) // {{{
+void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
+void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { pthread_mutex_lock(&myLock);
   if (myTasks.size()>0) // Pop task
   { shared_ptr<Task> t=myTasks.front().first;
-    string dst=myTasks.front().second;
+    size_t dst=myTasks.front().second;
     myTasks.pop();
     t->Values()[dst]=val;
-    pthread_mutex_lock(&myLock);
-    throw TaskResumeEvent(t);
+    pthread_mutex_unlock(&myLock);
+    ++(*Task::ActiveTasks);
+    Task::Tasks.Send(t);
   }
   else // Store in myMsgs
   { myMsgs.push(val);
-    pthread_mutex_lock(&myLock);
+    pthread_mutex_unlock(&myLock);
   }
 } // }}}
 
@@ -47,7 +47,7 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-void Channel::Receive(shared_ptr<Task> task, string dest) // {{{
+void Channel::Receive(const shared_ptr<Task> &task, size_t dest) // {{{
 { return SingleReceive(task,dest);
 } // }}}
 
@@ -55,7 +55,7 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-void Channel::SingleReceive(shared_ptr<Task> task, string dest) // {{{
+void Channel::SingleReceive(const shared_ptr<Task> &task, size_t dest) // {{{
 { pthread_mutex_lock(&myLock);
   if (myMsgs.size()>0) // Pop msg
   { task->Values()[dest]=myMsgs.front();
@@ -63,7 +63,7 @@ void Channel::SingleReceive(shared_ptr<Task> task, string dest) // {{{
     pthread_mutex_unlock(&myLock);
   }
   else // Task waits in queue
-  { myTasks.push(pair<shared_ptr<Task>,std::string>(task,dest));
+  { myTasks.push(pair<shared_ptr<Task>,size_t>(task,dest));
     pthread_mutex_unlock(&myLock);
     throw TaskPauseEvent();
   }
