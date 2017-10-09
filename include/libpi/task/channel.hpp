@@ -41,8 +41,8 @@ namespace libpi {
         // Actual methods
         void Send(const std::shared_ptr<libpi::Value> &msg);
         void SingleSend(const std::shared_ptr<libpi::Value> &msg);
-        void Receive(const std::shared_ptr<Task> &receiver, size_t dest);
-        void SingleReceive(const std::shared_ptr<Task> &receiver, size_t dest);
+        bool Receive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        bool SingleReceive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
     
         std::string GetAddress() const;
 
@@ -52,7 +52,7 @@ namespace libpi {
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<std::shared_ptr<Task>,size_t> > myTasks;
+        std::queue<std::pair<std::shared_ptr<Task>,std::shared_ptr<libpi::Value>&> > myTasks;
         std::queue<std::shared_ptr<libpi::Value> > myMsgs;
     };
   }

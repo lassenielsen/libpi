@@ -30,9 +30,9 @@ void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { pthread_mutex_lock(&myLock);
   if (myTasks.size()>0) // Pop task
   { shared_ptr<Task> t=myTasks.front().first;
-    size_t dst=myTasks.front().second;
+    shared_ptr<libpi::Value> &dst=myTasks.front().second;
     myTasks.pop();
-    t->Values()[dst]=val;
+    dst=val;
     pthread_mutex_unlock(&myLock);
     ++(*Task::ActiveTasks);
     Task::Tasks.Send(t);
@@ -47,7 +47,7 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-void Channel::Receive(const shared_ptr<Task> &task, size_t dest) // {{{
+bool Channel::Receive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
 { return SingleReceive(task,dest);
 } // }}}
 
@@ -55,17 +55,18 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-void Channel::SingleReceive(const shared_ptr<Task> &task, size_t dest) // {{{
+bool Channel::SingleReceive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
 { pthread_mutex_lock(&myLock);
   if (myMsgs.size()>0) // Pop msg
-  { task->Values()[dest]=myMsgs.front();
+  { dest=myMsgs.front();
     myMsgs.pop();
     pthread_mutex_unlock(&myLock);
+    return true;
   }
   else // Task waits in queue
-  { myTasks.push(pair<shared_ptr<Task>,size_t>(task,dest));
+  { myTasks.push(pair<shared_ptr<Task>,shared_ptr<libpi::Value>&>(task,dest));
     pthread_mutex_unlock(&myLock);
-    throw TaskPauseEvent();
+    return false;
   }
 } // }}}
 

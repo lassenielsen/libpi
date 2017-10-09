@@ -23,14 +23,13 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task() {}
+        Task() : mySteps(1024) {}
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}
-        Closure &Values() {return myValues;}
         size_t &GetSteps() {return mySteps;}
 
         static libpi::thread::Channel Tasks;     //! Task queue for worker threads
@@ -38,15 +37,7 @@ namespace libpi
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
       private:
         void *myLabel;
-        Closure myValues;
         size_t mySteps;
     }; // }}}
-
-    // Define Task-level Events
-    class TaskEvent {};
-    
-    class TaskPauseEvent: public TaskEvent
-    {
-    };
   }
 }

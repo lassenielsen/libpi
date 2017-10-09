@@ -44,7 +44,7 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
-void Channel::Receive(const std::shared_ptr<task::Task> &receiver, size_t dest) // {{{
+bool Channel::Receive(const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
 { return SingleReceive(receiver,dest);
 } // }}}
 
@@ -60,9 +60,9 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   return result;
 } // }}}
 
-void Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, size_t dest) // {{{
-{ receiver->Values()[dest]=SingleReceive();
-  return;
+bool Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest) // {{{
+{ dest=SingleReceive();
+  return true;
 } // }}}
 
 std::string Channel::GetAddress() const // {{{

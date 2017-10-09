@@ -31,7 +31,7 @@ shared_ptr<libpi::Value> Session::Receive(int from) // {{{
   return myInChannels[from]->Receive();
 } //}}}
 
-void Session::Receive(int from, const std::shared_ptr<task::Task> &receiver, size_t dest) // {{{
+bool Session::Receive(int from, const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
   return myInChannels[from]->Receive(receiver,dest);

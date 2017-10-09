@@ -61,7 +61,15 @@ class Channel : public Value
  */
 // }}}
     virtual std::shared_ptr<Value> Receive()=0;
-    virtual void Receive(const std::shared_ptr<task::Task> &receiver, size_t dest)=0;
+// DOCUMENTATION: Receive method {{{
+/*!
+ * Task level receive method. Enables the task to be stored in a local queue until the decired message is received.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * be requeued by the channel when the message is received.
+ */
+// }}}
+    virtual bool Receive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
@@ -69,7 +77,15 @@ class Channel : public Value
  */
 // }}}
     virtual std::shared_ptr<Value> SingleReceive()=0;
-    virtual void SingleReceive(const std::shared_ptr<task::Task> &receiver, size_t dest)=0;
+// DOCUMENTATION: Receive method {{{
+/*!
+ * Task level receive method. Enables the task to be stored in a local queue until the decired message is received.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * be requeued by the channel when the message is received.
+ */
+// }}}
+    virtual bool SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

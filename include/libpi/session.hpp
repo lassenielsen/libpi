@@ -72,7 +72,7 @@ namespace libpi
  */
 // }}}
       virtual std::shared_ptr<Value> Receive(int from);
-      virtual void Receive(int from, const std::shared_ptr<task::Task> &receiver, size_t dest);
+      virtual bool Receive(int from, const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest);
 
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
