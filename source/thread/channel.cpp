@@ -1,4 +1,5 @@
 #include <libpi/thread/channel.hpp>
+#include <libpi/task/task.hpp>
 #include <sstream>
 
 using namespace std;
@@ -26,11 +27,11 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(shared_ptr<libpi::Value> val) // {{{
+void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
+void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { lock.Lock();
   msgs.push(val);
   int currentCount=++(msg_count);
@@ -43,6 +44,10 @@ shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
+bool Channel::Receive(const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
+{ return SingleReceive(receiver,dest);
+} // }}}
+
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { sync.Lock();
   lock.Lock();
@@ -53,6 +58,11 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   if (currentCount>0)
     sync.Release();
   return result;
+} // }}}
+
+bool Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest) // {{{
+{ dest=SingleReceive();
+  return true;
 } // }}}
 
 std::string Channel::GetAddress() const // {{{

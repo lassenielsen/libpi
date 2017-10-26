@@ -19,7 +19,7 @@ Session::~Session() // {{{
 {
 } // }}}
 
-void Session::Send(int to, shared_ptr<libpi::Value> value) // {{{
+void Session::Send(int to, const shared_ptr<libpi::Value> &value) // {{{
 { if (Closed()) throw string("Session::Send: Trying to use closed session.");
   if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
   myOutChannels[to]->Send(value);
@@ -29,6 +29,12 @@ shared_ptr<libpi::Value> Session::Receive(int from) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
   return myInChannels[from]->Receive();
+} //}}}
+
+bool Session::Receive(int from, const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
+{ if (Closed()) throw string("Session::Receive: Trying to use closed session.");
+  if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
+  return myInChannels[from]->Receive(receiver,dest);
 } //}}}
 
 void Session::Close(bool unlink) // {{{

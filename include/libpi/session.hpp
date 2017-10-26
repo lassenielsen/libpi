@@ -10,6 +10,7 @@
 #include <memory>
 #include <libpi/channel.hpp>
 #include <libpi/value.hpp>
+#include <libpi/task/task.hpp>
 
 namespace libpi
 {
@@ -59,7 +60,7 @@ namespace libpi
  * receiving participant and can no longer be used by the sender.
  */
 // }}}
-      virtual void Send(int to, std::shared_ptr<Value> value);
+      virtual void Send(int to, const std::shared_ptr<Value> &value);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -71,6 +72,8 @@ namespace libpi
  */
 // }}}
       virtual std::shared_ptr<Value> Receive(int from);
+      virtual bool Receive(int from, const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest);
+
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
 // DOCUMENTATION: Close method {{{

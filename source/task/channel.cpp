@@ -3,82 +3,79 @@
 #include <sstream>
 
 using namespace std;
-
-extern libpi::thread::Channel _tasks;
-
 namespace libpi
 { namespace task
   {
 Channel::Channel() // {{{
-: msgs()
-, tasks()
-, lock()
-{
+{ pthread_mutex_init(&myLock,NULL);
 } // }}}
 
 Channel::Channel(const Channel &rhs) // {{{
-{ throw string("Error: Trying to copy a libpi::thread::Channel object which cannot be cloned or copied");
+{ throw string("Error: Trying to copy a libpi::task::Channel object which cannot be cloned or copied");
 } // }}}
 
 Channel::~Channel() // {{{
-{
+{ pthread_mutex_destroy(&myLock);
 } // }}}
 
 void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(shared_ptr<libpi::Value> val) // {{{
+void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(shared_ptr<libpi::Value> val) // {{{
-{ lock.Lock();
-  if (tasks.size()>0) // Pop task
-  { shared_ptr<Task> t=tasks.front().first;
-    string dst=tasks.front().second;
-    tasks.pop();
-    t->Values()[dst]=val;
-    _tasks.Send(t);
+void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
+{ pthread_mutex_lock(&myLock);
+  if (myTasks.size()>0) // Pop task
+  { shared_ptr<Task> t=myTasks.front().first;
+    shared_ptr<libpi::Value> &dst=myTasks.front().second;
+    myTasks.pop();
+    dst=val;
+    pthread_mutex_unlock(&myLock);
+    ++(*Task::ActiveTasks);
+    Task::Tasks.Send(t);
   }
-  else
-    msgs.push(val);
-  lock.Release();
+  else // Store in myMsgs
+  { myMsgs.push(val);
+    pthread_mutex_unlock(&myLock);
+  }
 } // }}}
 
 shared_ptr<libpi::Value> Channel::Receive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-shared_ptr<libpi::Value> Channel::Receive(shared_ptr<Task> task, string dest) // {{{
+bool Channel::Receive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
 { return SingleReceive(task,dest);
 } // }}}
 
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
 { throw string("Using original receive on task level channel");
-}
+} // }}}
 
-shared_ptr<libpi::Value> Channel::SingleReceive(shared_ptr<Task> task, string dest) // {{{
-{ shared_ptr<Value> result;
-  lock.Lock();
-  if (msgs.size()>0)
-  { result=msgs.front();
-    msgs.pop();
+bool Channel::SingleReceive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
+{ pthread_mutex_lock(&myLock);
+  if (myMsgs.size()>0) // Pop msg
+  { dest=myMsgs.front();
+    myMsgs.pop();
+    pthread_mutex_unlock(&myLock);
+    return true;
   }
-  else
-  { tasks.push(pair<shared_ptr<Task>,string>(task,dest));
-    // NULL WILL BE RETURNED -- MUST BE HANDLED BY CALLER
+  else // Task waits in queue
+  { myTasks.push(pair<shared_ptr<Task>,shared_ptr<libpi::Value>&>(task,dest));
+    pthread_mutex_unlock(&myLock);
+    return false;
   }
-  lock.Release();
-  return result;
 } // }}}
 
 std::string Channel::GetAddress() const // {{{
-{ throw string("Error: libpi::thread::Channel is cannot be serialized.");
+{ throw string("Error: libpi::task::Channel is cannot be serialized.");
 } // }}}
 
 Channel &Channel::operator=(const Channel &rhs) // {{{
-{ throw string("Error: libpi::thread::Channel cannot be copied.");
+{ throw string("Error: libpi::task::Channel cannot be copied.");
 } // }}}
 
   }
