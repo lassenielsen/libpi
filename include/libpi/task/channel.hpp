@@ -3,7 +3,6 @@
 
 #include <pthread.h>
 #include <libpi/thread/mutex.hpp>
-#include <libpi/task/mutex.hpp>
 #include <libpi/task/task.hpp>
 #include <libpi/channel.hpp>
 #include <string>

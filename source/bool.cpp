@@ -35,7 +35,7 @@ shared_ptr<Bool> Bool::operator!() const // {{{
 shared_ptr<Bool> Bool::operator==(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return GetInstance(false);
   return GetInstance(myValue==rhsptr->GetValue());
 } // }}}
 shared_ptr<Bool> Bool::operator<=(const Value &rhs) const // {{{
