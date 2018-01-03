@@ -47,31 +47,31 @@ shared_ptr<String> String::operator+(const String &rhs) const // {{{
 shared_ptr<Bool> String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   return Bool::GetInstance(myValue == rhsptr->GetValue());
 } // }}}
 shared_ptr<Bool> String::operator<=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   return Bool::GetInstance(myValue <= rhsptr->GetValue());
 } // }}}
 shared_ptr<Bool> String::operator<(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   return Bool::GetInstance(myValue < rhsptr->GetValue());
 } // }}}
 shared_ptr<Bool> String::operator>=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   return Bool::GetInstance(myValue >= rhsptr->GetValue());
 } // }}}
 shared_ptr<Bool> String::operator>(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 

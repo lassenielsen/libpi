@@ -87,35 +87,35 @@ shared_ptr<Quotient> Quotient::operator/(const Quotient &rhs) const // {{{
 shared_ptr<Bool> Quotient::operator==(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp==0);
 } // }}}
 shared_ptr<Bool> Quotient::operator<=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp<=0);
 } // }}}
 shared_ptr<Bool> Quotient::operator<(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp<0);
 } // }}}
 shared_ptr<Bool> Quotient::operator>=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp>=0);
 } // }}}
 shared_ptr<Bool> Quotient::operator>(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return false;
+    return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp>0);
 } // }}}
