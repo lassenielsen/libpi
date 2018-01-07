@@ -43,6 +43,8 @@ namespace libpi {
 
         Channel &operator=(const Channel &rhs);
 
+        bool Empty() { return msgs.empty(); }
+
         // Thread channels are not serialized or parsed
 
       private:

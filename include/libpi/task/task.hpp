@@ -23,21 +23,23 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task() : mySteps(1024) {}
+        Task() {}
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}
-        size_t &GetSteps() {return mySteps;}
 
         static libpi::thread::Channel Tasks;     //! Task queue for worker threads
         static std::atomic<size_t> *ActiveTasks; //! Actual number of active processes
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
+        static size_t MaxSteps;                  //! Maximum number of steps before yielding
+
+        std::shared_ptr<libpi::Value> tmp;       //! A temporary value that can be used by the task
+        std::vector<std::shared_ptr<libpi::Value> > tmps;       //! A list of temporary values that can be used by the task, used mainly for linking
       private:
         void *myLabel;
-        size_t mySteps;
     }; // }}}
   }
 }
