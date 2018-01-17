@@ -54,9 +54,9 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   size_t currentCount=--(msg_count);
   shared_ptr<libpi::Value> result=msgs.front();
   msgs.pop();
-  lock.Release();
   if (currentCount>0)
     sync.Release();
+  lock.Release();
   return result;
 } // }}}
 

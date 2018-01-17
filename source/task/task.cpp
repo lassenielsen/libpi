@@ -14,7 +14,7 @@ atomic<size_t> *_init_atasks() // {{{
 } // }}}
 atomic<size_t> *Task::ActiveTasks=_init_atasks();
 size_t Task::TargetTasks=std::thread::hardware_concurrency(); // Target number of active processes
-size_t Task::MaxSteps=5; // Maximum number of steps before yielding
+size_t Task::MaxSteps=100; // Maximum number of steps before yielding
 
 Task::~Task() // {{{
 {
