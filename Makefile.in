@@ -47,6 +47,7 @@ library_objects = \
   objects/thread/link.o \
   objects/thread/channel.o \
   objects/task/task.o \
+  objects/task/worker.o \
   objects/task/channel.o \
   objects/task/link.o \
 #  objects/process/link.o \
@@ -68,6 +69,7 @@ library_objects_debug = \
   objects_debug/thread/link.o \
   objects_debug/thread/channel.o \
   objects_debug/task/task.o \
+  objects_debug/task/worker.o \
   objects_debug/task/channel.o \
   objects_debug/task/link.o \
 #  objects_debug/process/link.o \

@@ -1,4 +1,5 @@
 #include <libpi/task/channel.hpp>
+#include <libpi/task/worker.hpp>
 #include <libpi/thread/channel.hpp>
 #include <sstream>
 
@@ -29,13 +30,11 @@ void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { pthread_mutex_lock(&myLock);
   if (myTasks.size()>0) // Pop task
-  { shared_ptr<Task> t=myTasks.front().first;
-    shared_ptr<libpi::Value> &dst=myTasks.front().second;
+  { pair<shared_ptr<Task>,std::shared_ptr<libpi::Value>&> elt=myTasks.front();
     myTasks.pop();
-    dst=val;
     pthread_mutex_unlock(&myLock);
-    ++(*Task::ActiveTasks);
-    Task::Tasks.Send(t);
+    elt.second=val;
+    elt.first->GetWorker().AddTask(elt.first);
   }
   else // Store in myMsgs
   { myMsgs.push(val);

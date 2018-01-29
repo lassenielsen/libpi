@@ -15,7 +15,7 @@ namespace libpi
   namespace task
   {
     typedef std::vector<std::shared_ptr<Value> > Closure;
-
+    class Worker;
 // DOCUMENTATION: Task class {{{
 /*!
  * Value defines the common interface for all value, and also represents the unit values.
@@ -30,16 +30,17 @@ namespace libpi
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}
+	Worker &GetWorker() {return *myWorker;}
+	void SetWorker(Worker *worker) {myWorker=worker;}
 
-        static libpi::thread::Channel Tasks;     //! Task queue for worker threads
-        static std::atomic<size_t> *ActiveTasks; //! Actual number of active processes
-        static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
         static size_t MaxSteps;                  //! Maximum number of steps before yielding
 
         std::shared_ptr<libpi::Value> tmp;       //! A temporary value that can be used by the task
         std::vector<std::shared_ptr<libpi::Value> > tmps;       //! A list of temporary values that can be used by the task, used mainly for linking
+
       private:
         void *myLabel;
+	Worker *myWorker;
     }; // }}}
   }
 }
