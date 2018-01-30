@@ -15,7 +15,7 @@ Worker::~Worker() // {{{
 
 queue<Worker*> Worker_Pool::ourIdleWorkers;
 atomic<size_t> Worker_Pool::ourIdleWorkersSize;
-libpi::thread::Mutex ourIdleWorkersLock;
+libpi::thread::Mutex Worker_Pool::ourIdleWorkersLock;
 
 Worker_Pool::Worker_Pool() // {{{
 : myWaitLock(true)
