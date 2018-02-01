@@ -34,12 +34,14 @@ namespace libpi {
         void Unlink();
 
         // Unsupported interface
+        void Send(const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
         std::shared_ptr<Value> Receive();
         std::shared_ptr<Value> SingleReceive();
 
         // Actual methods
-        void Send(const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
+        void Send(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
         bool Receive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
         bool SingleReceive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
     

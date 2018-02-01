@@ -46,6 +46,16 @@ class Channel : public Value
  */
 // }}}
     virtual void Send(const std::shared_ptr<Value> &msg)=0;
+// DOCUMENTATION: Send method {{{
+/*!
+ * Task level send method. Enables the receiving task to be sceduled on the
+ * sending tasas worker, avoiding further synchronization issues.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * bede requeued by the channel when the message is received.
+ */
+// }}}
+    virtual void Send(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -55,6 +65,12 @@ class Channel : public Value
  */
 // }}}
     virtual void SingleSend(const std::shared_ptr<Value> &msg)=0;
+// DOCUMENTATION: Send method {{{
+/*!
+ * Task level single packet send method.
+ */
+// }}}
+    virtual void SingleSend(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
@@ -63,7 +79,8 @@ class Channel : public Value
     virtual std::shared_ptr<Value> Receive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
- * Task level receive method. Enables the task to be stored in a local queue until the decired message is received.
+ * Task level receive method. Enables the task to be stored in a local queue
+ * until the desired message is received.
  * Returns true if message was received directly, and false if the task was
  * added to queue, and the task skould be ended (untill it will automatically
  * be requeued by the channel when the message is received.

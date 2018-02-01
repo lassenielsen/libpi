@@ -55,10 +55,12 @@ void Worker_Pool::Work() // {{{
       resume_task:
       if (!task)
         break;
+      if ((&task->GetWorker())!=this)
+        cerr << "Running task with different worker!!!" << endl;
       if (_methods(task))
       { if (myActiveTasks.empty())
           goto resume_task;
-        else AddTask(task);
+        else QueueTask(task);
       }
       else
         --ActiveTasks;
@@ -70,7 +72,8 @@ void Worker_Pool::Work() // {{{
 } // }}}
 
 void Worker_Pool::EmployTask(shared_ptr<Task> &task) // {{{
-{ task->SetWorker(this);
+{ if (task)
+    task->SetWorker(this);
   myActiveTasks.push(task);
   myWaitLock.Release();
 } // }}}
@@ -78,7 +81,8 @@ void Worker_Pool::EmployTask(shared_ptr<Task> &task) // {{{
 void Worker_Pool::AddTask(shared_ptr<Task> &task) // {{{
 { ++ActiveTasks;
   QueueTask(task);
-}
+} // }}}
+
 void Worker_Pool::QueueTask(shared_ptr<Task> &task) // {{{
 { if (ourIdleWorkersSize>0)
   { ourIdleWorkersLock.Lock();
@@ -92,6 +96,5 @@ void Worker_Pool::QueueTask(shared_ptr<Task> &task) // {{{
     else
       ourIdleWorkersLock.Release();
   }
-  ++ActiveTasks;
   myActiveTasks.push(task);
 } // }}}

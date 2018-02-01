@@ -40,6 +40,14 @@ void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
     sync.Release();
 } // }}}
 
+void Channel::Send(const std::shared_ptr<task::Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+{ SingleSend(sender,val);
+} // }}}
+
+void Channel::SingleSend(const std::shared_ptr<task::Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+{ SingleSend(val);
+} // }}}
+
 shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}

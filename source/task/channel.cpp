@@ -24,17 +24,25 @@ void Channel::Unlink() // {{{
 } // }}}
 
 void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
-{ SingleSend(val);
+{ throw string("Using original send on task level channel");
 } // }}}
 
 void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
+{ throw string("Using original send on task level channel");
+} // }}}
+
+void Channel::Send(const shared_ptr<Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+{ SingleSend(sender,val);
+} // }}}
+
+void Channel::SingleSend(const shared_ptr<Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
 { pthread_mutex_lock(&myLock);
   if (myTasks.size()>0) // Pop task
   { pair<shared_ptr<Task>,std::shared_ptr<libpi::Value>&> elt=myTasks.front();
     myTasks.pop();
     pthread_mutex_unlock(&myLock);
     elt.second=val;
-    elt.first->GetWorker().AddTask(elt.first);
+    sender->GetWorker().AddTask(elt.first);
   }
   else // Store in myMsgs
   { myMsgs.push(val);

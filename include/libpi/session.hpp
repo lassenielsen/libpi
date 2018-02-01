@@ -56,11 +56,12 @@ namespace libpi
  * @param to is the index of the participant to receive the message.
  * @to should be less than the @actors of the session and not be the
  * pid of the sending process.
- * @param value is the value to be sent, this is transferedd to the
- * receiving participant and can no longer be used by the sender.
+ * @param value is the value to be sent, this is transfered to the
+ * receiving participant.
  */
 // }}}
       virtual void Send(int to, const std::shared_ptr<Value> &value);
+      virtual void Send(int to, const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &value);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
