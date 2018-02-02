@@ -26,7 +26,7 @@ Worker_Pool::~Worker_Pool() // {{{
 {
 } // }}}
 
-void Worker_Pool::Work() // {{{
+/*void Worker_Pool::Work() // {{{
 { try
   { while (true) // Continue until termination
     { // Test if program is complete
@@ -70,6 +70,7 @@ void Worker_Pool::Work() // {{{
   }
   return;
 } // }}}
+*/
 
 void Worker_Pool::EmployTask(shared_ptr<Task> &task) // {{{
 { if (task)
