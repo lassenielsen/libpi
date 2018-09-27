@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/float.hpp>
 #include <libpi/bool.hpp>
 #include <iostream>
@@ -42,6 +43,8 @@ int main(int argc, char **argv)
     //Error due to inaccuracy Compare(((*x2)==(*y2))->GetValue(),true,"EQ");
     Compare(((*x3)==(*y2))->GetValue(),false,"EQ");
     Compare(((*y2)==(*x3))->GetValue(),false,"EQ");
+    shared_ptr<Float> x5(new Float("5.0"));
+    Compare(x5->Serialize(),"flt:5.0","Serialize");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;

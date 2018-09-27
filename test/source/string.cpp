@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/string.hpp>
 #include <iostream>
 #include <sstream>

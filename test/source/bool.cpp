@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/bool.hpp>
 #include <iostream>
 #include <sstream>

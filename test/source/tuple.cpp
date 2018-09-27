@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/tuple.hpp>
 #include <iostream>
 #include <sstream>

@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/thread/link.hpp>
 #include <libpi/session.hpp>
 #include <libpi/int.hpp>

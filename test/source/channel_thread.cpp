@@ -1,3 +1,4 @@
+#include "worker.hpp"
 #include <libpi/thread/channel.hpp>
 #include <libpi/session.hpp>
 #include <libpi/bool.hpp>
