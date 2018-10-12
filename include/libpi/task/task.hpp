@@ -30,8 +30,8 @@ namespace libpi
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}
-	Worker &GetWorker() {return *myWorker;}
-	void SetWorker(Worker *worker) {myWorker=worker;}
+        Worker &GetWorker() {return *myWorker;}
+        void SetWorker(Worker *worker) {myWorker=worker;}
 
         static size_t MaxSteps;                  //! Maximum number of steps before yielding
 
@@ -40,7 +40,7 @@ namespace libpi
 
       private:
         void *myLabel;
-	Worker *myWorker;
+        Worker *myWorker;
     }; // }}}
   }
 }

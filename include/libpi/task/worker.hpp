@@ -28,6 +28,7 @@ namespace libpi
 
         static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
+        static size_t Workers;                   //! Desired number of worker threads - defaults to number of cpu-cores
     }; // }}}
 // DOCUMENTATION: Worker_Pool class {{{
 /*! Executin tasks using a thread pool
@@ -46,6 +47,8 @@ namespace libpi
         void EmployTask(std::shared_ptr<Task> &task);
         void AddTask(std::shared_ptr<Task> &task);
         void QueueTask(std::shared_ptr<Task> &task);
+        const std::queue<std::shared_ptr<Task> > &GetActiveTasks() { return myActiveTasks; }
+
 
       private:
         std::queue<std::shared_ptr<Task> > myActiveTasks;

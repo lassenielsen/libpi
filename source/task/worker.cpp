@@ -8,6 +8,7 @@ bool _methods(shared_ptr<Task> &_task);
 
 atomic<size_t> Worker::ActiveTasks(0);
 size_t Worker::TargetTasks=std::thread::hardware_concurrency(); // Target number of active processes
+size_t Worker::Workers=std::thread::hardware_concurrency(); // Target number of active processes
 
 Worker::~Worker() // {{{
 {
