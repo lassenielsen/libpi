@@ -16,14 +16,14 @@ namespace libpi
     class Worker : public libpi::Value // {{{
     { public:
         Worker() {}
-	virtual ~Worker();
+        virtual ~Worker();
 
         virtual void Work()=0; // Perform tasks
-	//! EmplyTask is used to assign a task to an idle task
+        //! EmplyTask is used to assign a task to an idle worker
         virtual void EmployTask(std::shared_ptr<Task> &task)=0;
-	//! AddTask is used to add a new or previously inactive task to the queue
+        //! AddTask is used to add a new or previously inactive task to the queue
         virtual void AddTask(std::shared_ptr<Task> &task)=0;
-	//! QueueTask is used to push an already active task on the queue
+        //! QueueTask is used to push an already active task on the queue
         virtual void QueueTask(std::shared_ptr<Task> &task)=0;
 
         static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
@@ -41,7 +41,7 @@ namespace libpi
     class Worker_Pool : public Worker // {{{
     { public:
         Worker_Pool();
-	virtual ~Worker_Pool();
+        virtual ~Worker_Pool();
 
         void Work();
         void EmployTask(std::shared_ptr<Task> &task);

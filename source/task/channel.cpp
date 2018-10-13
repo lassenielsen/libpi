@@ -42,7 +42,7 @@ void Channel::SingleSend(const shared_ptr<Task> &sender, const shared_ptr<libpi:
     myTasks.pop();
     pthread_mutex_unlock(&myLock);
     elt.second=val;
-    elt.first->SetWorker(&sender->GetWorker());
+    elt.first->SetWorker(&sender->GetWorker()); // Use senders worker, to avoid the need for synchronization
     sender->GetWorker().AddTask(elt.first);
   }
   else // Store in myMsgs
