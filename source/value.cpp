@@ -58,6 +58,9 @@ shared_ptr<Bool> Value::operator>=(const Value &rhs) const // {{{
 shared_ptr<Bool> Value::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false); 
 } // }}}
+    void Value::Mark(unordered_set<void *> &marks) // {{{
+    {
+    } // }}}
 shared_ptr<Value> Value::Parse(const string &str) // {{{
 { stringstream ss;
   ss << str;

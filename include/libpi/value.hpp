@@ -4,6 +4,7 @@
 #include <memory>
 #include <ostream>
 #include <istream>
+#include <unordered_set>
 
 namespace libpi
 {
@@ -35,6 +36,9 @@ class Value // {{{
     static std::shared_ptr<Value> Parse(const std::string &str);
     static std::shared_ptr<Value> Parse(std::istream &in);
     static int RegisterParser(const std::string &type, value_creator p);
+
+    // Mark function for Garbage Collection
+    virtual void Mark(std::unordered_set<void *> &marks);
 
   private:
     static std::map<std::string,value_creator> ourParsers;

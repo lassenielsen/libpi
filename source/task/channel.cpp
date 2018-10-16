@@ -23,22 +23,22 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
+void Channel::Send(const libpi::Value *val) // {{{
 { throw string("Using original send on task level channel");
 } // }}}
 
-void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
+void Channel::SingleSend(const libpi::Value *val) // {{{
 { throw string("Using original send on task level channel");
 } // }}}
 
-void Channel::Send(const shared_ptr<Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+void Channel::Send(const Task *sender, const libpi::Value *val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
-void Channel::SingleSend(const shared_ptr<Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+void Channel::SingleSend(const Task *sender, const libpi::Value *val) // {{{
 { pthread_mutex_lock(&myLock);
   if (myTasks.size()>0) // Pop task
-  { pair<shared_ptr<Task>,std::shared_ptr<libpi::Value>&> elt=myTasks.front();
+  { pair<Task*,libpi::Value*> elt=myTasks.front();
     myTasks.pop();
     pthread_mutex_unlock(&myLock);
     elt.second=val;
@@ -51,19 +51,19 @@ void Channel::SingleSend(const shared_ptr<Task> &sender, const shared_ptr<libpi:
   }
 } // }}}
 
-shared_ptr<libpi::Value> Channel::Receive() // {{{
+libpi::Value *Channel::Receive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-bool Channel::Receive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
+bool Channel::Receive(const Task *task, libpi::Value *dest) // {{{
 { return SingleReceive(task,dest);
 } // }}}
 
-shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
+libpi::Value *Channel::SingleReceive() // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
-bool Channel::SingleReceive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &dest) // {{{
+bool Channel::SingleReceive(const Task *task, libpi::Value *dest) // {{{
 { pthread_mutex_lock(&myLock);
   if (myMsgs.size()>0) // Pop msg
   { dest=myMsgs.front();
@@ -72,7 +72,7 @@ bool Channel::SingleReceive(const shared_ptr<Task> &task, shared_ptr<libpi::Valu
     return true;
   }
   else // Task waits in queue
-  { myTasks.push(pair<shared_ptr<Task>,shared_ptr<libpi::Value>&>(task,dest));
+  { myTasks.push(pair<Task*,libpi::Value*>(task,dest));
     pthread_mutex_unlock(&myLock);
     return false;
   }
@@ -86,5 +86,15 @@ Channel &Channel::operator=(const Channel &rhs) // {{{
 { throw string("Error: libpi::task::Channel cannot be copied.");
 } // }}}
 
+void Channel::Mark(unordered_set<void*> &marks) const // {{{
+{ if (marks.member((void*)this))
+    return; // Nothing new to add
+    
+  marks.insert((void*)this);
+  for (queue<pair<Task*,Value*> >::const_iterator tsk=myTasks.begin(); tsk!=myTasks.end(); ++tsk)
+    tsk->Mark(marks);
+  for (queue<Value*>::const_iterator val=myMsgs.begin(); val!=myMsgs.end(); ++val)
+    val->Mark(marks);
+} // }}}
   }
 }

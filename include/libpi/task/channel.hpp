@@ -21,7 +21,7 @@ namespace libpi {
  * re-parsed as is necessary for process level channels and network
  * level channels.
  * Thread level channels are implemented via a
- * std::queue<std::shared_ptr<const Value> > structure,
+ * std::queue<Value*> structure,
  * synchronized using mutexes.
  */
 // }}}
@@ -34,27 +34,28 @@ namespace libpi {
         void Unlink();
 
         // Unsupported interface
-        void Send(const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
-        std::shared_ptr<Value> Receive();
-        std::shared_ptr<Value> SingleReceive();
+        void Send(const libpi::Value *msg);
+        void SingleSend(const libpi::Value *msg);
+        Value *Receive();
+        Value *SingleReceive();
 
         // Actual methods
-        void Send(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        bool Receive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
-        bool SingleReceive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        void Send(const Task *sender, const libpi::Value *msg);
+        void SingleSend(const Task *sender, const libpi::Value *msg);
+        bool Receive(const Task *receiver, libpi::Value *dest);
+        bool SingleReceive(const Task *receiver, libpi::Value *dest);
     
         std::string GetAddress() const;
 
         Channel &operator=(const Channel &rhs);
 
+        void Mark(std::unordered_set<void *> &marks) const; // Mark for garbage collection
         // Thread channels are not serialized or parsed
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<std::shared_ptr<Task>,std::shared_ptr<libpi::Value>&> > myTasks;
-        std::queue<std::shared_ptr<libpi::Value> > myMsgs;
+        std::queue<std::pair<Task*,libpi::Value*> > myTasks;
+        std::queue<libpi::Value*> myMsgs;
     };
   }
 }

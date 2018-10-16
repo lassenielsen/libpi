@@ -3,6 +3,7 @@
 #include <libpi/thread/mutex.hpp>
 #include <queue>
 #include <atomic>
+#include <unordered_set>
 
 namespace libpi
 {
@@ -20,11 +21,18 @@ namespace libpi
 
         virtual void Work()=0; // Perform tasks
         //! EmplyTask is used to assign a task to an idle worker
-        virtual void EmployTask(std::shared_ptr<Task> &task)=0;
+        virtual void EmployTask(Task *task)=0;
         //! AddTask is used to add a new or previously inactive task to the queue
-        virtual void AddTask(std::shared_ptr<Task> &task)=0;
+        virtual void AddTask(Task *task)=0;
         //! QueueTask is used to push an already active task on the queue
-        virtual void QueueTask(std::shared_ptr<Task> &task)=0;
+        virtual void QueueTask(Task *task)=0;
+        //! Mark implements the mark part of mark-sweep garbage collection
+        virtual void Mark(std::unordered_set<void*> &marks)=0;
+
+        virtual const unordered_set<void*> &GCMarks() const=0;   //! Used by GC to access marks
+        virtual const unordered_set<void*> &GCValues() const=0;  //! Used by GC to access potential sweeps
+        virtual void GCTask()=0; //! Usec by GC to order the calculation of GCMarks and GCValues
+        virtual void GCWait()=0; //! Used by GC to wait until GCMarks and GCValues are available
 
         static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
@@ -44,18 +52,29 @@ namespace libpi
         virtual ~Worker_Pool();
 
         void Work();
-        void EmployTask(std::shared_ptr<Task> &task);
-        void AddTask(std::shared_ptr<Task> &task);
-        void QueueTask(std::shared_ptr<Task> &task);
-        const std::queue<std::shared_ptr<Task> > &GetActiveTasks() { return myActiveTasks; }
-
+        void EmployTask(Task *task);
+        void AddTask(Task *task);
+        void QueueTask(Task *task);
+        const std::queue<Task*> &GetActiveTasks() { return myActiveTasks; }
+        // Garbage Collection functionality
+        const unordered_set<void*> &GCMarks() const { return myGCMarks; }
+        const unordered_set<void*> &GCValues() const { return myGCValues; }
+        void GCTask() { myGCFlag=true; }
+        void GCWait() { myGCLock.Lock(); }
 
       private:
-        std::queue<std::shared_ptr<Task> > myActiveTasks;
+        std::queue<Task*> myActiveTasks;
+        libpi::thread::Mutex myWaitLock;
+
+        unordered_set<void*> myGCMarks;
+        unordered_set<void*> myGCValues;
+        unordered_set<void*> myGCNewValues;
+        bool myGCFlag;
+        libpi::thread::Mutex myGCLock;
+
         static std::queue<Worker*> ourIdleWorkers; //! Queue of workers in the pool without tasks
         static std::atomic<size_t> ourIdleWorkersSize; //! Aggregating the size of ourIdleWorkers
         static libpi::thread::Mutex ourIdleWorkersLock; //! Lock for ourIdleWorkers
-        libpi::thread::Mutex myWaitLock;
     }; // }}}
   }
 }
