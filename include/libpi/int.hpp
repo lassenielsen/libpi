@@ -28,23 +28,23 @@ class Int : public Value // {{{
     std::string GetType() const { return "int"; }
     void ToStream(std::ostream &dest) const;
     //! Integer addition
-    std::shared_ptr<Int> operator+(const Int &rhs) const;
+    Int *operator+(const Int &rhs) const;
     //! Integer subtraction
-    std::shared_ptr<Int> operator-(const Int &rhs) const;
+    Int *operator-(const Int &rhs) const;
     //! Integer multiplication
-    std::shared_ptr<Int> operator*(const Int &rhs) const;
+    Int *operator*(const Int &rhs) const;
     //! Integer division
-    std::shared_ptr<Int> operator/(const Int &rhs) const;
+    Int *operator/(const Int &rhs) const;
     //! Integer comparison
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
     const mpz_t &GetValue() const;
 
-    static std::shared_ptr<Value> ParseInt(std::istream &in);
+    static Value *ParseInt(std::istream &in);
   private:
     mpz_t myValue;
 }; // }}}

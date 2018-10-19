@@ -43,30 +43,30 @@ std::string Value::Serialize() const // {{{
   Serialize(ss);
   return ss.str();
 } // }}}
-shared_ptr<Bool> Value::operator==(const Value &rhs) const // {{{
+Bool *Value::operator==(const Value &rhs) const // {{{
 { return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
 } // }}}
-shared_ptr<Bool> Value::operator<=(const Value &rhs) const // {{{
+Bool *Value::operator<=(const Value &rhs) const // {{{
 { return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
 } // }}}
-shared_ptr<Bool> Value::operator<(const Value &rhs) const // {{{
+Bool *Value::operator<(const Value &rhs) const // {{{
 { return Bool::GetInstance(false); 
 } // }}}
-shared_ptr<Bool> Value::operator>=(const Value &rhs) const // {{{
+Bool *Value::operator>=(const Value &rhs) const // {{{
 { return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
 } // }}}
-shared_ptr<Bool> Value::operator>(const Value &rhs) const // {{{
+Bool *Value::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false); 
 } // }}}
     void Value::Mark(unordered_set<void *> &marks) // {{{
     {
     } // }}}
-shared_ptr<Value> Value::Parse(const string &str) // {{{
+Value *Value::Parse(const string &str) // {{{
 { stringstream ss;
   ss << str;
   return Parse(ss);
 } // }}}
-shared_ptr<Value> Value::Parse(istream &in) // {{{
+Value *Value::Parse(istream &in) // {{{
 { char delimiter=':';
   string type;
   std::getline(in,type,delimiter);

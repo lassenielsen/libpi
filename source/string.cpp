@@ -41,41 +41,41 @@ void String::ToStream(ostream &dest) const // {{{
   delete [] code;
 } // }}}
 
-shared_ptr<String> String::operator+(const String &rhs) const // {{{
-{ return shared_ptr<String>(new String(myValue+rhs.GetValue()));
+String *String::operator+(const String &rhs) const // {{{
+{ return new String(myValue+rhs.GetValue());
 } // }}}
-shared_ptr<Bool> String::operator==(const Value &rhs) const // {{{
+Bool *String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   return Bool::GetInstance(myValue == rhsptr->GetValue());
 } // }}}
-shared_ptr<Bool> String::operator<=(const Value &rhs) const // {{{
+Bool *String::operator<=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   return Bool::GetInstance(myValue <= rhsptr->GetValue());
 } // }}}
-shared_ptr<Bool> String::operator<(const Value &rhs) const // {{{
+Bool *String::operator<(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   return Bool::GetInstance(myValue < rhsptr->GetValue());
 } // }}}
-shared_ptr<Bool> String::operator>=(const Value &rhs) const // {{{
+Bool *String::operator>=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   return Bool::GetInstance(myValue >= rhsptr->GetValue());
 } // }}}
-shared_ptr<Bool> String::operator>(const Value &rhs) const // {{{
+Bool *String::operator>(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 
-shared_ptr<Value> String::ParseString(istream &in) // {{{
+Value *String::ParseString(istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
@@ -84,7 +84,7 @@ shared_ptr<Value> String::ParseString(istream &in) // {{{
   enc << str;
   base64::decoder d;
   d.decode(enc,dec);
-  return shared_ptr<String>(new String(dec.str()));
+  return new String(dec.str());
 } // }}}
 
 namespace stringvalue

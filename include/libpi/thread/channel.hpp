@@ -20,7 +20,7 @@ namespace libpi {
  * re-parsed as is necessary for process level channels and network
  * level channels.
  * Thread level channels are implemented via a
- * std::queue<std::shared_ptr<const Value> > structure,
+ * std::queue<const Value*> structure,
  * synchronized using mutexes.
  */
 // }}}
@@ -32,14 +32,14 @@ namespace libpi {
 
         void Unlink();
 
-        void Send(const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
-        void Send(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        std::shared_ptr<libpi::Value> Receive();
-        bool Receive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest);
-        std::shared_ptr<libpi::Value> SingleReceive();
-        bool SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        void Send(const libpi::Value *msg);
+        void SingleSend(const libpi::Value *msg);
+        void Send(const task::Task *sender, const libpi::Value *msg);
+        void SingleSend(const task::Task *sender, const libpi::Value *msg);
+        libpi::Value *Receive();
+        bool Receive(const task::Task *receiver, libpi::Value *&dest);
+        libpi::Value *SingleReceive();
+        bool SingleReceive(const task::Task *receiver, libpi::Value *&dest);
     
         std::string GetAddress() const;
 
@@ -50,7 +50,7 @@ namespace libpi {
         // Thread channels are not serialized or parsed
 
       private:
-        std::queue<std::shared_ptr<libpi::Value> > msgs;
+        std::queue<libpi::Value*> msgs;
         Mutex sync;
         Mutex lock;
         std::atomic<int> msg_count;

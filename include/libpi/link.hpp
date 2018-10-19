@@ -25,6 +25,6 @@ namespace libpi
 // }}}
   class Link : public Value
   { public:
-      virtual std::shared_ptr<Session> Connect(int pid, int actors) = 0;
+      virtual Session *Connect(int pid, int actors) = 0;
   };
 }

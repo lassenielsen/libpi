@@ -29,24 +29,24 @@ class Quotient : public Value // {{{
     std::string GetType() const { return "qrt"; }
     void ToStream(std::ostream &dest) const;
     //! Quotient addition
-    std::shared_ptr<Quotient> operator+(const Quotient &rhs) const;
+    Quotient *operator+(const Quotient &rhs) const;
     //! Quotient subtraction
-    std::shared_ptr<Quotient> operator-(const Quotient &rhs) const;
+    Quotient *operator-(const Quotient &rhs) const;
     //! Quotient multiplication
-    std::shared_ptr<Quotient> operator*(const Quotient &rhs) const;
+    Quotient *operator*(const Quotient &rhs) const;
     //! Quotient division
-    std::shared_ptr<Quotient> operator/(const Quotient &rhs) const;
+    Quotient *operator/(const Quotient &rhs) const;
     //! Quotienteger comparison
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
     const mpq_t &GetValue() const {return myValue;}
     mpq_t &GetValue() {return myValue;}
 
-    static std::shared_ptr<Value> ParseQuotient(std::istream &in);
+    static Value * ParseQuotient(std::istream &in);
 
   private:
     mpq_t myValue;

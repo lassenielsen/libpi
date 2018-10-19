@@ -17,29 +17,29 @@ class Tuple : public Value // {{{
 { public:
     // Constructors
     Tuple();
-    Tuple(std::vector<std::shared_ptr<Value> > &vals);
+    Tuple(std::vector<Value*> &vals);
     virtual ~Tuple();
 
     std::string GetType() const { return "tpl"; }
     void ToStream(std::ostream &dest) const;
-    const std::shared_ptr<Value> &GetValue(const Int &index) const;
-    std::shared_ptr<Value> &GetValue(const Int &index);
-    const std::shared_ptr<Value> &GetValue(int index) const;
-    std::shared_ptr<Value> &GetValue(int index);
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    const Value *GetValue(const Int &index) const;
+    Value *GetValue(const Int &index);
+    const Value *GetValue(int index) const;
+    Value *GetValue(int index);
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
-    const std::vector<std::shared_ptr<Value> > &GetValues() const {return myValues; }
-    std::vector<std::shared_ptr<Value> > &GetValues() { return myValues; }
-    void AddValue(std::shared_ptr<Value> val);
+    const std::vector<Value*> &GetValues() const {return myValues; }
+    std::vector<Value*> &GetValues() { return myValues; }
+    void AddValue(Value *val);
 
-    static std::shared_ptr<Value> ParseTuple(std::istream &in);
+    static Value *ParseTuple(std::istream &in);
 
   private:
-    std::vector<std::shared_ptr<Value> > myValues;
+    std::vector<Value*> myValues;
 }; // }}}
 
 }

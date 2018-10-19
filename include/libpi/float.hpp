@@ -27,24 +27,24 @@ class Float : public Value // {{{
 
     std::string GetType() const { return "flt"; }
     void ToStream(std::ostream &dest) const;
-    //! Floateger addition
-    std::shared_ptr<Float> operator+(const Float &rhs) const;
-    //! Floateger subtraction
-    std::shared_ptr<Float> operator-(const Float &rhs) const;
-    //! Floateger multiplication
-    std::shared_ptr<Float> operator*(const Float &rhs) const;
-    //! Floateger division
-    std::shared_ptr<Float> operator/(const Float &rhs) const;
+    //! Float addition
+    Float *operator+(const Float &rhs) const;
+    //! Float subtraction
+    Float * operator-(const Float &rhs) const;
+    //! Float multiplication
+    Float * operator*(const Float &rhs) const;
+    //! Float division
+    Float * operator/(const Float &rhs) const;
     //! Float comparison
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
     const mpf_t &GetValue() const { return myValue; }
 
-    static std::shared_ptr<Value> ParseFloat(std::istream &in);
+    static Value *ParseFloat(std::istream &in);
   private:
     mpf_t myValue;
 }; // }}}

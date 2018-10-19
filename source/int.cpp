@@ -41,59 +41,59 @@ void Int::ToStream(ostream &dest) const // {{{
   dest << string(str);
   free(str);
 } // }}}
-shared_ptr<Int> Int::operator+(const Int &rhs) const // {{{
+Int *Int::operator+(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_add(res,myValue,rhs.GetValue());
-  return shared_ptr<Int>(new Int(res,true));
+  return new Int(res,true);
 } // }}}
-shared_ptr<Int> Int::operator-(const Int &rhs) const // {{{
+Int *Int::operator-(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_sub(res,myValue,rhs.GetValue());
-  return shared_ptr<Int>(new Int(res,true));
+  return new Int(res,true);
 } // }}}
-shared_ptr<Int> Int::operator*(const Int &rhs) const // {{{
+Int *Int::operator*(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_mul(res,myValue,rhs.GetValue());
-  return shared_ptr<Int>(new Int(res,true));
+  return new Int(res,true);
 } // }}}
-shared_ptr<Int> Int::operator/(const Int &rhs) const // {{{
+Int *Int::operator/(const Int &rhs) const // {{{
 { mpz_t res;
   mpz_init(res);
   mpz_tdiv_q(res,myValue,rhs.GetValue());
-  return shared_ptr<Int>(new Int(res,true));
+  return new Int(res,true);
 } // }}}
-shared_ptr<Bool> Int::operator==(const Value &rhs) const // {{{
+Bool *Int::operator==(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp==0);
 } // }}}
-shared_ptr<Bool> Int::operator<=(const Value &rhs) const // {{{
+Bool *Int::operator<=(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp<=0);
 } // }}}
-shared_ptr<Bool> Int::operator<(const Value &rhs) const // {{{
+Bool *Int::operator<(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp<0);
 } // }}}
-shared_ptr<Bool> Int::operator>=(const Value &rhs) const // {{{
+Bool *Int::operator>=(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp>=0);
 } // }}}
-shared_ptr<Bool> Int::operator>(const Value &rhs) const // {{{
+Bool *Int::operator>(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
@@ -104,11 +104,11 @@ const mpz_t &Int::GetValue() const // {{{
 { return myValue;
 } // }}}
 
-shared_ptr<Value> Int::ParseInt(std::istream &in) // {{{
+Value *Int::ParseInt(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return shared_ptr<Int>(new Int(str));
+  return new Int(str);
 } // }}}
 
 namespace intvalue

@@ -22,27 +22,27 @@ class Bool : public Value // {{{
     std::string GetType() const { return "boo"; }
     void ToStream(std::ostream &dest) const;
     //! Boolean conjunction
-    std::shared_ptr<Bool> operator&&(const Bool &rhs) const;
+    Bool *operator&&(const Bool &rhs) const;
     //! Boolean disjunction
-    std::shared_ptr<Bool> operator||(const Bool &rhs) const;
+    Bool *operator||(const Bool &rhs) const;
     //! Boolean negation
-    std::shared_ptr<Bool> operator!() const;
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    Bool *operator!() const;
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
     bool GetValue() const { return myValue; }
 
-    static std::shared_ptr<Value> ParseBool(std::istream &in);
-    static std::shared_ptr<Bool> GetInstance(bool val) // {{{
+    static Value *ParseBool(std::istream &in);
+    static Bool * GetInstance(bool val) // {{{
     { if (val)
         return trueInstance;
       else
         return falseInstance;
     } // }}}
-    static std::shared_ptr<Bool> GetInstance(const std::string &val) // {{{
+    static Bool * GetInstance(const std::string &val) // {{{
     { if (val=="true")
         return trueInstance;
       else if (val=="false")
@@ -52,8 +52,8 @@ class Bool : public Value // {{{
 
   private:
     bool myValue;
-    static std::shared_ptr<Bool> trueInstance;
-    static std::shared_ptr<Bool> falseInstance;
+    static Bool * trueInstance;
+    static Bool * falseInstance;
 }; // }}}
 
 }

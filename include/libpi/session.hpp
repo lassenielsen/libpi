@@ -40,7 +40,7 @@ namespace libpi
 * participants in the session.
 */
 // }}}
-      Session(int pid, int actors, std::vector<std::shared_ptr<Channel> > &inChannels, std::vector<std::shared_ptr<Channel> > &outChannels);
+      Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -60,8 +60,8 @@ namespace libpi
  * receiving participant.
  */
 // }}}
-      virtual void Send(int to, const std::shared_ptr<Value> &value);
-      virtual void Send(int to, const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &value);
+      virtual void Send(int to, const Value *value);
+      virtual void Send(int to, const task::Task *sender, const Value *value);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -72,8 +72,8 @@ namespace libpi
  * @retuens a pointer to the received value.
  */
 // }}}
-      virtual std::shared_ptr<Value> Receive(int from);
-      virtual bool Receive(int from, const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest);
+      virtual Value *Receive(int from);
+      virtual bool Receive(int from, const task::Task *receiver, Value **dest);
 
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
@@ -106,20 +106,20 @@ namespace libpi
       // Value methods
       std::string GetType() const;
       void ToStream(std::ostream &dest) const;
-      std::shared_ptr<Bool> operator==(const Value &rhs) const;
-      std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-      std::shared_ptr<Bool> operator<(const Value &rhs) const;
-      std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-      std::shared_ptr<Bool> operator>(const Value &rhs) const;
+      Bool *operator==(const Value &rhs) const;
+      Bool *operator<=(const Value &rhs) const;
+      Bool *operator<(const Value &rhs) const;
+      Bool *operator>=(const Value &rhs) const;
+      Bool *operator>(const Value &rhs) const;
 
-      static std::shared_ptr<Value> ParseSession(const std::string &str);
+      static Value *ParseSession(const std::string &str);
 
     private:
       int myPid;
       int myActors;
 
-      std::vector<std::shared_ptr<Channel> > myInChannels;
-      std::vector<std::shared_ptr<Channel> > myOutChannels;
+      std::vector<Channel*> myInChannels;
+      std::vector<Channel*> myOutChannels;
 // DOCUMENTATION: ourSessionCreators field {{{
 /*!
  * Maps all session protocols to methods that can create a session from an
