@@ -22,7 +22,8 @@ namespace libpi
 // }}}
 class Channel : public Value
 { public:
-    typedef Channel *(*channel_creator)(const std::string &);
+    typedef Channel *(*channel_creator)(const std::string &,gc::GCRegistrant*);
+    Channel(gc::GCRegistrant *registrant): Value(registrant) {}
     virtual ~Channel() {}
 
 //* DOCUMENTATION: Unlink Method {{{
@@ -45,7 +46,7 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void Send(const Value *msg)=0;
+    virtual void Send(Value *msg)=0;
 // DOCUMENTATION: Send method {{{
 /*!
  * Task level send method. Enables the receiving task to be sceduled on the
@@ -55,7 +56,7 @@ class Channel : public Value
  * bede requeued by the channel when the message is received.
  */
 // }}}
-    virtual void Send(const task::Task *sender, const Value *msg)=0;
+    virtual void Send(const task::Task *sender, Value *msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -64,13 +65,13 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void SingleSend(const Value *msg)=0;
+    virtual void SingleSend(Value *msg)=0;
 // DOCUMENTATION: Send method {{{
 /*!
  * Task level single packet send method.
  */
 // }}}
-    virtual void SingleSend(const task::Task *sender, const Value *msg)=0;
+    virtual void SingleSend(const task::Task *sender, Value *msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
@@ -120,7 +121,7 @@ class Channel : public Value
  * of all the supported protocol types.
  */
 // }}}
-    static Channel *Create(const std::string &address);
+    static Channel *Create(const std::string &address, gc::GCRegistrant *registrant);
 
   private:
 // DOCUMENTATION: ourSessionCreators field {{{

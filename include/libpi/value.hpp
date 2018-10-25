@@ -5,6 +5,7 @@
 #include <ostream>
 #include <istream>
 #include <unordered_set>
+#include <libpi/gc/registrant.hpp>
 
 namespace libpi
 {
@@ -17,10 +18,10 @@ class Bool;
 // }}}
 class Value // {{{
 { public:
-    typedef Value *(*value_creator)(std::istream &);
+    typedef Value *(*value_creator)(std::istream &, gc::GCRegistrant *registrant);
   public:
-    Value();
-    Value(const std::string &str);
+    Value(gc::GCRegistrant *registrant);
+    Value(const std::string &str, gc::GCRegistrant *registrant);
     virtual ~Value();
     virtual std::string GetType() const;
     virtual void ToStream(std::ostream &dest) const;
@@ -33,8 +34,8 @@ class Value // {{{
     virtual Bool *operator>=(const Value &rhs) const;
     virtual Bool *operator>(const Value &rhs) const;
 
-    static Value *Parse(const std::string &str);
-    static Value *Parse(std::istream &in);
+    static Value *Parse(const std::string &str, gc::GCRegistrant *registrant);
+    static Value *Parse(std::istream &in, gc::GCRegistrant *registrant);
     static int RegisterParser(const std::string &type, value_creator p);
 
     // Mark function for Garbage Collection

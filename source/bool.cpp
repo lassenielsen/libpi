@@ -6,11 +6,13 @@ namespace libpi
 {
 
 // Bool Implementation
-Bool::Bool(const Bool &val) // {{{
+Bool::Bool(const Bool &val, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 { myValue = val.GetValue();
 } // }}}
 
-Bool::Bool(bool val) // {{{
+Bool::Bool(bool val, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 { myValue=val;
 } // }}}
 Bool::~Bool() // {{{
@@ -63,15 +65,15 @@ Bool *Bool::operator>(const Value &rhs) const // {{{
   return GetInstance(myValue && !rhsptr->GetValue());
 } // }}}
 
-Value *Bool::ParseBool(istream &in) // {{{
+Value *Bool::ParseBool(istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
   return GetInstance(str);
 } // }}}
 
-Bool *Bool::trueInstance(new Bool(true));
-Bool *Bool::falseInstance(new Bool(false));
+Bool *Bool::trueInstance(new Bool(true, NULL));
+Bool *Bool::falseInstance(new Bool(false, NULL));
 
 namespace boolvalue
 { int _init=Value::RegisterParser("boo",&Bool::ParseBool);

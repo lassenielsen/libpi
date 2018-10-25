@@ -40,7 +40,7 @@ namespace libpi
 * participants in the session.
 */
 // }}}
-      Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels);
+      Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels, gc::Registrant *registrant);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -72,8 +72,8 @@ namespace libpi
  * @retuens a pointer to the received value.
  */
 // }}}
-      virtual Value *Receive(int from);
-      virtual bool Receive(int from, const task::Task *receiver, Value **dest);
+      virtual const Value *Receive(int from);
+      virtual bool Receive(int from, const task::Task *receiver, const Value *&dest);
 
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 

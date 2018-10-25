@@ -15,8 +15,10 @@ namespace libpi
 // }}}
 class Float : public Value // {{{
 { public:
+    enum FLOATOP { OP_ADD, OP_SUB, OP_MULT, OP_DIV };
     // Copy constructor and assignment
-    Float(const Float &val);
+    Float(const Float &val, gc::Registrant *registrant);
+    Float(const Float &lhs, const Float &rhs, FLOATOP op, gc::Registrant *registrant);
     Float &operator=(const Float &rhs);
 
     // Constructors
@@ -28,13 +30,13 @@ class Float : public Value // {{{
     std::string GetType() const { return "flt"; }
     void ToStream(std::ostream &dest) const;
     //! Float addition
-    Float *operator+(const Float &rhs) const;
+    //Float *operator+(const Float &rhs) const;
     //! Float subtraction
-    Float * operator-(const Float &rhs) const;
+    //Float * operator-(const Float &rhs) const;
     //! Float multiplication
-    Float * operator*(const Float &rhs) const;
+    //Float * operator*(const Float &rhs) const;
     //! Float division
-    Float * operator/(const Float &rhs) const;
+    //Float * operator/(const Float &rhs) const;
     //! Float comparison
     Bool *operator==(const Value &rhs) const;
     Bool *operator<=(const Value &rhs) const;
@@ -44,7 +46,7 @@ class Float : public Value // {{{
 
     const mpf_t &GetValue() const { return myValue; }
 
-    static Value *ParseFloat(std::istream &in);
+    static Value *ParseFloat(std::istream &in, gc::Registrant *registrant);
   private:
     mpf_t myValue;
 }; // }}}

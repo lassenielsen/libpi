@@ -9,12 +9,14 @@ using namespace std;
 namespace libpi
 {
 
-String::String() // {{{
+String::String(task::Worker *worker) // {{{
+: Value(worker)
 {
 } // }}}
 
 String::String(const string &val) // {{{
-: myValue(val)
+: Value(worker)
+, myValue(val)
 {
 } // }}}
 
@@ -75,7 +77,7 @@ Bool *String::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 
-Value *String::ParseString(istream &in) // {{{
+Value *String::ParseString(istream &in, task::Worker *worker) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
@@ -84,7 +86,7 @@ Value *String::ParseString(istream &in) // {{{
   enc << str;
   base64::decoder d;
   d.decode(enc,dec);
-  return new String(dec.str());
+  return new String(dec.str(), worker);
 } // }}}
 
 namespace stringvalue

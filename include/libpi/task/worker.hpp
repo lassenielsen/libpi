@@ -26,13 +26,12 @@ namespace libpi
         virtual void AddTask(Task *task)=0;
         //! QueueTask is used to push an already active task on the queue
         virtual void QueueTask(Task *task)=0;
-        //! Mark implements the mark part of mark-sweep garbage collection
-        virtual void Mark(std::unordered_set<void*> &marks)=0;
-
-        virtual const unordered_set<void*> &GCMarks() const=0;   //! Used by GC to access marks
-        virtual const unordered_set<void*> &GCValues() const=0;  //! Used by GC to access potential sweeps
-        virtual void GCTask()=0; //! Usec by GC to order the calculation of GCMarks and GCValues
-        virtual void GCWait()=0; //! Used by GC to wait until GCMarks and GCValues are available
+        //! GCRegister registers an address to be collected when no longer referenced
+        virtual void GCRegister(void *object)=0;
+        virtual const unordered_set<void*> &GCMarks() const=0;   //!< Used by GC to access marks
+        virtual const unordered_set<void*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
+        virtual void GCTask()=0; //!< Used by GC to order the calculation of GCMarks and GCValues
+        virtual void GCWait()=0; //!< Used by GC to wait until GCMarks and GCValues are available
 
         static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
@@ -57,6 +56,11 @@ namespace libpi
         void QueueTask(Task *task);
         const std::queue<Task*> &GetActiveTasks() { return myActiveTasks; }
         // Garbage Collection functionality
+        /*! Adds @object to set of known GC managed objects.
+            After each collection GCValues is reduced to the set of marks,
+            since the unmarked values are either collected or present in the
+            marks of other workers. */
+        void GCRegister(void *object) { myGCNewValues.insert(object); }
         const unordered_set<void*> &GCMarks() const { return myGCMarks; }
         const unordered_set<void*> &GCValues() const { return myGCValues; }
         void GCTask() { myGCFlag=true; }

@@ -15,8 +15,8 @@ namespace libpi
 class String : public Value // {{{
 { public:
     // Constructors
-    String(const std::string &val);
-    String();
+    String(const std::string &val, gc::Registrant *registrant);
+    String(gc::Registrant *registrant);
     virtual ~String();
 
     std::string GetType() const { return "str"; }
@@ -30,7 +30,7 @@ class String : public Value // {{{
 
     const std::string &GetValue() const { return myValue; }
 
-    static Value *ParseString(std::istream &in);
+    static Value *ParseString(std::istream &in, gc::Registrant *registrant);
 
   private:
     std::string myValue;

@@ -27,11 +27,11 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
+void Channel::Send(const libpi::Value *val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
+void Channel::SingleSend(const libpi::Value *val) // {{{
 { lock.Lock();
   msgs.push(val);
   int currentCount=++(msg_count);
@@ -40,27 +40,27 @@ void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
     sync.Release();
 } // }}}
 
-void Channel::Send(const std::shared_ptr<task::Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+void Channel::Send(const task::Task *sender, const libpi::Value *val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
-void Channel::SingleSend(const std::shared_ptr<task::Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+void Channel::SingleSend(const task::Task *sender, const libpi::Value *val) // {{{
 { SingleSend(val);
 } // }}}
 
-shared_ptr<libpi::Value> Channel::Receive() // {{{
+const libpi::Value *Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
-bool Channel::Receive(const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
+bool Channel::Receive(const task::Task *receiver, const libpi::Value *&dest) // {{{
 { return SingleReceive(receiver,dest);
 } // }}}
 
-shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
+const libpi::Value *Channel::SingleReceive() // {{{
 { sync.Lock();
   lock.Lock();
   size_t currentCount=--(msg_count);
-  shared_ptr<libpi::Value> result=msgs.front();
+  const libpi::Value *result=msgs.front();
   msgs.pop();
   if (currentCount>0)
     sync.Release();
@@ -68,7 +68,7 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   return result;
 } // }}}
 
-bool Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest) // {{{
+bool Channel::SingleReceive(const task::Task *receiver, const libpi::Value *&dest) // {{{
 { dest=SingleReceive();
   return true;
 } // }}}

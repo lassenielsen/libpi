@@ -13,10 +13,10 @@ namespace libpi
 class Bool : public Value // {{{
 { public:
     // Copy constructor and assignment
-    Bool(const Bool &val);
+    Bool(const Bool &val, gc::GCRegistrant *registrant);
 
     // Constructors
-    Bool(bool val=false);
+    Bool(bool val, gc::GCRegistrant *registrant);
     virtual ~Bool();
 
     std::string GetType() const { return "boo"; }
@@ -35,7 +35,7 @@ class Bool : public Value // {{{
 
     bool GetValue() const { return myValue; }
 
-    static Value *ParseBool(std::istream &in);
+    static Value *ParseBool(std::istream &in, gc::GCRegistrant *registrant);
     static Bool * GetInstance(bool val) // {{{
     { if (val)
         return trueInstance;

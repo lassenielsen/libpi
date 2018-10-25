@@ -13,12 +13,15 @@ namespace libpi
 
 map<string,Value::value_creator> Value::ourParsers;
 // Value Implementation
-Value::Value() // {{{
-{
+Value::Value(gc::GCRegistrant *registrant) // {{{
+{ if (registrant!=NULL)
+    registrant->GCRegister((void*)this);
 } // }}}
-Value::Value(const string &str) // {{{
+Value::Value(const string &str, gc::GCRegistrant *registrant) // {{{
 { if (str!="()")
     throw string("Value constructor expected string '()' but received: ") + str;
+  if (registrant!=NULL)
+    registrant->GCRegister((void*)this);
 } // }}}
 Value::~Value() // {{{
 {
@@ -61,19 +64,19 @@ Bool *Value::operator>(const Value &rhs) const // {{{
     void Value::Mark(unordered_set<void *> &marks) // {{{
     {
     } // }}}
-Value *Value::Parse(const string &str) // {{{
+Value *Value::Parse(const string &str, gc::GCRegistrant *registrant) // {{{
 { stringstream ss;
   ss << str;
-  return Parse(ss);
+  return Parse(ss,registrant);
 } // }}}
-Value *Value::Parse(istream &in) // {{{
+Value *Value::Parse(istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string type;
   std::getline(in,type,delimiter);
   map<string,value_creator>::const_iterator parser=ourParsers.find(type);
   if (parser==ourParsers.end())
     throw std::string("Unable to parse value of type: ")+type;
-  return (parser->second)(in);
+  return (parser->second)(in,registrant);
 } // }}}
 int Value::RegisterParser(const string &type, value_creator p) // {{{
 { map<string,value_creator>::const_iterator parser=ourParsers.find(type);

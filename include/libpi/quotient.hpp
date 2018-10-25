@@ -16,14 +16,14 @@ namespace libpi
 class Quotient : public Value // {{{
 { public:
     // Copy constructor and assignment
-    Quotient(const Quotient &val);
+    Quotient(const Quotient &val, gc::Registrant *registrant);
     Quotient &operator=(const Quotient &rhs);
 
     // Constructors
-    Quotient();
-    Quotient(const std::string &val);
-    Quotient(mpq_t &val, bool clear_arg=false);
-    Quotient(double vald);
+    Quotient(gc::Registrant *registrant);
+    Quotient(const std::string &val, gc::Registrant *registrant);
+    Quotient(mpq_t &val, gc::Registrant *registrant, bool clear_arg=false);
+    Quotient(double val, gc::Registrant *registrant);
     virtual ~Quotient();
 
     std::string GetType() const { return "qrt"; }
@@ -46,7 +46,7 @@ class Quotient : public Value // {{{
     const mpq_t &GetValue() const {return myValue;}
     mpq_t &GetValue() {return myValue;}
 
-    static Value * ParseQuotient(std::istream &in);
+    static Value * ParseQuotient(std::istream &in, gc::Registrant *registrant);
 
   private:
     mpq_t myValue;

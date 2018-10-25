@@ -36,10 +36,10 @@ namespace libpi {
         void SingleSend(const libpi::Value *msg);
         void Send(const task::Task *sender, const libpi::Value *msg);
         void SingleSend(const task::Task *sender, const libpi::Value *msg);
-        libpi::Value *Receive();
-        bool Receive(const task::Task *receiver, libpi::Value *&dest);
-        libpi::Value *SingleReceive();
-        bool SingleReceive(const task::Task *receiver, libpi::Value *&dest);
+        const libpi::Value *Receive();
+        bool Receive(const task::Task *receiver, const libpi::Value *&dest);
+        const libpi::Value *SingleReceive();
+        bool SingleReceive(const task::Task *receiver, const libpi::Value *&dest);
     
         std::string GetAddress() const;
 
@@ -50,7 +50,7 @@ namespace libpi {
         // Thread channels are not serialized or parsed
 
       private:
-        std::queue<libpi::Value*> msgs;
+        std::queue<const libpi::Value*> msgs;
         Mutex sync;
         Mutex lock;
         std::atomic<int> msg_count;

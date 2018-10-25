@@ -25,6 +25,7 @@ namespace libpi
 // }}}
   class Link : public Value
   { public:
+      Link(gc::Registrant *registrant): Value(worker) {}
       virtual Session *Connect(int pid, int actors) = 0;
   };
 }

@@ -54,8 +54,8 @@ namespace libpi {
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<Task*,libpi::Value*> > myTasks;
-        std::queue<libpi::Value*> myMsgs;
+        std::queue<std::pair<Task*,libpi::Value**> > myTasks;
+        std::queue<const libpi::Value*> myMsgs;
     };
   }
 }

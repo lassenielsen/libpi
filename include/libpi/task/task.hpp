@@ -8,6 +8,7 @@
 #include <vector>
 #include <atomic>
 #include <libpi/thread/channel.hpp>
+#include <unordered_set>
 
 namespace libpi
 {
@@ -38,7 +39,7 @@ namespace libpi
         libpi::Value *tmp;                                //! A temporary value that can be used by the task
         std::vector<libpi::Value*> tmps;                  //! A list of temporary values that can be used by the task, used mainly for linking
 
-        virtual void Mark(unordered_set<void*> &marks);   //! Mark all used values for garbage collection
+        virtual void Mark(std::unordered_set<void*> &marks);   //! Mark all used values for garbage collection
 
       private:
         void *myLabel;
