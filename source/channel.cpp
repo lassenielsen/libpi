@@ -7,7 +7,7 @@ using namespace std;
 
 map<string,Channel::channel_creator> Channel::ourChannelCreators;
 
-Channel *Channel::Create(const string &address) // {{{
+Channel *Channel::Create(const string &address, gc::GCRegistrant * registrant) // {{{
 { // Split address into its components
   int pos=address.find("://");
   if (pos<0) throw string("Channel::Create: address is not formatted correctly, missing ://");
@@ -15,7 +15,7 @@ Channel *Channel::Create(const string &address) // {{{
   string addr=address.substr(pos+3);
   channel_creator create=ourChannelCreators[protocol];
   if (create==NULL) throw (string)"Channel::Create: Unknown protocol: " + protocol;
-  return create(address);
+  return create(address,registrant);
 } // }}}
 
 Bool *Channel::operator==(const Value &rhs) const // {{{

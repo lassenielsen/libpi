@@ -8,18 +8,42 @@ namespace libpi
 {
 
 // Quotient Implementation
-Quotient::Quotient(const Quotient &val) // {{{
+Quotient::Quotient(const Quotient &val, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 { mpq_init(myValue);
   mpq_set(myValue,val.GetValue());
+} // }}}
+Quotient::Quotient(const Quotient &lhs, const Quotient &rhs, Quotient::QUOTOP op, gc::GCRegistrant * registrant) // {{{
+: Value(registrant)
+{ mpq_init(myValue);
+  switch (op)
+  { case OP_ADD:
+      mpq_add(myValue,lhs.GetValue(),rhs.GetValue());
+      break;
+    case OP_SUB:
+      mpq_sub(myValue,lhs.GetValue(),rhs.GetValue());
+      break;
+    case OP_MULT:
+      mpq_mul(myValue,lhs.GetValue(),rhs.GetValue());
+      break;
+    case OP_DIV:
+      mpq_div(myValue,lhs.GetValue(),rhs.GetValue());
+      break;
+    default:
+      throw string("Unknown Int opreration");
+      break;
+  }
 } // }}}
 Quotient &Quotient::operator=(const Quotient &rhs) // {{{
 { mpq_set(myValue,rhs.GetValue());
 } // }}}
 
-Quotient::Quotient() // {{{
+Quotient::Quotient(gc::GCRegistrant * registrant) // {{{
+: Value(registrant)
 { mpq_init(myValue);
 } // }}}
-Quotient::Quotient(const std::string &val) // {{{
+Quotient::Quotient(const std::string &val, gc::GCRegistrant * registrant) // {{{
+: Value(registrant)
 { mpq_init(myValue);
   size_t pos=val.find('.');
   if (pos!=string::npos)
@@ -38,13 +62,15 @@ Quotient::Quotient(const std::string &val) // {{{
   }
   mpq_canonicalize(myValue);
 } // }}}
-Quotient::Quotient(mpq_t &val, bool clear_arg) // {{{
+Quotient::Quotient(mpq_t &val, gc::GCRegistrant * registrant, bool clear_arg) // {{{
+: Value(registrant)
 { mpq_init(myValue);
   mpq_set(myValue,val);
   if (clear_arg)
     mpq_clear(val);
 } // }}}
-Quotient::Quotient(double val) // {{{
+Quotient::Quotient(double val, gc::GCRegistrant * registrant) // {{{
+: Value(registrant)
 { mpf_t tmp;
   mpf_init(tmp);
   mpf_set_d(tmp,val);
@@ -64,26 +90,26 @@ void Quotient::ToStream(ostream &dest) const // {{{
   dest << str;
   free(str);
 } // }}}
-Quotient *Quotient::operator+(const Quotient &rhs) const // {{{
-{ Quotient *res=new Quotient(false);
-  mpq_add(res->GetValue(),GetValue(),rhs.GetValue());
-  return res;
-} // }}}
-Quotient *Quotient::operator-(const Quotient &rhs) const // {{{
-{ Quotient *res=new Quotient(false);
-  mpq_sub(res->GetValue(),GetValue(),rhs.GetValue());
-  return res;
-} // }}}
-Quotient *Quotient::operator*(const Quotient &rhs) const // {{{
-{ Quotient *res=new Quotient(false);
-  mpq_mul(res->GetValue(),GetValue(),rhs.GetValue());
-  return res;
-} // }}}
-Quotient *Quotient::operator/(const Quotient &rhs) const // {{{
-{ Quotient *res=new Quotient(false);
-  mpq_div(res->GetValue(),GetValue(),rhs.GetValue());
-  return res;
-} // }}}
+//Quotient *Quotient::operator+(const Quotient &rhs) const // {{{
+//{ Quotient *res=new Quotient(false);
+//  mpq_add(res->GetValue(),GetValue(),rhs.GetValue());
+//  return res;
+//} // }}}
+//Quotient *Quotient::operator-(const Quotient &rhs) const // {{{
+//{ Quotient *res=new Quotient(false);
+//  mpq_sub(res->GetValue(),GetValue(),rhs.GetValue());
+//  return res;
+//} // }}}
+//Quotient *Quotient::operator*(const Quotient &rhs) const // {{{
+//{ Quotient *res=new Quotient(false);
+//  mpq_mul(res->GetValue(),GetValue(),rhs.GetValue());
+//  return res;
+//} // }}}
+//Quotient *Quotient::operator/(const Quotient &rhs) const // {{{
+//{ Quotient *res=new Quotient(false);
+//  mpq_div(res->GetValue(),GetValue(),rhs.GetValue());
+//  return res;
+//} // }}}
 Bool *Quotient::operator==(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
@@ -120,11 +146,11 @@ Bool *Quotient::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-Value *Quotient::ParseQuotient(std::istream &in) // {{{
+Value *Quotient::ParseQuotient(std::istream &in, gc::GCRegistrant * registrant) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return new Quotient(str);
+  return new Quotient(str,registrant);
 } // }}}
 
 namespace quotientvalue

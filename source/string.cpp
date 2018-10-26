@@ -9,15 +9,27 @@ using namespace std;
 namespace libpi
 {
 
-String::String(task::Worker *worker) // {{{
-: Value(worker)
+String::String(gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 {
 } // }}}
 
-String::String(const string &val) // {{{
-: Value(worker)
+String::String(const string &val, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 , myValue(val)
 {
+} // }}}
+
+String::String(const String &lhs, const String &rhs, String::STRINGOP op, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
+{ switch (op)
+  { case OP_CONCAT:
+      myValue=lhs.GetValue()+rhs.GetValue();
+      break;
+    default:
+      throw string("Unknown String operation");
+      break;
+  }
 } // }}}
 
 String::~String() // {{{
@@ -43,9 +55,9 @@ void String::ToStream(ostream &dest) const // {{{
   delete [] code;
 } // }}}
 
-String *String::operator+(const String &rhs) const // {{{
-{ return new String(myValue+rhs.GetValue());
-} // }}}
+//String *String::operator+(const String &rhs) const // {{{
+//{ return new String(myValue+rhs.GetValue());
+//} // }}}
 Bool *String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
@@ -77,7 +89,7 @@ Bool *String::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(myValue > rhsptr->GetValue());
 } // }}}
 
-Value *String::ParseString(istream &in, task::Worker *worker) // {{{
+Value *String::ParseString(istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
@@ -86,7 +98,7 @@ Value *String::ParseString(istream &in, task::Worker *worker) // {{{
   enc << str;
   base64::decoder d;
   d.decode(enc,dec);
-  return new String(dec.str(), worker);
+  return new String(dec.str(), registrant);
 } // }}}
 
 namespace stringvalue

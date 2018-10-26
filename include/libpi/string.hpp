@@ -14,9 +14,11 @@ namespace libpi
 // }}}
 class String : public Value // {{{
 { public:
+    enum STRINGOP { OP_CONCAT };
     // Constructors
-    String(const std::string &val, gc::Registrant *registrant);
-    String(gc::Registrant *registrant);
+    String(const std::string &val, gc::GCRegistrant *registrant);
+    String(const String &lhs, const String &rhs, STRINGOP op, gc::GCRegistrant *registrant);
+    String(gc::GCRegistrant *registrant);
     virtual ~String();
 
     std::string GetType() const { return "str"; }
@@ -30,7 +32,7 @@ class String : public Value // {{{
 
     const std::string &GetValue() const { return myValue; }
 
-    static Value *ParseString(std::istream &in, gc::Registrant *registrant);
+    static Value *ParseString(std::istream &in, gc::GCRegistrant *registrant);
 
   private:
     std::string myValue;

@@ -17,14 +17,14 @@ class Float : public Value // {{{
 { public:
     enum FLOATOP { OP_ADD, OP_SUB, OP_MULT, OP_DIV };
     // Copy constructor and assignment
-    Float(const Float &val, gc::Registrant *registrant);
-    Float(const Float &lhs, const Float &rhs, FLOATOP op, gc::Registrant *registrant);
+    Float(const Float &val, gc::GCRegistrant *registrant);
+    Float(const Float &lhs, const Float &rhs, FLOATOP op, gc::GCRegistrant *registrant);
     Float &operator=(const Float &rhs);
 
     // Constructors
-    Float(const std::string &val);
-    Float(mpf_t &val, bool clear_arg=false);
-    Float(double val=0);
+    Float(const std::string &val, gc::GCRegistrant *registrant);
+    Float(mpf_t &val, gc::GCRegistrant *registrant, bool clear_arg=false);
+    Float(double val, gc::GCRegistrant *registrant);
     virtual ~Float();
 
     std::string GetType() const { return "flt"; }
@@ -46,7 +46,7 @@ class Float : public Value // {{{
 
     const mpf_t &GetValue() const { return myValue; }
 
-    static Value *ParseFloat(std::istream &in, gc::Registrant *registrant);
+    static Value *ParseFloat(std::istream &in, gc::GCRegistrant *registrant);
   private:
     mpf_t myValue;
 }; // }}}

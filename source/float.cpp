@@ -8,17 +8,17 @@ namespace libpi
 {
 
 // Float Implementation
-Float::Float(const Float &val, gc::Registrant *registrant) // {{{
+Float::Float(const Float &val, gc::GCRegistrant *registrant) // {{{
 : Value(registrant)
 { mpf_init2(myValue,256);
   mpf_set(myValue,val.GetValue());
 } // }}}
-Float::Float(const Float &lhs, const Float &rhs, Float::FLOATOP op, gc::Registrant *registrant) // {{{
+Float::Float(const Float &lhs, const Float &rhs, Float::FLOATOP op, gc::GCRegistrant *registrant) // {{{
 : Value(registrant)
 { mpf_init2(myValue,256);
   switch (op)
   { case OP_ADD:
-      mpf_add(myValie,lhs.getValue(),rhs.GetValue());
+      mpf_add(myValue,lhs.GetValue(),rhs.GetValue());
       break;
     case OP_SUB:
       mpf_sub(myValue,lhs.GetValue(),rhs.GetValue());
@@ -38,20 +38,20 @@ Float &Float::operator=(const Float &rhs) // {{{
 { mpf_set(myValue,rhs.GetValue());
 } // }}}
 
-Float::Float(const std::string &val, gc::Registrant *registrant) // {{{
+Float::Float(const std::string &val, gc::GCRegistrant *registrant) // {{{
 : Value(registrant)
 { mpf_init2(myValue,256);
   int res=mpf_set_str(myValue,val.c_str(),10);
   if (res<0) throw string("Bad Float conversion of string: ") + val;
 } // }}}
-Float::Float(mpf_t &val, gc::Registrant *registrant, bool clear_arg) // {{{
+Float::Float(mpf_t &val, gc::GCRegistrant *registrant, bool clear_arg) // {{{
 : Value(registrant)
 { mpf_init2(myValue,256);
   mpf_set(myValue,val);
   if (clear_arg)
     mpf_clear(val);
 } // }}}
-Float::Float(double val, gc::Registrant *registrant) // {{{
+Float::Float(double val, gc::GCRegistrant *registrant) // {{{
 : Value(registrant)
 { mpf_init2(myValue,256);
   mpf_set_d(myValue,val);
@@ -133,7 +133,7 @@ Bool *Float::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-Value *Float::ParseFloat(std::istream &in, gc::Registrant *registrant) // {{{
+Value *Float::ParseFloat(std::istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
