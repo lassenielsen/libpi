@@ -7,8 +7,9 @@ using namespace std;
 namespace libpi
 {
 
-Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels) // {{{
-: myPid(pid),
+Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels, gc::GCRegistrant *registrant) // {{{
+: Value(registrant),
+  myPid(pid),
   myActors(actors),
   myInChannels(inChannels),
   myOutChannels(outChannels)
@@ -19,25 +20,25 @@ Session::~Session() // {{{
 {
 } // }}}
 
-void Session::Send(int to, const libpi::Value *value) // {{{
+void Session::Send(int to, libpi::Value *value) // {{{
 { if (Closed()) throw string("Session::Send: Trying to use closed session.");
   if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
   myOutChannels[to]->Send(value);
 } //}}}
 
-void Session::Send(int to, const task::Task *sender, const libpi::Value *value) // {{{
+void Session::Send(int to, task::Task *sender, libpi::Value *value) // {{{
 { if (Closed()) throw string("Session::Send: Trying to use closed session.");
   if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
   myOutChannels[to]->Send(sender,value);
 } //}}}
 
-const libpi::Value *Session::Receive(int from) // {{{
+libpi::Value *Session::Receive(int from, gc::GCRegistrant *registrant) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
-  return myInChannels[from]->Receive();
+  return myInChannels[from]->Receive(registrant);
 } //}}}
 
-bool Session::Receive(int from, const task::Task *receiver, const libpi::Value *&dest) // {{{
+bool Session::Receive(int from, task::Task *receiver, libpi::Value *&dest) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors())
     throw string("Session::Receive: to must be between 0 and actors-1");

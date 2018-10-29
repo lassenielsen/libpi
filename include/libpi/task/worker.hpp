@@ -14,9 +14,9 @@ namespace libpi
 /*! Abstract declaration of the framework for executing tasks
  */
 // }}}
-    class Worker : public libpi::Value // {{{
+    class Worker : public libpi::Value, public libpi::gc::GCRegistrant // {{{
     { public:
-        Worker() {}
+        Worker() : Value(NULL) {}
         virtual ~Worker();
 
         virtual void Work()=0; // Perform tasks
@@ -28,8 +28,8 @@ namespace libpi
         virtual void QueueTask(Task *task)=0;
         //! GCRegister registers an address to be collected when no longer referenced
         virtual void GCRegister(void *object)=0;
-        virtual const unordered_set<void*> &GCMarks() const=0;   //!< Used by GC to access marks
-        virtual const unordered_set<void*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
+        virtual const std::unordered_set<void*> &GCMarks() const=0;   //!< Used by GC to access marks
+        virtual const std::unordered_set<void*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
         virtual void GCTask()=0; //!< Used by GC to order the calculation of GCMarks and GCValues
         virtual void GCWait()=0; //!< Used by GC to wait until GCMarks and GCValues are available
 
@@ -61,8 +61,8 @@ namespace libpi
             since the unmarked values are either collected or present in the
             marks of other workers. */
         void GCRegister(void *object) { myGCNewValues.insert(object); }
-        const unordered_set<void*> &GCMarks() const { return myGCMarks; }
-        const unordered_set<void*> &GCValues() const { return myGCValues; }
+        const std::unordered_set<void*> &GCMarks() const { return myGCMarks; }
+        const std::unordered_set<void*> &GCValues() const { return myGCValues; }
         void GCTask() { myGCFlag=true; }
         void GCWait() { myGCLock.Lock(); }
 
@@ -70,9 +70,9 @@ namespace libpi
         std::queue<Task*> myActiveTasks;
         libpi::thread::Mutex myWaitLock;
 
-        unordered_set<void*> myGCMarks;
-        unordered_set<void*> myGCValues;
-        unordered_set<void*> myGCNewValues;
+	std::unordered_set<void*> myGCMarks;
+        std::unordered_set<void*> myGCValues;
+        std::unordered_set<void*> myGCNewValues;
         bool myGCFlag;
         libpi::thread::Mutex myGCLock;
 

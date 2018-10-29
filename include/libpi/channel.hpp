@@ -77,7 +77,7 @@ class Channel : public Value
  * Receive returns the value received on the channel.
  */
 // }}}
-    virtual Value *Receive()=0;
+    virtual Value *Receive(gc::GCRegistrant *registrant)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Task level receive method. Enables the task to be stored in a local queue
@@ -87,14 +87,14 @@ class Channel : public Value
  * be requeued by the channel when the message is received.
  */
 // }}}
-    virtual bool Receive(const task::Task *receiver, Value *&dest)=0;
+    virtual bool Receive(task::Task *receiver, Value *&dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
 // }}}
-    virtual Value *SingleReceive()=0;
+    virtual Value *SingleReceive(gc::GCRegistrant *registrant)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Task level receive method. Enables the task to be stored in a local queue until the decired message is received.
@@ -103,7 +103,7 @@ class Channel : public Value
  * be requeued by the channel when the message is received.
  */
 // }}}
-    virtual bool SingleReceive(const task::Task *receiver, Value *&dest)=0;
+    virtual bool SingleReceive(task::Task *receiver, Value *&dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

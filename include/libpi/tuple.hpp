@@ -16,8 +16,8 @@ namespace libpi
 class Tuple : public Value // {{{
 { public:
     // Constructors
-    Tuple(gc::Registrant *registrant);
-    Tuple(std::vector<Value*> &vals, gc::Registrant *registrant);
+    Tuple(gc::GCRegistrant *registrant);
+    Tuple(std::vector<Value*> &vals, gc::GCRegistrant *registrant);
     virtual ~Tuple();
 
     std::string GetType() const { return "tpl"; }
@@ -36,7 +36,7 @@ class Tuple : public Value // {{{
     std::vector<Value*> &GetValues() { return myValues; }
     void AddValue(Value *val);
 
-    static Value *ParseTuple(std::istream &in, gc::Registrant *registrant);
+    static Value *ParseTuple(std::istream &in, gc::GCRegistrant *registrant);
 
   private:
     std::vector<Value*> myValues;

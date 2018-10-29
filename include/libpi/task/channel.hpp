@@ -6,7 +6,7 @@
 #include <libpi/task/task.hpp>
 #include <libpi/channel.hpp>
 #include <string>
-#include <queue>
+#include <vector>
 #include <atomic>
 #include <iostream>
 
@@ -27,23 +27,23 @@ namespace libpi {
 // }}}
     class Channel : public libpi::Channel
     { public:
-        Channel();
-        Channel(const Channel &rhs);
+        Channel(libpi::gc::GCRegistrant *registrant);
+        Channel(const Channel &rhs /* NO GCRegistrant at the only purpose is to raise exception */);
         virtual ~Channel();
 
         void Unlink();
 
         // Unsupported interface
-        void Send(const libpi::Value *msg);
-        void SingleSend(const libpi::Value *msg);
-        Value *Receive();
-        Value *SingleReceive();
+        void Send(libpi::Value *msg);
+        void SingleSend(libpi::Value *msg);
+        Value *Receive(libpi::gc::GCRegistrant *registrant);
+        Value *SingleReceive(libpi::gc::GCRegistrant *registrant);
 
         // Actual methods
-        void Send(const Task *sender, const libpi::Value *msg);
-        void SingleSend(const Task *sender, const libpi::Value *msg);
-        bool Receive(const Task *receiver, libpi::Value *dest);
-        bool SingleReceive(const Task *receiver, libpi::Value *dest);
+        void Send(const Task *sender, libpi::Value *msg);
+        void SingleSend(const Task *sender, libpi::Value *msg);
+        bool Receive(Task *receiver, libpi::Value *&dest);
+        bool SingleReceive(Task *receiver, libpi::Value *&dest);
     
         std::string GetAddress() const;
 
@@ -54,8 +54,8 @@ namespace libpi {
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<Task*,libpi::Value**> > myTasks;
-        std::queue<const libpi::Value*> myMsgs;
+        std::vector<std::pair<Task*,libpi::Value**> > myTasks;
+        std::vector<libpi::Value*> myMsgs;
     };
   }
 }

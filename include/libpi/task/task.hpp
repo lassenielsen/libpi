@@ -24,14 +24,14 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task() {}
+        Task(libpi::gc::GCRegistrant *registrant) : Value(registrant) {}
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}
-        Worker &GetWorker() {return *myWorker;}
+        Worker &GetWorker() const {return *myWorker;}
         void SetWorker(Worker *worker) {myWorker=worker;}
 
         static size_t MaxSteps;                           //! Maximum number of steps before yielding

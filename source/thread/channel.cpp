@@ -1,5 +1,6 @@
 #include <libpi/thread/channel.hpp>
 #include <libpi/task/task.hpp>
+#include <libpi/task/worker.hpp>
 #include <sstream>
 
 using namespace std;
@@ -7,8 +8,9 @@ using namespace std;
 namespace libpi
 { namespace thread
   {
-Channel::Channel() // {{{
-: msgs()
+Channel::Channel(libpi::gc::GCRegistrant *registrant) // {{{
+: libpi::Channel(registrant)
+, msgs()
 , sync(true)
 , lock()
 , msg_count(0)
@@ -16,6 +18,7 @@ Channel::Channel() // {{{
 } // }}}
 
 Channel::Channel(const Channel &rhs) // {{{
+: libpi::Channel(NULL)
 { throw string("Error: Trying to copy a libpi::thread::Channel object which cannot be cloned or copied");
 } // }}}
 
@@ -27,11 +30,11 @@ void Channel::Unlink() // {{{
 {
 } // }}}
 
-void Channel::Send(const libpi::Value *val) // {{{
+void Channel::Send(libpi::Value *val) // {{{
 { SingleSend(val);
 } // }}}
 
-void Channel::SingleSend(const libpi::Value *val) // {{{
+void Channel::SingleSend(libpi::Value *val) // {{{
 { lock.Lock();
   msgs.push(val);
   int currentCount=++(msg_count);
@@ -40,27 +43,27 @@ void Channel::SingleSend(const libpi::Value *val) // {{{
     sync.Release();
 } // }}}
 
-void Channel::Send(const task::Task *sender, const libpi::Value *val) // {{{
+void Channel::Send(const task::Task *sender, libpi::Value *val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
-void Channel::SingleSend(const task::Task *sender, const libpi::Value *val) // {{{
+void Channel::SingleSend(const task::Task *sender, libpi::Value *val) // {{{
 { SingleSend(val);
 } // }}}
 
-const libpi::Value *Channel::Receive() // {{{
-{ return SingleReceive();
+libpi::Value *Channel::Receive(libpi::gc::GCRegistrant *registrant) // {{{
+{ return SingleReceive(registrant);
 } // }}}
 
-bool Channel::Receive(const task::Task *receiver, const libpi::Value *&dest) // {{{
+bool Channel::Receive(task::Task *receiver, libpi::Value *&dest) // {{{
 { return SingleReceive(receiver,dest);
 } // }}}
 
-const libpi::Value *Channel::SingleReceive() // {{{
+libpi::Value *Channel::SingleReceive(libpi::gc::GCRegistrant *registrant) // {{{
 { sync.Lock();
   lock.Lock();
   size_t currentCount=--(msg_count);
-  const libpi::Value *result=msgs.front();
+  libpi::Value *result=msgs.front();
   msgs.pop();
   if (currentCount>0)
     sync.Release();
@@ -68,8 +71,8 @@ const libpi::Value *Channel::SingleReceive() // {{{
   return result;
 } // }}}
 
-bool Channel::SingleReceive(const task::Task *receiver, const libpi::Value *&dest) // {{{
-{ dest=SingleReceive();
+bool Channel::SingleReceive(task::Task *receiver, libpi::Value *&dest) // {{{
+{ dest=SingleReceive(&(receiver->GetWorker()));
   return true;
 } // }}}
 

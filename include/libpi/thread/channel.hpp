@@ -26,20 +26,20 @@ namespace libpi {
 // }}}
     class Channel : public libpi::Channel
     { public:
-        Channel();
-        Channel(const Channel &rhs);
+        Channel(libpi::gc::GCRegistrant *registrant);
+        Channel(const Channel &rhs/* No registrant, as it is used to intercept std copy constructor! , libpi::gc::GCRegistrant *registrant*/);
         virtual ~Channel();
 
         void Unlink();
 
-        void Send(const libpi::Value *msg);
-        void SingleSend(const libpi::Value *msg);
-        void Send(const task::Task *sender, const libpi::Value *msg);
-        void SingleSend(const task::Task *sender, const libpi::Value *msg);
-        const libpi::Value *Receive();
-        bool Receive(const task::Task *receiver, const libpi::Value *&dest);
-        const libpi::Value *SingleReceive();
-        bool SingleReceive(const task::Task *receiver, const libpi::Value *&dest);
+        void Send(libpi::Value *msg);
+        void SingleSend(libpi::Value *msg);
+        void Send(const task::Task *sender, libpi::Value *msg);
+        void SingleSend(const task::Task *sender, libpi::Value *msg);
+        libpi::Value *Receive(libpi::gc::GCRegistrant *registrant);
+        bool Receive(task::Task *receiver, libpi::Value *&dest);
+        libpi::Value *SingleReceive(libpi::gc::GCRegistrant *registrant);
+        bool SingleReceive(task::Task *receiver, libpi::Value *&dest);
     
         std::string GetAddress() const;
 
@@ -50,7 +50,7 @@ namespace libpi {
         // Thread channels are not serialized or parsed
 
       private:
-        std::queue<const libpi::Value*> msgs;
+        std::queue<libpi::Value*> msgs;
         Mutex sync;
         Mutex lock;
         std::atomic<int> msg_count;

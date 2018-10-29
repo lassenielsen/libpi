@@ -8,11 +8,13 @@ using namespace std;
 namespace libpi
 {
 
-Tuple::Tuple() // {{{
+Tuple::Tuple(gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
 {
 } // }}}
-Tuple::Tuple(vector<Value*> &vals) // {{{
-: myValues(vals)
+Tuple::Tuple(vector<Value*> &vals, gc::GCRegistrant *registrant) // {{{
+: Value(registrant)
+, myValues(vals)
 {
 } // }}}
 Tuple::~Tuple() // {{{
@@ -119,7 +121,7 @@ Bool *Tuple::operator>(const Value &rhs) const // {{{
 void Tuple::AddValue(Value *val) // {{{
 { myValues.push_back(val);
 } // }}}
-Value *Tuple::ParseTuple(istream &in) // {{{
+Value *Tuple::ParseTuple(istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string num_str;
   std::getline(in,num_str,delimiter);
@@ -127,9 +129,9 @@ Value *Tuple::ParseTuple(istream &in) // {{{
   
   vector<Value*> dst;
   for (int i=0; i<num; ++i)
-    dst.push_back(Value::Parse(in));
+    dst.push_back(Value::Parse(in,registrant));
 
-  return new Tuple(dst);
+  return new Tuple(dst,registrant);
 } // }}}
 
 namespace tuplevalue
