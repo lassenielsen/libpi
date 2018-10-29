@@ -6,11 +6,12 @@ using namespace std;
 namespace libpi {
   namespace task {
 
-Link::Link(int actors) // {{{
+Link::Link(int actors, libpi::gc::GCRegistrant *registrant) // {{{
+: libpi::Link(registrant)
 { if (actors<2)
     throw string("libpi::task::Link constructor: Numbor of actors is too small");
   for (int i=1; i<actors; ++i)
-    myChannels.push_back(new Channel());
+    myChannels.push_back(new Channel(registrant));
 } // }}}
 
 Link::~Link() // {{{
@@ -51,7 +52,7 @@ Bool *Link::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false);
 } // }}}
 
-Session *Link::Connect(int pid, int actors) // {{{
+Session *Link::Connect(int pid, int actors, libpi::gc::GCRegistrant *registrant) // {{{
 { if (actors!=myChannels.size()+1)
     throw string("libpi::task::Link::Connect: Wrong number of channels provided");
   if (pid<0 || actors<=pid)
@@ -63,13 +64,13 @@ Session *Link::Connect(int pid, int actors) // {{{
 
   // Create receiving session-channels
   for (int i=0; i<actors; ++i)
-  { inChannels.push_back(new Channel());
+  { inChannels.push_back(new Channel(registrant));
   }
 
   if (pid==0) // Orchestrate session initiation
   { outChannels.push_back(inChannels[pid]);
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
-    { Value *val=myChannels[actor-1]->SingleReceive();
+    { Value *val=myChannels[actor-1]->SingleReceive(registrant);
       libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
       if (!ch)
         throw string("libpi::task::Link Received non-channel during connecting");
@@ -82,7 +83,7 @@ Session *Link::Connect(int pid, int actors) // {{{
     { for (int actor2=1; actor2<actors; ++actor2)
       { if (actor==actor2)
           continue; // Skip distribution when sender and receiver is the same
-        Value *val=inChannels[actor]->SingleReceive();
+        Value *val=inChannels[actor]->SingleReceive(registrant);
         outChannels[actor2]->SingleSend(val);
       }
     }
@@ -90,7 +91,7 @@ Session *Link::Connect(int pid, int actors) // {{{
   }
   else
   { myChannels[pid-1]->SingleSend(inChannels.front());
-    Value *val=inChannels.front()->SingleReceive();
+    Value *val=inChannels.front()->SingleReceive(registrant);
     libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
     if (!ch)
       throw string("libpi::task::Link Received non-channel during connecting");
@@ -105,7 +106,7 @@ Session *Link::Connect(int pid, int actors) // {{{
       { outChannels.push_back(inChannels[pid]);
         continue; // Skip distribution of own channel
       }
-      Value *val=inChannels.front()->SingleReceive();
+      Value *val=inChannels.front()->SingleReceive(registrant);
       libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
       if (!ch)
         throw string("libpi::task::Link Received non-channel during connecting");
@@ -113,7 +114,7 @@ Session *Link::Connect(int pid, int actors) // {{{
     }
     // Session channels has been established!
   }
-  return new Session(pid,actors,inChannels,outChannels);
+  return new Session(pid,actors,inChannels,outChannels, registrant);
 } // }}}
   }
 }
