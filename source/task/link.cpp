@@ -116,5 +116,13 @@ Session *Link::Connect(int pid, int actors, libpi::gc::GCRegistrant *registrant)
   }
   return new Session(pid,actors,inChannels,outChannels, registrant);
 } // }}}
+
+    void Link::Mark(unordered_set<Value*> &marks) // {{{
+    { if (marks.count(this)>0)
+        return;
+
+      for (auto it=myChannels.begin(); it!=myChannels.end(); ++it)
+        (*it)->Mark(marks);
+    } // }}}
   }
 }

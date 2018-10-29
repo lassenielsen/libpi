@@ -36,6 +36,8 @@ class Tuple : public Value // {{{
     std::vector<Value*> &GetValues() { return myValues; }
     void AddValue(Value *val);
 
+    virtual void Mark(std::unordered_set<Value*> &marks);
+
     static Value *ParseTuple(std::istream &in, gc::GCRegistrant *registrant);
 
   private:

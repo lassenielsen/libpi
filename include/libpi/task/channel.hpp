@@ -49,7 +49,7 @@ namespace libpi {
 
         Channel &operator=(const Channel &rhs);
 
-        void Mark(std::unordered_set<void *> &marks) const; // Mark for garbage collection
+        void Mark(std::unordered_set<Value*> &marks); // Mark for garbage collection
         // Thread channels are not serialized or parsed
 
       private:

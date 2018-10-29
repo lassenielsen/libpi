@@ -121,6 +121,14 @@ Bool *Tuple::operator>(const Value &rhs) const // {{{
 void Tuple::AddValue(Value *val) // {{{
 { myValues.push_back(val);
 } // }}}
+void Tuple::Mark(unordered_set<Value*> &marks) // {{{
+{ if (marks.count(this)>0)
+    return;
+  
+  marks.insert(this);
+  for (vector<Value*>::const_iterator it=myValues.begin(); it!=myValues.end(); ++it)
+    (*it)->Mark(marks);
+} // }}}
 Value *Tuple::ParseTuple(istream &in, gc::GCRegistrant *registrant) // {{{
 { char delimiter=':';
   string num_str;

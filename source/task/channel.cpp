@@ -88,11 +88,11 @@ Channel &Channel::operator=(const Channel &rhs) // {{{
 { throw string("Error: libpi::task::Channel cannot be copied.");
 } // }}}
 
-void Channel::Mark(unordered_set<void*> &marks) const // {{{
-{ if (marks.count((void*)this)>0)
+void Channel::Mark(unordered_set<Value*> &marks) // {{{
+{ if (marks.count(this)>0)
     return; // Nothing new to add
     
-  marks.insert((void*)this);
+  marks.insert(this);
   for (vector<pair<Task*,Value**> >::const_iterator tsk=myTasks.begin(); tsk!=myTasks.end(); ++tsk)
     tsk->first->Mark(marks);
   for (vector<Value*>::const_iterator val=myMsgs.begin(); val!=myMsgs.end(); ++val)

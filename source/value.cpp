@@ -61,8 +61,10 @@ Bool *Value::operator>=(const Value &rhs) const // {{{
 Bool *Value::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false); 
 } // }}}
-    void Value::Mark(unordered_set<void *> &marks) // {{{
-    {
+    void Value::Mark(unordered_set<Value*> &marks) // {{{
+    { if (marks.count(this)>0)
+        return;
+      marks.insert(this);
     } // }}}
 Value *Value::Parse(const string &str, gc::GCRegistrant *registrant) // {{{
 { stringstream ss;

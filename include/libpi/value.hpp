@@ -39,7 +39,7 @@ class Value // {{{
     static int RegisterParser(const std::string &type, value_creator p);
 
     // Mark function for Garbage Collection
-    virtual void Mark(std::unordered_set<void *> &marks);
+    virtual void Mark(std::unordered_set<Value*> &marks);
 
   private:
     static std::map<std::string,value_creator> ourParsers;

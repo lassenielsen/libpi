@@ -112,7 +112,9 @@ namespace libpi
       Bool *operator>=(const Value &rhs) const;
       Bool *operator>(const Value &rhs) const;
 
-      static Value *ParseSession(const std::string &str);
+      virtual void Mark(std::unordered_set<Value*> &marks);
+
+      //static Value *ParseSession(const std::string &str);
 
     private:
       int myPid;

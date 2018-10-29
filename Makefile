@@ -131,6 +131,8 @@ install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	cp include/$(name)/thread/*.hpp /usr/include/$(name)/thread/
 	mkdir -p /usr/include/$(name)/task
 	cp include/$(name)/task/*.hpp /usr/include/$(name)/task/
+	mkdir -p /usr/include/$(name)/gc
+	cp include/$(name)/gc/*.hpp /usr/include/$(name)/gc/
 	chmod -R a+rx /usr/include/$(name)
 #OS_LINUX	@echo "Reindexing libraries"
 #OS_LINUX	ldconfig -n /usr/lib

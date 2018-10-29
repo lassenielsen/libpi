@@ -106,4 +106,14 @@ Bool *Session::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false);
 } // }}}
 
+void Session::Mark(unordered_set<Value*> &marks) // {{{
+{ if (marks.count(this)>0)
+    return;
+  marks.insert(this);
+  for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
+    (*it)->Mark(marks);
+  for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
+    (*it)->Mark(marks);
+} // }}}
+
 }

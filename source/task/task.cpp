@@ -16,3 +16,11 @@ void Task::ToStream(std::ostream &dest) const // {{{
 std::string Task::GetType() const // {{{
 { return "sta";
 } // }}}
+
+void Task::Mark(unordered_set<Value*> &marks) // {{{
+{ if (tmp!=NULL)
+    tmp->Mark(marks);
+  for (vector<libpi::Value*>::const_iterator it=tmps.begin(); it!=tmps.end(); ++it)
+    (*it)->Mark(marks);
+  return;
+} // }}}

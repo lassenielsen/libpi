@@ -29,6 +29,8 @@ class Link : public libpi::Link // {{{
     const std::vector<Channel*> &GetChannels() const { return myChannels; }
     std::vector<Channel*> &GetChannels() { return myChannels; }
 
+    virtual void Mark(std::unordered_set<Value*> &marks);
+
   private:
     std::vector<Channel*> myChannels;
 }; // }}}
