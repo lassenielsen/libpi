@@ -11,7 +11,7 @@
 # - Lasse Nielsen.                                                    #
 #=====================================================================#
 name = libpi
-version = 2018
+version = 2018.2
 libname = $(name).so
 libname_debug = $(name)_debug.so
 #OS_LINUXlibname = $(name).so

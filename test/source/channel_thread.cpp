@@ -80,7 +80,7 @@ void *proc_receive(void *arg) // {{{
       cout << ss.str() << flush;
     }
 #endif
-    shared_ptr<Value> rv=parg->chan->Receive();
+    Value *rv=parg->chan->Receive(NULL);
 #ifdef PIDEBUG
     { stringstream ss;
       ss << "Receiver done.\n";
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 
     void *r1, *r2;
     cout << "- Testing transmission of Bool value\n" << flush;
-    shared_ptr<Channel> ch1(new thread::Channel());
+    Channel *ch1(new thread::Channel(NULL));
     procarg argBool(ch1,Bool::GetInstance(true),0);
     pthread_create(&t1,NULL,proc_send,&argBool);
     pthread_create(&t2,NULL,proc_receive,&argBool);

@@ -23,27 +23,27 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { shared_ptr<Int> x0(new Int("1"));
-    cout << "x0=" << x0->ToString() << endl;
+  { Int x0("1",NULL);
+    cout << "x0=" << x0.ToString() << endl;
  
-    shared_ptr<Int> x1(new Int(1));
-    Compare(x1->Serialize(),"int:1","Serialize");
-    { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("int:1"));
+    Int x1(1,NULL);
+    Compare(x1.Serialize(),"int:1","Serialize");
+    { Value *parsed=Value::Parse("int:1",NULL);
       Compare(parsed->Serialize(),"int:1","Parse");
     }
-    shared_ptr<Int> x2=(*x1)+(*x1);
-    Compare(x2->Serialize(),"int:2","Sum");
-    shared_ptr<Int> x4=(*x2)*(*x2);
-    Compare(x4->Serialize(),"int:4","Product");
-    shared_ptr<Int> x3=(*x4)-(*x1);
-    Compare(x3->Serialize(),"int:3","Difference");
-    shared_ptr<Int> y2=(*x4)/(*x2);
-    Compare(y2->Serialize(),"int:2","Quotient");
-    Compare(((*x1)<=(*x2))->GetValue(),true,"LEQ");
-    Compare(((*x3)<=(*x2))->GetValue(),false,"LEQ");
-    Compare(((*x2)==(*y2))->GetValue(),true,"EQ");
-    Compare(((*x3)==(*y2))->GetValue(),false,"EQ");
-    Compare(((*y2)==(*x3))->GetValue(),false,"EQ");
+    Int x2(x1,x1,Int::OP_ADD,NULL);
+    Compare(x2.Serialize(),"int:2","Sum");
+    Int x4(x2,x2,Int::OP_MULT,NULL);
+    Compare(x4.Serialize(),"int:4","Product");
+    Int x3(x4,x1,Int::OP_SUB,NULL);
+    Compare(x3.Serialize(),"int:3","Difference");
+    Int y2(x4,x2,Int::OP_DIV,NULL);
+    Compare(y2.Serialize(),"int:2","Quotient");
+    Compare((x1<=x2)->GetValue(),true,"LEQ");
+    Compare((x3<=x2)->GetValue(),false,"LEQ");
+    Compare((x2==y2)->GetValue(),true,"EQ");
+    Compare((x3==y2)->GetValue(),false,"EQ");
+    Compare((y2==x3)->GetValue(),false,"EQ");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;
