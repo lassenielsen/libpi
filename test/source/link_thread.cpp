@@ -44,7 +44,7 @@ void *proc(void *arg) // {{{
       cout << ss.str() << flush;
     }
 #endif
-    shared_ptr<Session> s=parg->link->Connect(parg->pid,parg->actors);
+    Session *s=parg->link->Connect(parg->pid,parg->actors,NULL);
 #ifdef PIDEBUG
     { stringstream ss;
       ss << "Participant " << parg->pid+1 << " of " << parg->actors << " connected.\n";
@@ -52,9 +52,9 @@ void *proc(void *arg) // {{{
     }
 #endif
     // Test session
-    shared_ptr<Value> val;
+    Value *val;
     if (parg->pid==0)
-    { val=shared_ptr<Value>(new Int(1));
+    { val=new Int(1,NULL);
 #ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " sending.\n";
@@ -68,7 +68,7 @@ void *proc(void *arg) // {{{
         cout << ss.str() << flush;
       }
 #endif
-      val=s->Receive(parg->actors-1);
+      val=s->Receive(parg->actors-1,NULL);
 #ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " finished.\n";
@@ -84,7 +84,7 @@ void *proc(void *arg) // {{{
         cout << ss.str() << flush;
       }
 #endif
-      val=s->Receive(parg->pid-1);
+      val=s->Receive(parg->pid-1,NULL);
 #ifdef PIDEBUG
       { stringstream ss;
         ss << "Participant " << parg->pid+1 << " of " << parg->actors << " sending.\n";
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
   { pthread_t t1,t2,t3;
     void *r1, *r2, *r3;
     cout << "- Testing 2 participants\n" << flush;
-    thread::Link *l2=new thread::Link(2);
+    thread::Link *l2=new thread::Link(2,NULL);
     procarg p1of2(l2,0,2,0);
     procarg p2of2(l2,1,2,0);
     cout << "--- Testing same time\n" << flush;
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     else
       cout << "FAILURE\n" << flush;
     delete l2;
-    thread::Link *l3=new thread::Link(3);
+    thread::Link *l3=new thread::Link(3,NULL);
     cout << "- Testing 3 participants\n" << flush;
     procarg p1of3(l3,0,3,0);
     procarg p2of3(l3,1,3,0);

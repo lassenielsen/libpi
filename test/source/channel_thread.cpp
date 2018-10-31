@@ -18,13 +18,13 @@ using namespace std;
 
 class procarg
 { public:
-    procarg(shared_ptr<Channel> c, shared_ptr<Value> v, int w)
+    procarg(Channel *c, Value *v, int w)
     : chan(c)
     , val(v)
     , wait(w)
     { }
-    shared_ptr<Channel> chan;
-    shared_ptr<Value> val;
+    Channel *chan;
+    Value *val;
     int wait;
 };
 
@@ -115,8 +115,8 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing transmission of Int value\n" << flush;
-    shared_ptr<Channel> ch2(new thread::Channel());
-    procarg argInt(ch2,shared_ptr<Value>(new Int(1337)),0);
+    Channel *ch2(new thread::Channel(NULL));
+    procarg argInt(ch2,new Int(1337,NULL),0);
     pthread_create(&t1,NULL,proc_send,&argInt);
     pthread_create(&t2,NULL,proc_receive,&argInt);
     pthread_join(t1,&r1);
@@ -127,8 +127,8 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing transmission of String value\n" << flush;
-    shared_ptr<Channel> ch3(new thread::Channel());
-    procarg argString(ch3,shared_ptr<Value>(new String("Hello World")),0);
+    Channel *ch3(new thread::Channel(NULL));
+    procarg argString(ch3,new String("Hello World",NULL),0);
     pthread_create(&t1,NULL,proc_send,&argString);
     pthread_create(&t2,NULL,proc_receive,&argString);
     pthread_join(t1,&r1);
@@ -139,8 +139,8 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing transmission of Channel value\n" << flush;
-    shared_ptr<Value> channelValue(new thread::Channel());
-    shared_ptr<Channel> ch4(new thread::Channel());
+    Value *channelValue(new thread::Channel(NULL));
+    Channel *ch4(new thread::Channel(NULL));
     procarg argChannel(ch4,channelValue,0);
     pthread_create(&t1,NULL,proc_send,&argChannel);
     pthread_create(&t2,NULL,proc_receive,&argChannel);
@@ -152,10 +152,10 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing transmission of Session value\n" << flush;
-    vector<shared_ptr<Channel> > chVector;
-    chVector.push_back(dynamic_pointer_cast<Channel>(channelValue));
-    shared_ptr<Value> sessionValue(new Session(1,1,chVector,chVector));
-    shared_ptr<Channel> ch5(new thread::Channel());
+    vector<Channel *> chVector;
+    chVector.push_back(dynamic_cast<Channel*>(channelValue));
+    Value *sessionValue(new Session(1,1,chVector,chVector,NULL));
+    Channel *ch5(new thread::Channel(NULL));
     procarg argSession(ch5,sessionValue,0);
     pthread_create(&t1,NULL,proc_send,&argSession);
     pthread_create(&t2,NULL,proc_receive,&argSession);
@@ -167,11 +167,11 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing transmission of Tuple value\n" << flush;
-    shared_ptr<Tuple> tplVal=shared_ptr<Tuple>(new Tuple());
-    tplVal->AddValue(shared_ptr<Value>(new String("Hello")));
-    tplVal->AddValue(shared_ptr<Value>(new Int(123)));
-    tplVal->AddValue(shared_ptr<Value>(new String("World")));
-    shared_ptr<Channel> ch6(new thread::Channel());
+    Tuple *tplVal=new Tuple(NULL);
+    tplVal->AddValue(new String("Hello",NULL));
+    tplVal->AddValue(new Int(123,NULL));
+    tplVal->AddValue(new String("World",NULL));
+    Channel *ch6(new thread::Channel(NULL));
     procarg argTuple(ch6,tplVal,0);
     pthread_create(&t1,NULL,proc_send,&argTuple);
     pthread_create(&t2,NULL,proc_receive,&argTuple);
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
       cout << "FAILURE\n" << flush;
 
     cout << "- Testing concurrency\n" << flush;
-    shared_ptr<Channel> ch7(new thread::Channel());
+    Channel *ch7(new thread::Channel(NULL));
     for (size_t i=0; i<99; ++i)
     { pthread_t x;
       pthread_attr_t y;
