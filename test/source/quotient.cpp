@@ -23,28 +23,29 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { shared_ptr<Quotient> x0(new Quotient(3.1415));
-    // Inaccuracy issue Compare(x0->Serialize(),"qrt:31415/10000","Serialize");
-    shared_ptr<Quotient> x1(new Quotient("3.1415"));
-    Compare(x1->Serialize(),"qrt:6283/2000","Initialize (float str)");
-    shared_ptr<Quotient> z1(new Quotient("31415/10000"));
-    Compare(z1->Serialize(),"qrt:6283/2000","Initialize (frac str)");
-    { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("qrt:3.1415"));
+  { Quotient x0(3.1415L,NULL);
+    // Inaccuracy Issue Compare(x0.Serialize(),"qrt:31415/10000","Serialize");
+    Quotient x1("3.1415",NULL);
+    Compare(x1.Serialize(),"qrt:6283/2000","Initialize (float str)");
+    Quotient z1("31415/10000",NULL);
+    Compare(z1.Serialize(),"qrt:6283/2000","Initialize (frac str)");
+    { Value *parsed=Value::Parse("qrt:3.1415",NULL);
       Compare(parsed->Serialize(),"qrt:6283/2000","Parse");
+      delete parsed;
     }
-    shared_ptr<Quotient> x2((*x1)+(*x1));
-    Compare(x2->Serialize(),"qrt:6283/1000","Sum");
-    shared_ptr<Quotient> x4=(*x2)*(*x2);
-    Compare(x4->Serialize(),"qrt:39476089/1000000","Product");
-    shared_ptr<Quotient> x3=(*x4)-(*x1);
-    Compare(x3->Serialize(),"qrt:36334589/1000000","Difference");
-    shared_ptr<Quotient> y2=(*x4)/(*x2);
-    Compare(y2->Serialize(),"qrt:6283/1000","Quotient");
-    Compare(((*x1)<=(*x2))->GetValue(),true,"LEQ");
-    Compare(((*x3)<=(*x2))->GetValue(),false,"LEQ");
-    Compare(((*x2)==(*y2))->GetValue(),true,"EQ");
-    Compare(((*x3)==(*y2))->GetValue(),false,"EQ");
-    Compare(((*y2)==(*x3))->GetValue(),false,"EQ");
+    Quotient x2(x1,x1,Quotient::OP_ADD,NULL);
+    Compare(x2.Serialize(),"qrt:6283/1000","Sum");
+    Quotient x4(x2,x2,Quotient::OP_MULT,NULL);
+    Compare(x4.Serialize(),"qrt:39476089/1000000","Product");
+    Quotient x3(x4,x1,Quotient::OP_SUB,NULL);
+    Compare(x3.Serialize(),"qrt:36334589/1000000","Difference");
+    Quotient y2(x4,x2,Quotient::OP_DIV,NULL);
+    Compare(y2.Serialize(),"qrt:6283/1000","Quotient");
+    Compare((x1<=x2)->GetValue(),true,"LEQ");
+    Compare((x3<=x2)->GetValue(),false,"LEQ");
+    Compare((x2==y2)->GetValue(),true,"EQ");
+    Compare((x3==y2)->GetValue(),false,"EQ");
+    Compare((y2==x3)->GetValue(),false,"EQ");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;

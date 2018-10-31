@@ -19,11 +19,11 @@ void *proc1(void *arg) // {{{
 #ifdef PIDEBUG
     cout << "P1: Connecting\n" << flush;
 #endif
-    shared_ptr<Session> s=link->Connect(0,2);
+    Session *s=link->Connect(0,2,NULL);
 #ifdef PIDEBUG
     cout << "P1: Connecting complete\n" << flush;
 #endif
-    shared_ptr<Value> intval=shared_ptr<Value>(Value::Parse("int:1337"));
+    Value *intval=Value::Parse("int:1337",NULL);
 #ifdef PIDEBUG
     cout << "P1: Sending simple value\n" << flush;
 #endif
@@ -31,22 +31,22 @@ void *proc1(void *arg) // {{{
 #ifdef PIDEBUG
     cout << "P1: Creating local session\n" << flush;
 #endif
-    shared_ptr<Session> t1;
-    shared_ptr<Session> t2;
-    { vector<shared_ptr<Channel> > chsIn1;
-      chsIn1.push_back(shared_ptr<Channel>(new thread::Channel()));
-      chsIn1.push_back(shared_ptr<Channel>(new thread::Channel()));
-      vector<shared_ptr<Channel> > chsOut1;
+    Session *t1;
+    Session *t2;
+    { vector<Channel *> chsIn1;
+      chsIn1.push_back(new thread::Channel(NULL));
+      chsIn1.push_back(new thread::Channel(NULL));
+      vector<Channel *> chsOut1;
       chsOut1.push_back(chsIn1[0]);
-      chsOut1.push_back(shared_ptr<Channel>(new thread::Channel()));
-      t1=shared_ptr<Session>(new Session(0,2,chsIn1,chsOut1));
-      vector<shared_ptr<Channel> > chsIn2;
+      chsOut1.push_back(new thread::Channel(NULL));
+      t1=new Session(0,2,chsIn1,chsOut1,NULL);
+      vector<Channel *> chsIn2;
       chsIn2.push_back(chsOut1[1]);
-      chsIn2.push_back(shared_ptr<Channel>(new thread::Channel()));
-      vector<shared_ptr<Channel> > chsOut2;
+      chsIn2.push_back(new thread::Channel(NULL));
+      vector<Channel *> chsOut2;
       chsOut2.push_back(chsIn1[1]);
       chsOut2.push_back(chsIn2[1]);
-      t2=shared_ptr<Session>(new Session(1,2,chsIn2,chsOut2));
+      t2=new Session(1,2,chsIn2,chsOut2,NULL);
     }
 #ifdef PIDEBUG
     cout << "P1: Delegating local session\n" << flush;
@@ -71,23 +71,23 @@ void *proc2(void *arg) // {{{
 #ifdef PIDEBUG
     cout << "P2: Connecting\n" << flush;
 #endif
-    shared_ptr<Session> s=link->Connect(1,2);
+    Session *s=link->Connect(1,2,NULL);
 #ifdef PIDEBUG
     cout << "P2: Connecting complete\n" << flush;
 #endif
-    shared_ptr<Int> intval1 = dynamic_pointer_cast<Int>(s->Receive(0));
-    if (intval1->Serialize()!="int:1337")
+    Int *intval1 = dynamic_cast<Int*>(s->Receive(0,NULL));
+    if (intval1==NULL || intval1->Serialize()!="int:1337")
       throw string("Received wrong value: ")+intval1->Serialize();
 #ifdef PIDEBUG
     cout << "P2: Recieved correct value\n" << flush;
 #endif
-    shared_ptr<Session> t= dynamic_pointer_cast<Session>(s->Receive(0));
+    Session *t=dynamic_cast<Session*>(s->Receive(0,NULL));
 #ifdef PIDEBUG
     cout << "P2: Recieved session\n" << flush;
     cout << "P2: Using delegated session\n" << flush;
 #endif
-    shared_ptr<Int> intval2 = dynamic_pointer_cast<Int>(t->Receive(0));
-    if (intval2->Serialize()!="int:1337")
+    Int *intval2 = dynamic_cast<Int*>(t->Receive(0,NULL));
+    if (intval2==NULL || intval2->Serialize()!="int:1337")
       throw string("Received wrong value: ")+intval2->Serialize();
 #ifdef PIDEBUG
     cout << "P2: Received correct value\n" << flush;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
   { pthread_t t1,t2,t3;
     void *r1, *r2, *r3;
     cout << "--- Creating link... " << flush;
-    thread::Link *link=new thread::Link(2);
+    thread::Link *link=new thread::Link(2,NULL);
     cout << "done\n" << flush;
     cout << "--- Starting two participants... " << flush;
     pthread_create(&t1,NULL,proc1,link);

@@ -22,18 +22,19 @@ void Compare(bool lhs, bool rhs, const string name) // {{{
 
 int main(int argc, char **argv)
 { try
-  { vector<shared_ptr<Value> > vals;
-    vals.push_back(shared_ptr<Value>(Value::Parse("boo:true")));
-    vals.push_back(shared_ptr<Value>(Value::Parse("boo:false")));
-    shared_ptr<Tuple> x1(new Tuple(vals));
-    Compare(x1->Serialize(),"tpl:2:boo:true:boo:false","Serialize");
-    { shared_ptr<Value> parsed=shared_ptr<Value>(Value::Parse("tpl:2:boo:true:boo:false"));
+  { vector<Value *> vals;
+    vals.push_back(Value::Parse("boo:true",NULL));
+    vals.push_back(Value::Parse("boo:false",NULL));
+    Tuple x1(vals,NULL);
+    Compare(x1.Serialize(),"tpl:2:boo:true:boo:false","Serialize");
+    { Value *parsed=Value::Parse("tpl:2:boo:true:boo:false",NULL);
       Compare(parsed->Serialize(),"tpl:2:boo:true:boo:false","Parse");
+      delete parsed;
     }
-    Compare(x1->GetValue(0)->Serialize(),"boo:true","GetValue");
-    Compare(x1->GetValue(1)->Serialize(),"boo:false","GetValue");
-    x1->AddValue(shared_ptr<Value>(Value::Parse("int:123")));
-    Compare(x1->Serialize(),"tpl:3:boo:true:boo:false:int:123","AddValue");
+    Compare(x1.GetValue(0)->Serialize(),"boo:true","GetValue");
+    Compare(x1.GetValue(1)->Serialize(),"boo:false","GetValue");
+    x1.AddValue(Value::Parse("int:123",NULL));
+    Compare(x1.Serialize(),"tpl:3:boo:true:boo:false:int:123","AddValue");
   }
   catch (string s)
   { cout << "FAILED: " << s << endl;
