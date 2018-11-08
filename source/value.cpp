@@ -15,13 +15,13 @@ map<string,Value::value_creator> Value::ourParsers;
 // Value Implementation
 Value::Value(gc::GCRegistrant *registrant) // {{{
 { if (registrant!=NULL)
-    registrant->GCRegister((void*)this);
+    registrant->GCRegister(this);
 } // }}}
 Value::Value(const string &str, gc::GCRegistrant *registrant) // {{{
 { if (str!="()")
     throw string("Value constructor expected string '()' but received: ") + str;
   if (registrant!=NULL)
-    registrant->GCRegister((void*)this);
+    registrant->GCRegister(this);
 } // }}}
 Value::~Value() // {{{
 {

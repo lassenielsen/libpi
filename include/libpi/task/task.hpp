@@ -38,7 +38,7 @@ namespace libpi
         libpi::Value *tmp;                                //! A temporary value that can be used by the task
         std::vector<libpi::Value*> tmps;                  //! A list of temporary values that can be used by the task, used mainly for linking
 
-        virtual void Mark(std::unordered_set<Value*> &marks);   //! Mark all used values for garbage collection
+        virtual void Mark(std::unordered_set<Value*> &marks);   //! Mark all live values for garbage collection
 
       private:
         void *myLabel;

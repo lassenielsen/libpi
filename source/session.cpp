@@ -17,7 +17,9 @@ Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::ve
 } // }}}
 
 Session::~Session() // {{{
-{
+{ DeleteVector(myInChannels);
+  // Do not delete outChannels as they may be in use, and will be
+  // deleted by receiver
 } // }}}
 
 void Session::Send(int to, libpi::Value *value) // {{{
@@ -110,10 +112,11 @@ void Session::Mark(unordered_set<Value*> &marks) // {{{
 { if (marks.count(this)>0)
     return;
   marks.insert(this);
-  for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
-    (*it)->Mark(marks);
-  for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
-    (*it)->Mark(marks);
+  // Deletes channels manualy
+  //for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
+  //  (*it)->Mark(marks);
+  //for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
+  //  (*it)->Mark(marks);
 } // }}}
 
 }
