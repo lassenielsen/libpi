@@ -17,7 +17,8 @@ Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::ve
 } // }}}
 
 Session::~Session() // {{{
-{ DeleteVector(myInChannels);
+{ if (Closed())
+    DeleteVector(myInChannels);
   // Do not delete outChannels as they may be in use, and will be
   // deleted by receiver
 } // }}}

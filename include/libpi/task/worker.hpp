@@ -1,6 +1,7 @@
 #pragma once
 #include <libpi/task/task.hpp>
 #include <libpi/thread/mutex.hpp>
+#include <list>
 #include <queue>
 #include <atomic>
 #include <unordered_set>
@@ -27,11 +28,13 @@ namespace libpi
         //! QueueTask is used to push an already active task on the queue
         virtual void QueueTask(Task *task)=0;
         //! GCRegister registers an address to be collected when no longer referenced
-        virtual void GCRegister(void *object)=0;
-        virtual const std::unordered_set<void*> &GCMarks() const=0;   //!< Used by GC to access marks
-        virtual const std::unordered_set<void*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
+        virtual void GCRegister(libpi::Value *object)=0;
+        virtual const std::unordered_set<libpi::Value*> &GCMarks() const=0;   //!< Used by GC to access marks
+        virtual const std::unordered_set<libpi::Value*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
         virtual void GCTask()=0; //!< Used by GC to order the calculation of GCMarks and GCValues
         virtual void GCWait()=0; //!< Used by GC to wait until GCMarks and GCValues are available
+        virtual void GCMark(libpi::Value *obj)=0; //!< Used by tasks to pre-mark values
+        virtual void GCClearMarks()=0; //!< Used by tasks to clear pre-marked values
 
         static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
         static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
@@ -54,25 +57,27 @@ namespace libpi
         void EmployTask(Task *task);
         void AddTask(Task *task);
         void QueueTask(Task *task);
-        const std::queue<Task*> &GetActiveTasks() { return myActiveTasks; }
+        const std::list<Task*> &GetActiveTasks() { return myActiveTasks; }
         // Garbage Collection functionality
         /*! Adds @object to set of known GC managed objects.
             After each collection GCValues is reduced to the set of marks,
             since the unmarked values are either collected or present in the
             marks of other workers. */
-        void GCRegister(void *object) { myGCNewValues.insert(object); }
-        const std::unordered_set<void*> &GCMarks() const { return myGCMarks; }
-        const std::unordered_set<void*> &GCValues() const { return myGCValues; }
+        void GCRegister(libpi::Value *object) { myGCNewValues.insert(object); }
+        const std::unordered_set<libpi::Value*> &GCMarks() const { return myGCMarks; }
+        const std::unordered_set<libpi::Value*> &GCValues() const { return myGCValues; }
         void GCTask() { myGCFlag=true; }
         void GCWait() { myGCLock.Lock(); }
+        void GCMark(libpi::Value *object) { myGCMarks.insert(object); }
+        void GCClearMarks() { myGCMarks.clear(); }
 
       private:
-        std::queue<Task*> myActiveTasks;
+        std::list<Task*> myActiveTasks;
         libpi::thread::Mutex myWaitLock;
 
-	std::unordered_set<void*> myGCMarks;
-        std::unordered_set<void*> myGCValues;
-        std::unordered_set<void*> myGCNewValues;
+        std::unordered_set<libpi::Value*> myGCMarks;
+        std::unordered_set<libpi::Value*> myGCValues;
+        std::unordered_set<libpi::Value*> myGCNewValues;
         bool myGCFlag;
         libpi::thread::Mutex myGCLock;
 

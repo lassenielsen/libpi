@@ -32,7 +32,7 @@ Worker_Pool::~Worker_Pool() // {{{
 void Worker_Pool::EmployTask(Task *task) // {{{
 { if (task)
     task->SetWorker(this);
-  myActiveTasks.push(task);
+  myActiveTasks.push_back(task);
   myWaitLock.Release();
 } // }}}
 
@@ -54,5 +54,5 @@ void Worker_Pool::QueueTask(Task *task) // {{{
     else
       ourIdleWorkersLock.Release();
   }
-  myActiveTasks.push(task);
+  myActiveTasks.push_back(task);
 } // }}}
