@@ -3,6 +3,7 @@
 #include <libpi/thread/mutex.hpp>
 #include <list>
 #include <queue>
+#include <set>
 #include <atomic>
 #include <unordered_set>
 
@@ -12,51 +13,61 @@ namespace libpi
   namespace task
   {
 // DOCUMENTATION: Worker class {{{
-/*! Abstract declaration of the framework for executing tasks
+/*! A worker is a framework for executing tasks with support for distribution
+ *  over threads but potentially also over clusters.
+ *  The framework implements distributed scheduling, sleeping, and distributed
+ *  garbage collection.
+ *
+ *  Current implementation Executin tasks using a thread pool
+ *
+ *  When queueing task:
+ *  If @myActiveTasks is empty, commence task immediately
+ *  Otherwise if @ourIdleWorkersSize>0 lock pop and unloc and assign task to idle worker
+ *  Oherwize push task in myActiveTasks for scheduling, and resume next task
+ *
+ *  When garbage collecting:
+ *  Perform marking, store results in myGCValues and myGCMarks, and add worker to ourGCReady set.
+ *  When all workers are in ourGCReady, the master thread will collect all
+ *  values and marks, and delete the values that have no been marked by any
+ *  worker.
  */
 // }}}
     class Worker : public libpi::Value, public libpi::gc::GCRegistrant // {{{
     { public:
-        Worker() : Value(NULL) {}
+        Worker();
         virtual ~Worker();
 
-        virtual void Work()=0; // Perform tasks
-        //! EmplyTask is used to assign a task to an idle worker
-        virtual void EmployTask(Task *task)=0;
+        void Work(); //!< Main loop, scheduling tasks
+        //! Activate is used to release the myWaitLock. This is used when garbage collecting, while waiting for active tasks.
+        void Activate() { myWaitLock.Release(); }
+        //! EmplyTask is used when assigning a task to an idle worker
+        void EmployTask(Task *task) // {{{
+        { if (task)
+            task->SetWorker(this);
+          myActiveTasks.push_back(task);
+          myWaitLock.Release();
+        } // }}}
         //! AddTask is used to add a new or previously inactive task to the queue
-        virtual void AddTask(Task *task)=0;
+        void AddTask(Task *task) // {{{
+        { ++ActiveTasks;
+          QueueTask(task);
+        } // }}}
         //! QueueTask is used to push an already active task on the queue
-        virtual void QueueTask(Task *task)=0;
-        //! GCRegister registers an address to be collected when no longer referenced
-        virtual void GCRegister(libpi::Value *object)=0;
-        virtual const std::unordered_set<libpi::Value*> &GCMarks() const=0;   //!< Used by GC to access marks
-        virtual const std::unordered_set<libpi::Value*> &GCValues() const=0;  //!< Used by GC to access potential sweeps
-        virtual void GCTask()=0; //!< Used by GC to order the calculation of GCMarks and GCValues
-        virtual void GCWait()=0; //!< Used by GC to wait until GCMarks and GCValues are available
-        virtual void GCMark(libpi::Value *obj)=0; //!< Used by tasks to pre-mark values
-        virtual void GCClearMarks()=0; //!< Used by tasks to clear pre-marked values
-
-        static std::atomic<size_t> ActiveTasks;  //! Actual number of active processes
-        static size_t TargetTasks;               //! Desired number of active processes - defaults to number of cpu-cores
-        static size_t Workers;                   //! Desired number of worker threads - defaults to number of cpu-cores
-    }; // }}}
-// DOCUMENTATION: Worker_Pool class {{{
-/*! Executin tasks using a thread pool
-    When queueing task:
-    If @myActiveTasks is empty, commence task immediately
-    Otherwise if @ourIdleWorkersSize>0 lock pop and unloc and assign task to idle worker
-    Oherwize push task in myActiveTasks for scheduling, and resume next task
- */
-// }}}
-    class Worker_Pool : public Worker // {{{
-    { public:
-        Worker_Pool();
-        virtual ~Worker_Pool();
-
-        void Work();
-        void EmployTask(Task *task);
-        void AddTask(Task *task);
-        void QueueTask(Task *task);
+        void QueueTask(Task *task) // {{{
+        { if (ourIdleWorkersSize>0)
+          { ourIdleWorkersLock.Lock();
+            if (ourIdleWorkersSize>0)
+            { --ourIdleWorkersSize;
+              ourIdleWorkers.front()->EmployTask(task);
+              ourIdleWorkers.pop_back();
+              ourIdleWorkersLock.Release();
+              return;
+            }
+            else
+              ourIdleWorkersLock.Release();
+          }
+          myActiveTasks.push_back(task);
+        } // }}}
         const std::list<Task*> &GetActiveTasks() { return myActiveTasks; }
         // Garbage Collection functionality
         /*! Adds @object to set of known GC managed objects.
@@ -64,12 +75,28 @@ namespace libpi
             since the unmarked values are either collected or present in the
             marks of other workers. */
         void GCRegister(libpi::Value *object) { myGCNewValues.insert(object); }
+        //! Used by GC to access marks
         const std::unordered_set<libpi::Value*> &GCMarks() const { return myGCMarks; }
+        //! Used by GC to access potential sweeps
         const std::unordered_set<libpi::Value*> &GCValues() const { return myGCValues; }
+        //! Used by GC to order the calculation of GCMarks and GCValues
         void GCTask() { myGCFlag=true; }
-        void GCWait() { myGCLock.Lock(); }
+        //! Used by tasks to pre-mark values
         void GCMark(libpi::Value *object) { myGCMarks.insert(object); }
+        //! Used by tasks to clear pre-marked values
         void GCClearMarks() { myGCMarks.clear(); }
+
+        //! Actual number of active processes
+        static std::atomic<size_t> ActiveTasks;
+        //! Desired number of active processes - defaults to number of cpu-cores
+        static size_t TargetTasks;
+        //! Desired number of worker threads - defaults to number of cpu-cores
+        static size_t Workers;
+
+        static void SetGCReady(std::atomic<std::set<Worker*> > *gcready) {ourGCReady=gcready;}
+        static std::list<Worker*> &GetIdleWorkers() {return ourIdleWorkers;}
+        static std::atomic<size_t> &GetIdleWorkersSize() {return ourIdleWorkersSize;}
+        static libpi::thread::Mutex &GetIdleWorkersLock() {return ourIdleWorkersLock;}
 
       private:
         std::list<Task*> myActiveTasks;
@@ -79,11 +106,11 @@ namespace libpi
         std::unordered_set<libpi::Value*> myGCValues;
         std::unordered_set<libpi::Value*> myGCNewValues;
         bool myGCFlag;
-        libpi::thread::Mutex myGCLock;
 
-        static std::queue<Worker*> ourIdleWorkers; //! Queue of workers in the pool without tasks
-        static std::atomic<size_t> ourIdleWorkersSize; //! Aggregating the size of ourIdleWorkers
-        static libpi::thread::Mutex ourIdleWorkersLock; //! Lock for ourIdleWorkers
+        static std::list<Worker*> ourIdleWorkers; //!< Queue of workers in the pool without tasks
+        static std::atomic<size_t> ourIdleWorkersSize; //!< Aggregating the size of ourIdleWorkers
+        static std::atomic<std::set<Worker*> > *ourGCReady; //!< Register whem GC marks are ready
+        static libpi::thread::Mutex ourIdleWorkersLock; //!< Lock for ourIdleWorkers
     }; // }}}
   }
 }
