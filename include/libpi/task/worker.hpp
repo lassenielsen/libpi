@@ -59,7 +59,7 @@ namespace libpi
             if (ourIdleWorkersSize>0)
             { --ourIdleWorkersSize;
               ourIdleWorkers.front()->EmployTask(task);
-              ourIdleWorkers.pop_back();
+              ourIdleWorkers.pop_front();
               ourIdleWorkersLock.Release();
               return;
             }
@@ -80,7 +80,9 @@ namespace libpi
         //! Used by GC to access potential sweeps
         const std::unordered_set<libpi::Value*> &GCValues() const { return myGCValues; }
         //! Used by GC to order the calculation of GCMarks and GCValues
-        void GCTask() { myGCFlag=true; }
+        void GCTask() { myGCReady=false; myGCFlag=true; }
+        //! Used by GC to determine if GC marks and values are ready for collection
+        bool GCReady() { return myGCReady; }
         //! Used by tasks to pre-mark values
         void GCMark(libpi::Value *object) { myGCMarks.insert(object); }
         //! Used by tasks to clear pre-marked values
@@ -93,7 +95,6 @@ namespace libpi
         //! Desired number of worker threads - defaults to number of cpu-cores
         static size_t Workers;
 
-        static void SetGCReady(std::atomic<std::set<Worker*> > *gcready) {ourGCReady=gcready;}
         static std::list<Worker*> &GetIdleWorkers() {return ourIdleWorkers;}
         static std::atomic<size_t> &GetIdleWorkersSize() {return ourIdleWorkersSize;}
         static libpi::thread::Mutex &GetIdleWorkersLock() {return ourIdleWorkersLock;}
@@ -106,10 +107,10 @@ namespace libpi
         std::unordered_set<libpi::Value*> myGCValues;
         std::unordered_set<libpi::Value*> myGCNewValues;
         bool myGCFlag;
+        bool myGCReady;
 
         static std::list<Worker*> ourIdleWorkers; //!< Queue of workers in the pool without tasks
         static std::atomic<size_t> ourIdleWorkersSize; //!< Aggregating the size of ourIdleWorkers
-        static std::atomic<std::set<Worker*> > *ourGCReady; //!< Register whem GC marks are ready
         static libpi::thread::Mutex ourIdleWorkersLock; //!< Lock for ourIdleWorkers
     }; // }}}
   }

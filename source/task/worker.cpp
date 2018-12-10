@@ -18,6 +18,7 @@ Worker::Worker() // {{{
 : Value(NULL)
 , myWaitLock(true)
 , myGCFlag(false)
+, myGCReady(false)
 {
 } // }}}
 
