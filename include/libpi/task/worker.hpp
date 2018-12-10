@@ -58,9 +58,10 @@ namespace libpi
           { ourIdleWorkersLock.Lock();
             if (ourIdleWorkersSize>0)
             { --ourIdleWorkersSize;
-              ourIdleWorkers.front()->EmployTask(task);
               ourIdleWorkers.pop_front();
               ourIdleWorkersLock.Release();
+              task->Mark(myGCMarks);
+              ourIdleWorkers.front()->EmployTask(task);
               return;
             }
             else
@@ -84,7 +85,7 @@ namespace libpi
         //! Used by GC to determine if GC marks and values are ready for collection
         bool GCReady() { return myGCReady; }
         //! Used by tasks to pre-mark values
-        void GCMark(libpi::Value *object) { myGCMarks.insert(object); }
+        void GCMark(libpi::Value *object) { if (object) object->Mark(myGCMarks); }
         //! Used by tasks to clear pre-marked values
         void GCClearMarks() { myGCMarks.clear(); }
 
