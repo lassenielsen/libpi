@@ -113,11 +113,11 @@ void Session::Mark(unordered_set<Value*> &marks) // {{{
 { if (marks.count(this)>0)
     return;
   marks.insert(this);
-  // Deletes channels manualy
-  //for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
-  //  (*it)->Mark(marks);
-  //for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
-  //  (*it)->Mark(marks);
+  // Deletes channels manualy, but their queued values must be marked
+  for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
+    (*it)->Mark(marks);
+  for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
+    (*it)->Mark(marks);
 } // }}}
 
 }
