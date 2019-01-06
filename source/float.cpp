@@ -40,12 +40,12 @@ Float::~Float() // {{{
 void Float::ToStream(ostream &dest) const // {{{
 { mp_exp_t exp;
   char *str=mpf_get_str(NULL,&exp,10,0,myValue);
-  if (exp>=strlen(str))
+  if (int(exp)>=int(strlen(str)))
     dest << str << string(exp-strlen(str),'0') << ".0";
-  else if (exp>=0)
-    dest << string(str,exp) << "." << string(str+exp);
+  else if (int(exp)>=0)
+    dest << string(str,int(exp)) << "." << string(str+exp);
   else
-    dest << "0." << string(1-exp,'0') << string(str);
+    dest << "0." << string(1-int(exp),'0') << string(str);
   free(str);
 } // }}}
 shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{
