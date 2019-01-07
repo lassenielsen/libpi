@@ -41,9 +41,9 @@ void Float::ToStream(ostream &dest) const // {{{
 { mp_exp_t exp;
   char *str=mpf_get_str(NULL,&exp,10,0,myValue);
   if (int(exp)>=int(strlen(str)))
-    dest << str << string(exp-strlen(str),'0') << ".0";
+    dest << str << string(int(exp)-strlen(str),'0') << ".0";
   else if (int(exp)>=0)
-    dest << string(str,int(exp)) << "." << string(str+exp);
+    dest << (int(exp)==0?string("0"):string(str,int(exp))) << "." << string(str+int(exp));
   else
     dest << "0." << string(1-int(exp),'0') << string(str);
   free(str);
