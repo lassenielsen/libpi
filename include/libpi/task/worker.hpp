@@ -58,10 +58,11 @@ namespace libpi
           { ourIdleWorkersLock.Lock();
             if (ourIdleWorkersSize>0)
             { --ourIdleWorkersSize;
+              Worker *iworker=ourIdleWorkers.front();
               ourIdleWorkers.pop_front();
               ourIdleWorkersLock.Release();
-              task->Mark(myGCMarks);
-              ourIdleWorkers.front()->EmployTask(task);
+              task->Mark(myGCNewMarks);
+              iworker->EmployTask(task);
               return;
             }
             else
@@ -85,9 +86,9 @@ namespace libpi
         //! Used by GC to determine if GC marks and values are ready for collection
         bool GCReady() { return myGCReady; }
         //! Used by tasks to pre-mark values
-        void GCMark(libpi::Value *object) { if (object) object->Mark(myGCMarks); }
+        void GCMark(libpi::Value *object) { if (object) object->Mark(myGCNewMarks); }
         //! Used by tasks to clear pre-marked values
-        void GCClearMarks() { myGCMarks.clear(); }
+        void GCClearMarks() { myGCNewMarks.clear(); }
 
         //! Actual number of active processes
         static std::atomic<size_t> ActiveTasks;
@@ -105,6 +106,7 @@ namespace libpi
         libpi::thread::Mutex myWaitLock;
 
         std::unordered_set<libpi::Value*> myGCMarks;
+        std::unordered_set<libpi::Value*> myGCNewMarks;
         std::unordered_set<libpi::Value*> myGCValues;
         std::unordered_set<libpi::Value*> myGCNewValues;
         bool myGCFlag;

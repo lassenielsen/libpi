@@ -23,7 +23,7 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task(libpi::gc::GCRegistrant *registrant) : Value(registrant) {}
+        Task(libpi::gc::GCRegistrant *registrant) : Value(registrant), tmp(NULL) {}
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;

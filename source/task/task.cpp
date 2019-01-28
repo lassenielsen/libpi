@@ -18,7 +18,11 @@ std::string Task::GetType() const // {{{
 } // }}}
 
 void Task::Mark(unordered_set<Value*> &marks) // {{{
-{ if (tmp!=NULL)
+{ if (marks.count(this)>0)
+    return;
+  
+  marks.insert(this);
+  if (tmp!=NULL)
     tmp->Mark(marks);
   for (vector<libpi::Value*>::const_iterator it=tmps.begin(); it!=tmps.end(); ++it)
     (*it)->Mark(marks);
