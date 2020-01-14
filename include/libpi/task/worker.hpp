@@ -45,7 +45,7 @@ namespace libpi
         { if (task)
             task->SetWorker(this);
           myActiveTasks.push_back(task);
-          myWaitLock.Release();
+          Activate();
         } // }}}
         //! AddTask is used to add a new or previously inactive task to the queue
         void AddTask(Task *task) // {{{
@@ -85,6 +85,8 @@ namespace libpi
         void GCTask() { myGCReady=false; myGCFlag=true; }
         //! Used by GC to determine if GC marks and values are ready for collection
         bool GCReady() { return myGCReady; }
+        //! Used by GC to signal that GC is complete, and it is safe to resume work
+        void GCDone() { myGCReady=false; return myGCDoneLock.Release(); }
         //! Used by tasks to pre-mark values
         void GCMark(libpi::Value *object) { if (object) object->Mark(myGCNewMarks); }
         //! Used by tasks to clear pre-marked values
@@ -105,6 +107,7 @@ namespace libpi
         std::list<Task*> myActiveTasks;
         libpi::thread::Mutex myWaitLock;
 
+        libpi::thread::Mutex myGCDoneLock;
         std::unordered_set<libpi::Value*> myGCMarks;
         std::unordered_set<libpi::Value*> myGCNewMarks;
         std::unordered_set<libpi::Value*> myGCValues;

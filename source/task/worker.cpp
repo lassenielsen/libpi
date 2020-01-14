@@ -17,6 +17,7 @@ libpi::thread::Mutex Worker::ourIdleWorkersLock;
 Worker::Worker() // {{{
 : Value(NULL)
 , myWaitLock(true)
+, myGCDoneLock(true)
 , myGCFlag(false)
 , myGCReady(false)
 {

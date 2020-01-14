@@ -11,15 +11,17 @@ Link::Link(int actors, libpi::gc::GCRegistrant *registrant) // {{{
 { if (actors<2)
     throw string("libpi::task::Link constructor: Numbor of actors is too small");
   for (int i=1; i<actors; ++i)
-    myChannels.push_back(new Channel(registrant));
+    myChannels.push_back(new Channel(NULL/*registrant*/));
 } // }}}
 
 Link::~Link() // {{{
 {
+  //for (auto it=myChannels.begin(); it!=myChannels.end(); ++it)
+  //  delete *it;
 } // }}}
 
 string Link::GetType() const // {{{
-{ throw "libpi::task::Link is not serializable";
+{ return "lnk";
 } // }}}
 
 void Link::ToStream(ostream &dest) const // {{{

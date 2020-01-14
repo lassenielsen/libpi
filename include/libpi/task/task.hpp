@@ -23,10 +23,11 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task(libpi::gc::GCRegistrant *registrant) : Value(registrant), tmp(NULL) {}
+        Task(libpi::gc::GCRegistrant *registrant) : Value(NULL) /* NO GC OF TAASKS! */, tmp(NULL) {}
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;
+        virtual std::string GetName() const;
     
         void *GetLabel() {return myLabel;}
         void SetLabel(void *label) {myLabel=label;}

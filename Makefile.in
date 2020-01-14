@@ -26,7 +26,7 @@ OS_AUTO = $(shell uname -s)
 compiler = g++
 ctags = ctags
 opt = -O3
-opt_debug = -pg -g -DPIDEBUG
+opt_debug = -pg -g -gstabs -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
@@ -50,6 +50,7 @@ library_objects = \
   objects/task/worker.o \
   objects/task/channel.o \
   objects/task/link.o \
+  objects/gc/manager.o \
 #  objects/process/link.o \
 #  objects/process/channel.o \
 #  objects/network/link.o \
@@ -72,6 +73,7 @@ library_objects_debug = \
   objects_debug/task/worker.o \
   objects_debug/task/channel.o \
   objects_debug/task/link.o \
+  objects/gc/manager.o \
 #  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
 #  objects_debug/network/link.o \
@@ -216,12 +218,16 @@ $(libname)$(libversion): $(library_objects)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs)
 
 $(libname_debug)$(libversion): $(library_objects_debug)
-#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
+#OS_LINUX	$(compiler) -g -gstabs -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
 objects/task/%.o: source/task/%.cpp include/$(name)/*.hpp include/$(name)/task/*.hpp include/$(name)/config.hpp
 	mkdir -p objects/task
 	$(compiler) -c source/task/$*.cpp $(args) -o objects/task/$*.o
+
+objects/gc/%.o: source/gc/%.cpp include/$(name)/*.hpp include/$(name)/gc/*.hpp include/$(name)/config.hpp
+	mkdir -p objects/gc
+	$(compiler) -c source/gc/$*.cpp $(args) -o objects/gc/$*.o
 
 objects/thread/%.o: source/thread/%.cpp include/$(name)/*.hpp include/$(name)/thread/*.hpp include/$(name)/config.hpp
 	mkdir -p objects/thread

@@ -28,3 +28,7 @@ void Task::Mark(unordered_set<Value*> &marks) // {{{
     (*it)->Mark(marks);
   return;
 } // }}}
+
+std::string Task::GetName() const // {{{
+{ return "Unknown";
+} // }}}

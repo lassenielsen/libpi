@@ -6,6 +6,10 @@
 #include <libpi/message.hpp>
 #include <libpi/channel.hpp>
 #include <typeinfo>
+//#ifdef PIDEBUG
+#include <iostream>
+//#endif
+
 
 using namespace std;
 namespace libpi
@@ -14,17 +18,26 @@ namespace libpi
 map<string,Value::value_creator> Value::ourParsers;
 // Value Implementation
 Value::Value(gc::GCRegistrant *registrant) // {{{
-{ if (registrant!=NULL)
+{ 
+#ifdef PIDEBUG
+  std::cerr << "VALUE CREATED AT: " << this << std::endl;
+#endif
+  if (registrant!=NULL)
     registrant->GCRegister(this);
 } // }}}
 Value::Value(const string &str, gc::GCRegistrant *registrant) // {{{
-{ if (str!="()")
+{
+#ifdef PIDEBUG
+  std::cerr << "VALUE CREATED AT: " << this << std::endl;
+#endif
+  if (str!="()")
     throw string("Value constructor expected string '()' but received: ") + str;
   if (registrant!=NULL)
     registrant->GCRegister(this);
 } // }}}
 Value::~Value() // {{{
-{
+{ //cout << "Deleting value at " << this << endl;
+
 } // }}}
 std::string Value::GetType() const // {{{
 { return "unt";
