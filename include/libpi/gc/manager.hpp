@@ -12,7 +12,7 @@ namespace libpi
 
     class GCManager
     { public:
-        static void Manage(std::vector<task::Worker*> &workers, size_t run_interval=100000, size_t wait_interval=100000, ManagerMode mode=MANAGER_CONCURRENTMODE);
+        static void Manage(std::vector<task::Worker*> &workers, size_t run_interval=10000, size_t wait_interval=10000, ManagerMode mode=MANAGER_SAFEMODE);
     };
   }
 }

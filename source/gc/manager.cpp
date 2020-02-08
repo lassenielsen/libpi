@@ -51,42 +51,47 @@ void GCManager::Manage(vector<task::Worker*> &workers, size_t run_interval, size
           break;
       }
     }
-    if (mode==MANAGER_CONCURRENTMODE)
-      for (vector<libpi::task::Worker*>::iterator w=workers.begin(); w!=workers.end(); ++w)
-        (*w)->GCDone();
-    //cout << "GC(" << MNOW << "): Marks are in" << endl;
-    set<libpi::Value*> marks;
+    unordered_set<libpi::Value*> marks;
     for (vector<libpi::task::Worker*>::iterator w=workers.begin(); w!=workers.end(); ++w)
-    { //cout << "GC(" << MNOW << "): Worker " << *w << " returned the values: ";
+    { cout << "GC(" << MNOW << "): Handling worker " << *w << endl;
+      values.insert((*w)->GCValues().begin(),(*w)->GCValues().end());
+      for (std::list<libpi::task::Task*>::iterator task=(*w)->GetActiveTasks().begin(); task!=(*w)->GetActiveTasks().end(); ++task)
+      { cout << "GC(" << MNOW << "): Handling Task " << *task << endl;
+        (*task)->Mark(marks);
+      }
+    }
+    //for (vector<libpi::task::Worker*>::iterator w=workers.begin(); w!=workers.end(); ++w)
+    //{ //cout << "GC(" << MNOW << "): Worker " << *w << " returned the values: ";
       //for (unordered_set<libpi::Value*>::const_iterator v=(*w)->GCValues().begin(); v!=(*w)->GCValues().end(); ++v)
       //  cout << *v << ",";
       //cout << endl;
-      values.insert((*w)->GCValues().begin(),(*w)->GCValues().end());
+    //  values.insert((*w)->GCValues().begin(),(*w)->GCValues().end());
       //cout << "GC(" << MNOW << "): Worker " << *w << " returned the marks: ";
       //for (unordered_set<libpi::Value*>::const_iterator v=(*w)->GCMarks().begin(); v!=(*w)->GCMarks().end(); ++v)
       //  cout << *v << ",";
       //cout << endl;
-      marks.insert((*w)->GCMarks().begin(),(*w)->GCMarks().end());
-    }
+   //   marks.insert((*w)->GCMarks().begin(),(*w)->GCMarks().end());
+   // }
     set<libpi::Value*> garbage;
+    // garbage = value \ marks
     std::set_difference(values.begin(),values.end(),marks.begin(),marks.end(),std::inserter(garbage,garbage.end()));
     //cout << "GC(" << MNOW << "): Deleting unmarked values" << endl;
     for (set<libpi::Value*>::iterator val=garbage.begin(); val!=garbage.end(); ++val)
-    { //cout << "GC(" << MNOW << "): Deleting value at " << *val << endl;
+    { cout << "GC(" << MNOW << "): Deleting value at " << *val << endl;
       string t=(*val)->GetType();
-      //cout << "GC(" << MNOW << "): Deleting value " << t << ":" << flush;
-      //if (t!="sta" && t!="lnk")
-      //  (*val)->ToStream(cout);
-      //cout << " at " << *val << endl;
-      //  delete *val;
+      cout << "GC(" << MNOW << "): Deleting value " << t << ":" << flush;
+      if (t!="sta" && t!="lnk")
+        (*val)->ToStream(cout);
+      cout << " at " << *val << endl;
+      delete *val;
     }
     set<libpi::Value*> newValues;
     //cout << "GC(" << MNOW << "): Storing remaining values" << endl;
+    // newValues = values \cap marks
     std::set_intersection(values.begin(),values.end(),marks.begin(),marks.end(),std::inserter(newValues,newValues.end()));
     values=newValues;
-    if (mode==MANAGER_SAFEMODE)
-      for (vector<libpi::task::Worker*>::iterator w=workers.begin(); w!=workers.end(); ++w)
-        (*w)->GCDone();
+    for (vector<libpi::task::Worker*>::iterator w=workers.begin(); w!=workers.end(); ++w)
+      (*w)->GCDone();
   }
   //cout << "GC(" << MNOW << "): Terminating tasks" << endl;
   size_t endedSize=0;

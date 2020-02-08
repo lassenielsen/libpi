@@ -70,7 +70,8 @@ namespace libpi
           }
           myActiveTasks.push_back(task);
         } // }}}
-        const std::list<Task*> &GetActiveTasks() { return myActiveTasks; }
+        const std::list<Task*> &GetActiveTasks() const { return myActiveTasks; }
+        std::list<Task*> &GetActiveTasks() { return myActiveTasks; }
         // Garbage Collection functionality
         /*! Adds @object to set of known GC managed objects.
             After each collection GCValues is reduced to the set of marks,

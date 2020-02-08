@@ -2,6 +2,7 @@
 #include <libpi/task/worker.hpp>
 #include <libpi/thread/channel.hpp>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 namespace libpi
@@ -10,6 +11,9 @@ namespace libpi
 Channel::Channel(libpi::gc::GCRegistrant *registrant) // {{{
 : libpi::Channel(registrant)
 { pthread_mutex_init(&myLock,NULL);
+  int x=0;
+  if (registrant!=NULL)
+    cout << "REGISTRANT ERROR: " << 1/x << endl;
 } // }}}
 
 Channel::Channel(const Channel &rhs) // {{{

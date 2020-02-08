@@ -8,9 +8,9 @@ void libpi::task::Worker::Work() // {{{
         { //cout << "WORKER(" << this << "): Marking" << endl;
           myGCFlag=false;
           myGCValues=myGCNewValues;
-          myGCMarks=myGCNewMarks; 
-          for (std::list<Task*>::iterator task=myActiveTasks.begin(); task!=myActiveTasks.end(); ++task)
-            (*task)->Mark(myGCMarks);
+          //myGCMarks=myGCNewMarks; 
+          //for (std::list<Task*>::iterator task=myActiveTasks.begin(); task!=myActiveTasks.end(); ++task)
+          //  (*task)->Mark(myGCMarks);
           myGCReady=true; // GC results are ready
           myGCNewValues.clear();
           myGCNewMarks.clear();
