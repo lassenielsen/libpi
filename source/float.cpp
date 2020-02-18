@@ -36,6 +36,7 @@ Float::Float(const Float &lhs, const Float &rhs, Float::FLOATOP op, gc::GCRegist
 } // }}}
 Float &Float::operator=(const Float &rhs) // {{{
 { mpf_set(myValue,rhs.GetValue());
+  return *this;
 } // }}}
 
 Float::Float(const std::string &val, gc::GCRegistrant *registrant) // {{{

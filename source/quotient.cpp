@@ -36,6 +36,7 @@ Quotient::Quotient(const Quotient &lhs, const Quotient &rhs, Quotient::QUOTOP op
 } // }}}
 Quotient &Quotient::operator=(const Quotient &rhs) // {{{
 { mpq_set(myValue,rhs.GetValue());
+  return *this;
 } // }}}
 
 Quotient::Quotient(gc::GCRegistrant * registrant) // {{{
