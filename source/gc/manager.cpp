@@ -80,7 +80,7 @@ void GCManager::Manage(vector<task::Worker*> &workers, size_t run_interval, size
     { cout << "GC(" << MNOW << "): Deleting value at " << *val << endl;
       string t=(*val)->GetType();
       cout << "GC(" << MNOW << "): Deleting value " << t << ":" << flush;
-      if (t!="sta" && t!="lnk")
+      if (t!="ses" && t!="lnk")
         (*val)->ToStream(cout);
       cout << " at " << *val << endl;
       delete *val;
