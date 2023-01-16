@@ -6,6 +6,7 @@
 #include <set>
 #include <atomic>
 #include <unordered_set>
+#include <iostream>
 
 namespace libpi
 {
@@ -89,7 +90,12 @@ namespace libpi
         //! Used by GC to signal that GC is complete, and it is safe to resume work
         void GCDone() { myGCReady=false; return myGCDoneLock.Release(); }
         //! Used by tasks to pre-mark values
-        void GCMark(libpi::Value *object) { if (object) object->Mark(myGCNewMarks); }
+        void GCMark(libpi::Value *object)
+        { if (object!=NULL)
+          { std::cout << "Calling Mark on object: " << object << std::endl;
+            object->Mark(myGCNewMarks);
+          }
+        }
         //! Used by tasks to clear pre-marked values
         void GCClearMarks() { myGCNewMarks.clear(); }
 
