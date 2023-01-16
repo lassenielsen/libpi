@@ -26,7 +26,7 @@ OS_AUTO = $(shell uname -s)
 compiler = g++
 ctags = ctags
 opt = -O3
-opt_debug = -pg -g -gstabs -DPIDEBUG
+opt_debug = -g -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
