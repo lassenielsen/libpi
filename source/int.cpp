@@ -13,6 +13,7 @@ Int::Int(const Int &val) // {{{
 } // }}}
 Int &Int::operator=(const Int &rhs) // {{{
 { mpz_set(myValue,rhs.GetValue());
+  return *this;
 } // }}}
 
 Int::Int(const std::string &val) // {{{
