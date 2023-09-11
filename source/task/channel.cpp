@@ -27,11 +27,23 @@ void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 { throw string("Using original send on task level channel");
 } // }}}
 
+void Channel::Send(long int val) // {{{
+{ throw string("Using original send on task level channel");
+} // }}}
+
 void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { throw string("Using original send on task level channel");
 } // }}}
 
+void Channel::SingleSend(long int val) // {{{
+{ throw string("Using original send on task level channel");
+} // }}}
+
 void Channel::Send(const shared_ptr<Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+{ SingleSend(sender,val);
+} // }}}
+
+void Channel::Send(const shared_ptr<Task> &sender, long int val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
@@ -51,7 +63,27 @@ void Channel::SingleSend(const shared_ptr<Task> &sender, const shared_ptr<libpi:
   }
 } // }}}
 
+void Channel::SingleSend(const shared_ptr<Task> &sender, long int val) // {{{
+{ pthread_mutex_lock(&myLock);
+  if (myUnsafeTasks.size()>0) // Pop task
+  { pair<shared_ptr<Task>,long int&> elt=myUnsafeTasks.front();
+    myUnsafeTasks.pop();
+    pthread_mutex_unlock(&myLock);
+    elt.second=val;
+    elt.first->SetWorker(&sender->GetWorker()); // Use senders worker, to avoid the need for synchronization
+    sender->GetWorker().AddTask(elt.first);
+  }
+  else // Store in myUnsafeMsgs
+  { myUnsafeMsgs.push(val);
+    pthread_mutex_unlock(&myLock);
+  }
+} // }}}
+
 shared_ptr<libpi::Value> Channel::Receive() // {{{
+{ throw string("Using original receive on task level channel");
+} // }}}
+
+void Channel::Receive(long int &dest) // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
@@ -59,7 +91,15 @@ bool Channel::Receive(const shared_ptr<Task> &task, shared_ptr<libpi::Value> &de
 { return SingleReceive(task,dest);
 } // }}}
 
+bool Channel::Receive(const shared_ptr<Task> &task, long int &dest) // {{{
+{ return SingleReceive(task,dest);
+} // }}}
+
 shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
+{ throw string("Using original receive on task level channel");
+} // }}}
+
+void Channel::SingleReceive(long int &dest) // {{{
 { throw string("Using original receive on task level channel");
 } // }}}
 
@@ -73,6 +113,21 @@ bool Channel::SingleReceive(const shared_ptr<Task> &task, shared_ptr<libpi::Valu
   }
   else // Task waits in queue
   { myTasks.push(pair<shared_ptr<Task>,shared_ptr<libpi::Value>&>(task,dest));
+    pthread_mutex_unlock(&myLock);
+    return false;
+  }
+} // }}}
+
+bool Channel::SingleReceive(const shared_ptr<Task> &task, long int &dest) // {{{
+{ pthread_mutex_lock(&myLock);
+  if (myUnsafeMsgs.size()>0) // Pop msg
+  { dest=myUnsafeMsgs.front();
+    myUnsafeMsgs.pop();
+    pthread_mutex_unlock(&myLock);
+    return true;
+  }
+  else // Task waits in queue
+  { myUnsafeTasks.push(pair<shared_ptr<Task>,long int&>(task,dest));
     pthread_mutex_unlock(&myLock);
     return false;
   }

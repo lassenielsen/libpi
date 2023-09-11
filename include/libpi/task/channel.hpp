@@ -35,15 +35,23 @@ namespace libpi {
 
         // Unsupported interface
         void Send(const std::shared_ptr<libpi::Value> &msg);
+        void Send(long int msg);
         void SingleSend(const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(long int msg);
         std::shared_ptr<Value> Receive();
+        void Receive(long int &dest);
         std::shared_ptr<Value> SingleReceive();
+        void SingleReceive(long int &dest);
 
         // Actual methods
         void Send(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
+        void Send(const std::shared_ptr<Task> &sender, long int msg);
         void SingleSend(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<Task> &sender, long int msg);
         bool Receive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        bool Receive(const std::shared_ptr<Task> &receiver, long int &dest);
         bool SingleReceive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        bool SingleReceive(const std::shared_ptr<Task> &receiver, long int &dest);
     
         std::string GetAddress() const;
 
@@ -54,7 +62,9 @@ namespace libpi {
       private:
         pthread_mutex_t myLock;
         std::queue<std::pair<std::shared_ptr<Task>,std::shared_ptr<libpi::Value>&> > myTasks;
+        std::queue<std::pair<std::shared_ptr<Task>,long int&> > myUnsafeTasks;
         std::queue<std::shared_ptr<libpi::Value> > myMsgs;
+        std::queue<long int> myUnsafeMsgs;
     };
   }
 }

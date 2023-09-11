@@ -33,13 +33,21 @@ namespace libpi {
         void Unlink();
 
         void Send(const std::shared_ptr<libpi::Value> &msg);
+        void Send(long int msg);
         void SingleSend(const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(long int msg);
         void Send(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<libpi::Value> &msg);
+        void Send(const std::shared_ptr<task::Task> &sender, long int msg);
         void SingleSend(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<libpi::Value> &msg);
+        void SingleSend(const std::shared_ptr<task::Task> &sender, long int msg);
         std::shared_ptr<libpi::Value> Receive();
+        void Receive(long int &dest);
         bool Receive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        bool Receive(const std::shared_ptr<task::Task> &receiver, long int &dest);
         std::shared_ptr<libpi::Value> SingleReceive();
+        void SingleReceive(long int &dest);
         bool SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        bool SingleReceive(const std::shared_ptr<task::Task> &receiver, long int &dest);
     
         std::string GetAddress() const;
 
@@ -51,9 +59,12 @@ namespace libpi {
 
       private:
         std::queue<std::shared_ptr<libpi::Value> > msgs;
+        std::queue<long int> unsafemsgs;
         Mutex sync;
+        Mutex unsafesync;
         Mutex lock;
         std::atomic<int> msg_count;
+        std::atomic<int> unsafemsg_count;
     };
   }
 }

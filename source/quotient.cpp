@@ -14,6 +14,7 @@ Quotient::Quotient(const Quotient &val) // {{{
 } // }}}
 Quotient &Quotient::operator=(const Quotient &rhs) // {{{
 { mpq_set(myValue,rhs.GetValue());
+  return *this;
 } // }}}
 
 Quotient::Quotient() // {{{

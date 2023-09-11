@@ -9,9 +9,12 @@ namespace libpi
   {
 Channel::Channel() // {{{
 : msgs()
+, unsafemsgs()
 , sync(true)
+, unsafesync(true)
 , lock()
 , msg_count(0)
+, unsafemsg_count(0)
 {
 } // }}}
 
@@ -31,6 +34,10 @@ void Channel::Send(const shared_ptr<libpi::Value> &val) // {{{
 { SingleSend(val);
 } // }}}
 
+void Channel::Send(long int val) // {{{
+{ SingleSend(val);
+} // }}}
+
 void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
 { lock.Lock();
   msgs.push(val);
@@ -40,7 +47,20 @@ void Channel::SingleSend(const shared_ptr<libpi::Value> &val) // {{{
     sync.Release();
 } // }}}
 
+void Channel::SingleSend(long int val) // {{{
+{ lock.Lock();
+  unsafemsgs.push(val);
+  int currentCount=++(unsafemsg_count);
+  lock.Release();
+  if (currentCount==1)
+    unsafesync.Release();
+} // }}}
+
 void Channel::Send(const std::shared_ptr<task::Task> &sender, const shared_ptr<libpi::Value> &val) // {{{
+{ SingleSend(sender,val);
+} // }}}
+
+void Channel::Send(const std::shared_ptr<task::Task> &sender, long int val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
@@ -48,11 +68,23 @@ void Channel::SingleSend(const std::shared_ptr<task::Task> &sender, const shared
 { SingleSend(val);
 } // }}}
 
+void Channel::SingleSend(const std::shared_ptr<task::Task> &sender, long int  val) // {{{
+{ SingleSend(val);
+} // }}}
+
 shared_ptr<libpi::Value> Channel::Receive() // {{{
 { return SingleReceive();
 } // }}}
 
+void Channel::Receive(long int &dest) // {{{
+{ return SingleReceive(dest);
+} // }}}
+
 bool Channel::Receive(const std::shared_ptr<task::Task> &receiver, shared_ptr<libpi::Value> &dest) // {{{
+{ return SingleReceive(receiver,dest);
+} // }}}
+
+bool Channel::Receive(const std::shared_ptr<task::Task> &receiver, long int &dest) // {{{
 { return SingleReceive(receiver,dest);
 } // }}}
 
@@ -68,8 +100,25 @@ shared_ptr<libpi::Value> Channel::SingleReceive() // {{{
   return result;
 } // }}}
 
+void Channel::SingleReceive(long int &dest) // {{{
+{ unsafesync.Lock();
+  lock.Lock();
+  size_t currentCount=--(msg_count);
+  dest=unsafemsgs.front();
+  unsafemsgs.pop();
+  if (currentCount>0)
+    sync.Release();
+  lock.Release();
+  return;
+} // }}}
+
 bool Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<libpi::Value> &dest) // {{{
 { dest=SingleReceive();
+  return true;
+} // }}}
+
+bool Channel::SingleReceive(const std::shared_ptr<task::Task> &receiver, long int &dest) // {{{
+{ SingleReceive(dest);
   return true;
 } // }}}
 

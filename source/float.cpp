@@ -14,6 +14,7 @@ Float::Float(const Float &val) // {{{
 } // }}}
 Float &Float::operator=(const Float &rhs) // {{{
 { mpf_set(myValue,rhs.GetValue());
+  return *this;
 } // }}}
 
 Float::Float(const std::string &val) // {{{
