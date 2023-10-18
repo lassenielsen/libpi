@@ -7,7 +7,7 @@ using namespace std;
 
 map<string,Channel::channel_creator> Channel::ourChannelCreators;
 
-shared_ptr<Channel> Channel::Create(const string &address) // {{{
+Channel *Channel::Create(const string &address) // {{{
 { // Split address into its components
   int pos=address.find("://");
   if (pos<0) throw string("Channel::Create: address is not formatted correctly, missing ://");
@@ -18,19 +18,19 @@ shared_ptr<Channel> Channel::Create(const string &address) // {{{
   return create(address);
 } // }}}
 
-shared_ptr<Bool> Channel::operator==(const Value &rhs) const // {{{
+Bool *Channel::operator==(const Value &rhs) const // {{{
 { const Channel *rhsptr=dynamic_cast<const Channel*>(&rhs);
   return Bool::GetInstance(rhsptr!=NULL && GetAddress()==rhsptr->GetAddress());
 } // }}}
-shared_ptr<Bool> Channel::operator<=(const Value &rhs) const // {{{
+Bool *Channel::operator<=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-shared_ptr<Bool> Channel::operator<(const Value &rhs) const // {{{
+Bool *Channel::operator<(const Value &rhs) const // {{{
 { return Bool::GetInstance(false);
 } // }}}
-shared_ptr<Bool> Channel::operator>=(const Value &rhs) const // {{{
+Bool *Channel::operator>=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-shared_ptr<Bool> Channel::operator>(const Value &rhs) const // {{{
+Bool *Channel::operator>(const Value &rhs) const // {{{
 { return Bool::GetInstance(false);
 } // }}}

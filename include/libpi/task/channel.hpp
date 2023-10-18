@@ -14,15 +14,12 @@ namespace libpi {
   namespace task {
 // DOCUMENTATION: Channel class {{{
 /*!
- * libpi::thread::Channel implements a thread-level channel.
- * This allows threads to send and receive messages in an efficient
+ * libpi::task::Channel implements a task-level channel.
+ * This allows tasks to send and receive messages in an efficient
  * way.
  * This is because the transmitted values are not serialized and
  * re-parsed as is necessary for process level channels and network
  * level channels.
- * Thread level channels are implemented via a
- * std::queue<std::shared_ptr<const Value> > structure,
- * synchronized using mutexes.
  */
 // }}}
     class Channel : public libpi::Channel
@@ -34,16 +31,20 @@ namespace libpi {
         void Unlink();
 
         // Unsupported interface
-        void Send(const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<libpi::Value> &msg);
-        std::shared_ptr<Value> Receive();
-        std::shared_ptr<Value> SingleReceive();
+        void Send(libpi::Value *msg);
+        void SingleSend(libpi::Value *msg);
+        Value *Receive();
+        Value *SingleReceive();
 
         // Actual methods
-        void Send(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        void SingleSend(const std::shared_ptr<Task> &sender, const std::shared_ptr<libpi::Value> &msg);
-        bool Receive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
-        bool SingleReceive(const std::shared_ptr<Task> &receiver, std::shared_ptr<libpi::Value> &dest);
+        void Send(Task *sender, libpi::Value *msg);
+        void SingleSend(Task *sender, libpi::Value *msg);
+        void Send(Task *sender, long int msg);
+        void SingleSend(Task *sender, long int msg);
+        bool Receive(Task *receiver, libpi::Value **dest);
+        bool Receive(Task *receiver, long int *dest);
+        bool SingleReceive(Task *receiver, libpi::Value **dest);
+        bool SingleReceive(Task *receiver, long int *dest);
     
         std::string GetAddress() const;
 
@@ -53,8 +54,10 @@ namespace libpi {
 
       private:
         pthread_mutex_t myLock;
-        std::queue<std::pair<std::shared_ptr<Task>,std::shared_ptr<libpi::Value>&> > myTasks;
-        std::queue<std::shared_ptr<libpi::Value> > myMsgs;
+        std::queue<std::pair<Task*,libpi::Value**> > myTasks;
+        std::queue<libpi::Value*> myMsgs;
+        std::queue<std::pair<Task*,long int*> > myIntTasks;
+        std::queue<long int> myIntMsgs;
     };
   }
 }

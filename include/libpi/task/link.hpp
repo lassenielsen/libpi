@@ -19,18 +19,18 @@ class Link : public libpi::Link // {{{
     virtual ~Link();
     virtual std::string GetType() const;
     virtual void ToStream(std::ostream &dest) const;
-    virtual std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
-    virtual std::shared_ptr<Session> Connect(int pid, int actors);
+    virtual Bool *operator==(const Value &rhs) const;
+    virtual Bool *operator<=(const Value &rhs) const;
+    virtual Bool *operator<(const Value &rhs) const;
+    virtual Bool *operator>=(const Value &rhs) const;
+    virtual Bool *operator>(const Value &rhs) const;
+    virtual Session *Connect(int pid, int actors);
 
-    const std::vector<std::shared_ptr<Channel> > &GetChannels() const { return myChannels; }
-    std::vector<std::shared_ptr<Channel> > &GetChannels() { return myChannels; }
+    const std::vector<Channel*> &GetChannels() const { return myChannels; }
+    std::vector<Channel*> &GetChannels() { return myChannels; }
 
   private:
-    std::vector<std::shared_ptr<Channel> > myChannels;
+    std::vector<Channel*> myChannels;
 }; // }}}
   }
 }

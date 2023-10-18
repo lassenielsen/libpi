@@ -21,16 +21,16 @@ class String : public Value // {{{
 
     std::string GetType() const { return "str"; }
     void ToStream(std::ostream &dest) const;
-    std::shared_ptr<String> operator+(const String &rhs) const;
-    virtual std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    String *operator+(const String &rhs) const;
+    Bool *operator==(const Value &rhs) const;
+    Bool *operator<=(const Value &rhs) const;
+    Bool *operator<(const Value &rhs) const;
+    Bool *operator>=(const Value &rhs) const;
+    Bool *operator>(const Value &rhs) const;
 
     const std::string &GetValue() const { return myValue; }
 
-    static std::shared_ptr<Value> ParseString(std::istream &in);
+    static Value *ParseString(std::istream &in);
 
   private:
     std::string myValue;

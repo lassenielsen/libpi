@@ -65,55 +65,55 @@ void Quotient::ToStream(ostream &dest) const // {{{
   dest << str;
   free(str);
 } // }}}
-shared_ptr<Quotient> Quotient::operator+(const Quotient &rhs) const // {{{
-{ shared_ptr<Quotient> res=shared_ptr<Quotient>(new Quotient(false));
+Quotient *Quotient::operator+(const Quotient &rhs) const // {{{
+{ Quotient *res=new Quotient(false);
   mpq_add(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-shared_ptr<Quotient> Quotient::operator-(const Quotient &rhs) const // {{{
-{ shared_ptr<Quotient> res=shared_ptr<Quotient>(new Quotient(false));
+Quotient *Quotient::operator-(const Quotient &rhs) const // {{{
+{ Quotient *res=new Quotient(false);
   mpq_sub(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-shared_ptr<Quotient> Quotient::operator*(const Quotient &rhs) const // {{{
-{ shared_ptr<Quotient> res=shared_ptr<Quotient>(new Quotient(false));
+Quotient *Quotient::operator*(const Quotient &rhs) const // {{{
+{ Quotient *res=new Quotient(false);
   mpq_mul(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-shared_ptr<Quotient> Quotient::operator/(const Quotient &rhs) const // {{{
-{ shared_ptr<Quotient> res=shared_ptr<Quotient>(new Quotient(false));
+Quotient *Quotient::operator/(const Quotient &rhs) const // {{{
+{ Quotient *res=new Quotient(false);
   mpq_div(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-shared_ptr<Bool> Quotient::operator==(const Value &rhs) const // {{{
+Bool *Quotient::operator==(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp==0);
 } // }}}
-shared_ptr<Bool> Quotient::operator<=(const Value &rhs) const // {{{
+Bool *Quotient::operator<=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp<=0);
 } // }}}
-shared_ptr<Bool> Quotient::operator<(const Value &rhs) const // {{{
+Bool *Quotient::operator<(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp<0);
 } // }}}
-shared_ptr<Bool> Quotient::operator>=(const Value &rhs) const // {{{
+Bool *Quotient::operator>=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
   return Bool::GetInstance(cmp>=0);
 } // }}}
-shared_ptr<Bool> Quotient::operator>(const Value &rhs) const // {{{
+Bool *Quotient::operator>(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
@@ -121,11 +121,11 @@ shared_ptr<Bool> Quotient::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-shared_ptr<Value> Quotient::ParseQuotient(std::istream &in) // {{{
+Value *Quotient::ParseQuotient(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return shared_ptr<Quotient>(new Quotient(str));
+  return new Quotient(str);
 } // }}}
 
 namespace quotientvalue

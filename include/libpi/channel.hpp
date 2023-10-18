@@ -22,7 +22,7 @@ namespace libpi
 // }}}
 class Channel : public Value
 { public:
-    typedef std::shared_ptr<Channel> (*channel_creator)(const std::string &);
+    typedef Channel* (*channel_creator)(const std::string &);
     virtual ~Channel() {}
 
 //* DOCUMENTATION: Unlink Method {{{
@@ -33,11 +33,11 @@ class Channel : public Value
 // }}}
     virtual void Unlink()=0;
 
-    std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    Bool* operator==(const Value &rhs) const;
+    Bool* operator<=(const Value &rhs) const;
+    Bool* operator<(const Value &rhs) const;
+    Bool* operator>=(const Value &rhs) const;
+    Bool* operator>(const Value &rhs) const;
 
 // DOCUMENTATION: Send method {{{
 /*!
@@ -45,7 +45,7 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void Send(const std::shared_ptr<Value> &msg)=0;
+    virtual void Send(Value *msg)=0;
 // DOCUMENTATION: Send method {{{
 /*!
  * Task level send method. Enables the receiving task to be sceduled on the
@@ -55,7 +55,7 @@ class Channel : public Value
  * bede requeued by the channel when the message is received.
  */
 // }}}
-    virtual void Send(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &msg)=0;
+    virtual void Send(task::Task *sender, Value *msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -64,19 +64,19 @@ class Channel : public Value
  * The transmitted value is consumed.
  */
 // }}}
-    virtual void SingleSend(const std::shared_ptr<Value> &msg)=0;
+    virtual void SingleSend(Value *msg)=0;
 // DOCUMENTATION: Send method {{{
 /*!
  * Task level single packet send method.
  */
 // }}}
-    virtual void SingleSend(const std::shared_ptr<task::Task> &sender, const std::shared_ptr<Value> &msg)=0;
+    virtual void SingleSend(task::Task *sender, Value *msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
  */
 // }}}
-    virtual std::shared_ptr<Value> Receive()=0;
+    virtual Value *Receive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Task level receive method. Enables the task to be stored in a local queue
@@ -86,14 +86,14 @@ class Channel : public Value
  * be requeued by the channel when the message is received.
  */
 // }}}
-    virtual bool Receive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest)=0;
+    virtual bool Receive(task::Task *receiver, Value **dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
 // }}}
-    virtual std::shared_ptr<Value> SingleReceive()=0;
+    virtual Value *SingleReceive()=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Task level receive method. Enables the task to be stored in a local queue until the decired message is received.
@@ -102,7 +102,7 @@ class Channel : public Value
  * be requeued by the channel when the message is received.
  */
 // }}}
-    virtual bool SingleReceive(const std::shared_ptr<task::Task> &receiver, std::shared_ptr<Value> &dest)=0;
+    virtual bool SingleReceive(task::Task *receiver, Value **dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used
@@ -120,7 +120,7 @@ class Channel : public Value
  * of all the supported protocol types.
  */
 // }}}
-    static std::shared_ptr<Channel> Create(const std::string &address);
+    static Channel *Create(const std::string &address);
 
   private:
 // DOCUMENTATION: ourSessionCreators field {{{

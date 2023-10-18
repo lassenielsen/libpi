@@ -14,5 +14,5 @@ void Task::ToStream(std::ostream &dest) const // {{{
 } // }}}
 
 std::string Task::GetType() const // {{{
-{ return "sta";
+{ return "tsk";
 } // }}}

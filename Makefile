@@ -14,11 +14,11 @@ name = libpi
 version = 2018
 libname = $(name).so
 libname_debug = $(name)_debug.so
-libname = $(name).so
-libname_debug = $(name)_debug.so
+#OS_LINUXlibname = $(name).so
+#OS_LINUXlibname_debug = $(name)_debug.so
 #OS_MAClibname = $(name).dylib
 #OS_MAClibname_debug = $(name)_debug.dylib
-libversion = .$(version)
+#OS_LINUXlibversion = .$(version)
 #OS_MAClibversion =
 COMMENT = OS_
 OS_AUTO = $(shell uname -s)
@@ -30,8 +30,8 @@ opt_debug = -pg -g -DPIDEBUG
 args = -std=c++11 -fPIC $(opt) -I./include/
 args_debug = -std=c++11 -fPIC $(opt_debug) -I./include/
 #OS_MAClibs = 
-libs = -lrt -lgmp -lb64
-libs_debug = -lrt -lgmp -lb64
+#OS_LINUXlibs = -lrt -lgmp -lb64
+#OS_LINUXlibs_debug = -lrt -lgmp -lb64
 
 library_objects = \
   objects/message.o \
@@ -44,12 +44,12 @@ library_objects = \
   objects/channel.o \
   objects/session.o \
   objects/tuple.o \
-  objects/thread/link.o \
-  objects/thread/channel.o \
   objects/task/task.o \
   objects/task/worker.o \
   objects/task/channel.o \
   objects/task/link.o \
+#  objects/thread/link.o \
+#  objects/thread/channel.o \
 #  objects/process/link.o \
 #  objects/process/channel.o \
 #  objects/network/link.o \
@@ -66,12 +66,12 @@ library_objects_debug = \
   objects_debug/channel.o \
   objects_debug/session.o \
   objects_debug/tuple.o \
-  objects_debug/thread/link.o \
-  objects_debug/thread/channel.o \
   objects_debug/task/task.o \
   objects_debug/task/worker.o \
   objects_debug/task/channel.o \
   objects_debug/task/link.o \
+#  objects_debug/thread/link.o \
+#  objects_debug/thread/channel.o \
 #  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
 #  objects_debug/network/link.o \
@@ -115,15 +115,15 @@ include/$(name)/config.hpp:
 	@echo "#define CONFIG_DPL" >> include/$(name)/config.hpp
 	@echo "#include <string>" >> include/$(name)/config.hpp
 #OS_MAC	@echo "#define OS_X" >> include/$(name)/config.hpp
-	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
+#OS_LINUX	@echo "#define OS_LINUX" >> include/$(name)/config.hpp
 	@echo "#endif" >> include/$(name)/config.hpp
 
 install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	@echo "Copying library"
 	cp $(libname)$(libversion) /usr/lib/
 	cp $(libname_debug)$(libversion) /usr/lib/
-	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
-	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
+#OS_LINUX	ln -f -s /usr/lib/$(libname)$(libversion) /usr/lib/$(libname)
+#OS_LINUX	ln -f -s /usr/lib/$(libname_debug)$(libversion) /usr/lib/$(libname_debug)
 	@echo "Copying include-files"
 	mkdir -p /usr/include/$(name)
 	cp include/$(name)/*.hpp /usr/include/$(name)/
@@ -132,8 +132,8 @@ install: $(libname)$(libversion) $(libname_debug)$(libversion)
 	mkdir -p /usr/include/$(name)/task
 	cp include/$(name)/task/*.hpp /usr/include/$(name)/task/
 	chmod -R a+rx /usr/include/$(name)
-	@echo "Reindexing libraries"
-	ldconfig -n /usr/lib
+#OS_LINUX	@echo "Reindexing libraries"
+#OS_LINUX	ldconfig -n /usr/lib
 
 uninstall:
 	@echo "Removing library"
@@ -141,8 +141,8 @@ uninstall:
 	rm -f /usr/lib/$(libname_debug)*
 	@echo "Removing include-files"
 	rm -Rf /usr/include/$(name)
-	@echo "Reindexing libraries"
-	ldconfig -n /usr/lib
+#OS_LINUX	@echo "Reindexing libraries"
+#OS_LINUX	ldconfig -n /usr/lib
 
 clean:
 	touch clean~
@@ -210,11 +210,11 @@ deb: $(libname)$(libversion) $(libname_debug)$(libversion)
 	rm -Rf debs/$(name)_$(version)_i386
 
 $(libname)$(libversion): $(library_objects)
-	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
+#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname).1 -o $(libname)$(libversion) $(library_objects) $(libs)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs)
 
 $(libname_debug)$(libversion): $(library_objects_debug)
-	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
+#OS_LINUX	$(compiler) -shared -Wl,-soname,$(libname_debug).1 -o $(libname_debug)$(libversion) $(library_objects_debug) $(libs_debug)
 #OS_MAC	$(compiler) -dynamiclib -o $(libname) $(library_objects) $(libs_debug)
 
 objects/task/%.o: source/task/%.cpp include/$(name)/*.hpp include/$(name)/task/*.hpp include/$(name)/config.hpp

@@ -4,6 +4,7 @@
 #include <memory>
 #include <ostream>
 #include <istream>
+#include <atomic>
 
 namespace libpi
 {
@@ -12,11 +13,12 @@ class Bool;
 // DOCUMENTATION: Value class {{{
 /*!
  * Value defines the common interface for all value, and also represents the unit values.
+ * Defines interface for basic operations, and also holds the reference counting functionality.
  */
 // }}}
 class Value // {{{
 { public:
-    typedef std::shared_ptr<Value> (*value_creator)(std::istream &);
+    typedef Value* (*value_creator)(std::istream &);
   public:
     Value();
     Value(const std::string &str);
@@ -26,18 +28,21 @@ class Value // {{{
     std::string ToString() const;
     void Serialize(std::ostream &dest) const;
     std::string Serialize() const;
-    virtual std::shared_ptr<Bool> operator==(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator<(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>=(const Value &rhs) const;
-    virtual std::shared_ptr<Bool> operator>(const Value &rhs) const;
+    virtual Bool* operator==(const Value &rhs) const;
+    virtual Bool* operator<=(const Value &rhs) const;
+    virtual Bool* operator<(const Value &rhs) const;
+    virtual Bool* operator>=(const Value &rhs) const;
+    virtual Bool* operator>(const Value &rhs) const;
 
-    static std::shared_ptr<Value> Parse(const std::string &str);
-    static std::shared_ptr<Value> Parse(std::istream &in);
+    static Value* Parse(const std::string &str);
+    static Value* Parse(std::istream &in);
     static int RegisterParser(const std::string &type, value_creator p);
 
+    inline void AddRef() { ++myRefCount; }
+    inline void RemoveRef() { --myRefCount; if (myRefCount<=0) delete this; }
   private:
     static std::map<std::string,value_creator> ourParsers;
+    std::atomic<int> myRefCount;
 }; // }}}
 
 }

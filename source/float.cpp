@@ -49,59 +49,59 @@ void Float::ToStream(ostream &dest) const // {{{
     dest << "0." << string(1-int(exp),'0') << string(str);
   free(str);
 } // }}}
-shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{
+Float *Float::operator+(const Float &rhs) const // {{{
 { mpf_t res;
   mpf_init2(res,256);
   mpf_add(res,myValue,rhs.GetValue());
-  return shared_ptr<Float>(new Float(res,true));
+  return new Float(res,true);
 } // }}}
-shared_ptr<Float> Float::operator-(const Float &rhs) const // {{{
+Float *Float::operator-(const Float &rhs) const // {{{
 { mpf_t res;
   mpf_init2(res,256);
   mpf_sub(res,myValue,rhs.GetValue());
-  return shared_ptr<Float>(new Float(res,true));
+  return new Float(res,true);
 } // }}}
-shared_ptr<Float> Float::operator*(const Float &rhs) const // {{{
+Float *Float::operator*(const Float &rhs) const // {{{
 { mpf_t res;
   mpf_init2(res,256);
   mpf_mul(res,myValue,rhs.GetValue());
-  return shared_ptr<Float>(new Float(res,true));
+  return new Float(res,true);
 } // }}}
-shared_ptr<Float> Float::operator/(const Float &rhs) const // {{{
+Float *Float::operator/(const Float &rhs) const // {{{
 { mpf_t res;
   mpf_init2(res,256);
   mpf_div(res,myValue,rhs.GetValue());
-  return shared_ptr<Float>(new Float(res,true));
+  return new Float(res,true);
 } // }}}
-shared_ptr<Bool> Float::operator==(const Value &rhs) const // {{{
+Bool *Float::operator==(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp==0);
 } // }}}
-shared_ptr<Bool> Float::operator<=(const Value &rhs) const // {{{
+Bool *Float::operator<=(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp<=0);
 } // }}}
-shared_ptr<Bool> Float::operator<(const Value &rhs) const // {{{
+Bool *Float::operator<(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp<0);
 } // }}}
-shared_ptr<Bool> Float::operator>=(const Value &rhs) const // {{{
+Bool *Float::operator>=(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
   return Bool::GetInstance(cmp>=0);
 } // }}}
-shared_ptr<Bool> Float::operator>(const Value &rhs) const // {{{
+Bool *Float::operator>(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
     return Bool::GetInstance(false);
@@ -109,11 +109,11 @@ shared_ptr<Bool> Float::operator>(const Value &rhs) const // {{{
   return Bool::GetInstance(cmp>0);
 } // }}}
 
-shared_ptr<Value> Float::ParseFloat(std::istream &in) // {{{
+Value *Float::ParseFloat(std::istream &in) // {{{
 { char delimiter=':';
   string str;
   std::getline(in,str,delimiter);
-  return shared_ptr<Float>(new Float(str));
+  return new Float(str);
 } // }}}
 
 namespace floatvalue

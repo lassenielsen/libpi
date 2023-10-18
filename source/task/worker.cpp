@@ -4,7 +4,7 @@
 using namespace std;
 using namespace libpi::task;
 
-bool _methods(shared_ptr<Task> &_task);
+bool _methods(Task *_task);
 
 atomic<size_t> Worker::ActiveTasks(0);
 size_t Worker::TargetTasks=std::thread::hardware_concurrency(); // Target number of active processes per worker
@@ -33,8 +33,8 @@ Worker_Pool::~Worker_Pool() // {{{
     { // Test if program is complete
       if (ActiveTasks==0)
       { ourIdleWorkersLock.Lock();
-        shared_ptr<Task> nullTask;
-	while (!ourIdleWorkers.empty())
+        Task *nullTask=NULL;
+        while (!ourIdleWorkers.empty())
         { ourIdleWorkers.front()->EmployTask(nullTask);
           ourIdleWorkers.pop();
         }
@@ -50,7 +50,7 @@ Worker_Pool::~Worker_Pool() // {{{
         ourIdleWorkersLock.Release();
         myWaitLock.Lock();
       }
-      shared_ptr<Task> task=myActiveTasks.front();
+      Task *task=myActiveTasks.front();
       myActiveTasks.pop();
 
       resume_task:
@@ -73,19 +73,19 @@ Worker_Pool::~Worker_Pool() // {{{
 } // }}}
 */
 
-void Worker_Pool::EmployTask(shared_ptr<Task> &task) // {{{
+void Worker_Pool::EmployTask(Task *task) // {{{
 { if (task)
     task->SetWorker(this);
   myActiveTasks.push(task);
   myWaitLock.Release();
 } // }}}
 
-void Worker_Pool::AddTask(shared_ptr<Task> &task) // {{{
+void Worker_Pool::AddTask(Task *task) // {{{
 { ++ActiveTasks;
   QueueTask(task);
 } // }}}
 
-void Worker_Pool::QueueTask(shared_ptr<Task> &task) // {{{
+void Worker_Pool::QueueTask(Task *task) // {{{
 { if (ourIdleWorkersSize>0)
   { ourIdleWorkersLock.Lock();
     if (ourIdleWorkersSize>0)

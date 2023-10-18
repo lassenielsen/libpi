@@ -44,12 +44,12 @@ library_objects = \
   objects/channel.o \
   objects/session.o \
   objects/tuple.o \
-  objects/thread/link.o \
-  objects/thread/channel.o \
   objects/task/task.o \
   objects/task/worker.o \
   objects/task/channel.o \
   objects/task/link.o \
+#  objects/thread/link.o \
+#  objects/thread/channel.o \
 #  objects/process/link.o \
 #  objects/process/channel.o \
 #  objects/network/link.o \
@@ -66,12 +66,12 @@ library_objects_debug = \
   objects_debug/channel.o \
   objects_debug/session.o \
   objects_debug/tuple.o \
-  objects_debug/thread/link.o \
-  objects_debug/thread/channel.o \
   objects_debug/task/task.o \
   objects_debug/task/worker.o \
   objects_debug/task/channel.o \
   objects_debug/task/link.o \
+#  objects_debug/thread/link.o \
+#  objects_debug/thread/channel.o \
 #  objects_debug/process/link.o \
 #  objects_debug/process/channel.o \
 #  objects_debug/network/link.o \
