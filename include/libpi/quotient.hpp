@@ -37,11 +37,11 @@ class Quotient : public Value // {{{
     //! Quotient division
     Quotient *operator/(const Quotient &rhs) const;
     //! Quotienteger comparison
-    Bool *operator==(const Value &rhs) const;
-    Bool *operator<=(const Value &rhs) const;
-    Bool *operator<(const Value &rhs) const;
-    Bool *operator>=(const Value &rhs) const;
-    Bool *operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     const mpq_t &GetValue() const {return myValue;}
     mpq_t &GetValue() {return myValue;}

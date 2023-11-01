@@ -23,44 +23,44 @@ void Bool::ToStream(ostream &dest) const // {{{
   else
     dest << "false";
 } // }}}
-Bool* Bool::operator&&(const Bool &rhs) const // {{{
-{ return GetInstance(GetValue() && rhs.GetValue());
+bool Bool::operator&&(const Bool &rhs) const // {{{
+{ return GetValue() && rhs.GetValue();
 } // }}}
-Bool* Bool::operator||(const Bool &rhs) const // {{{
-{ return GetInstance(GetValue() || rhs.GetValue());
+bool Bool::operator||(const Bool &rhs) const // {{{
+{ return GetValue() || rhs.GetValue();
 } // }}}
-Bool* Bool::operator!() const // {{{
-{ return GetInstance(!GetValue());
+bool Bool::operator!() const // {{{
+{ return !GetValue();
 } // }}}
-Bool* Bool::operator==(const Value &rhs) const // {{{
+bool Bool::operator==(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return GetInstance(false);
-  return GetInstance(myValue==rhsptr->GetValue());
+    return false;
+  return myValue==rhsptr->GetValue();
 } // }}}
-Bool* Bool::operator<=(const Value &rhs) const // {{{
+bool Bool::operator<=(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return GetInstance(false);
-  return GetInstance(rhsptr->GetValue() || !myValue);
+    return false;
+  return rhsptr->GetValue() || !myValue;
 } // }}}
-Bool* Bool::operator<(const Value &rhs) const // {{{
+bool Bool::operator<(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return GetInstance(false);
-  return GetInstance(rhsptr->GetValue() && !myValue);
+    return false;
+  return rhsptr->GetValue() && !myValue;
 } // }}}
-Bool* Bool::operator>=(const Value &rhs) const // {{{
+bool Bool::operator>=(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return GetInstance(false);
-  return GetInstance(myValue || !rhsptr->GetValue());
+    return false;
+  return myValue || !rhsptr->GetValue();
 } // }}}
-Bool* Bool::operator>(const Value &rhs) const // {{{
+bool Bool::operator>(const Value &rhs) const // {{{
 { const Bool *rhsptr=dynamic_cast<const Bool*>(&rhs);
   if (rhsptr==NULL)
-    return GetInstance(false);
-  return GetInstance(myValue && !rhsptr->GetValue());
+    return false;
+  return myValue && !rhsptr->GetValue();
 } // }}}
 
 Value* Bool::ParseBool(istream &in) // {{{

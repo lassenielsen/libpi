@@ -36,11 +36,11 @@ class Float : public Value // {{{
     //! Floateger division
     Float *operator/(const Float &rhs) const;
     //! Float comparison
-    Bool *operator==(const Value &rhs) const;
-    Bool *operator<=(const Value &rhs) const;
-    Bool *operator<(const Value &rhs) const;
-    Bool *operator>=(const Value &rhs) const;
-    Bool *operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     const mpf_t &GetValue() const { return myValue; }
 

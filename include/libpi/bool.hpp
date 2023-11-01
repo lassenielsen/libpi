@@ -22,16 +22,16 @@ class Bool : public Value // {{{
     std::string GetType() const { return "boo"; }
     void ToStream(std::ostream &dest) const;
     //! Boolean conjunction
-    Bool* operator&&(const Bool &rhs) const;
+    bool operator&&(const Bool &rhs) const;
     //! Boolean disjunction
-    Bool* operator||(const Bool &rhs) const;
+    bool operator||(const Bool &rhs) const;
     //! Boolean negation
-    Bool* operator!() const;
-    Bool* operator==(const Value &rhs) const;
-    Bool* operator<=(const Value &rhs) const;
-    Bool* operator<(const Value &rhs) const;
-    Bool* operator>=(const Value &rhs) const;
-    Bool* operator>(const Value &rhs) const;
+    bool operator!() const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     bool GetValue() const { return myValue; }
 

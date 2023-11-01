@@ -18,19 +18,19 @@ Channel *Channel::Create(const string &address) // {{{
   return create(address);
 } // }}}
 
-Bool *Channel::operator==(const Value &rhs) const // {{{
+bool Channel::operator==(const Value &rhs) const // {{{
 { const Channel *rhsptr=dynamic_cast<const Channel*>(&rhs);
-  return Bool::GetInstance(rhsptr!=NULL && GetAddress()==rhsptr->GetAddress());
+  return rhsptr!=NULL && GetAddress()==rhsptr->GetAddress();
 } // }}}
-Bool *Channel::operator<=(const Value &rhs) const // {{{
+bool Channel::operator<=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Channel::operator<(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Channel::operator<(const Value &rhs) const // {{{
+{ return false;
 } // }}}
-Bool *Channel::operator>=(const Value &rhs) const // {{{
+bool Channel::operator>=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Channel::operator>(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Channel::operator>(const Value &rhs) const // {{{
+{ return false;
 } // }}}

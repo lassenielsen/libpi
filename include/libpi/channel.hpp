@@ -33,11 +33,11 @@ class Channel : public Value
 // }}}
     virtual void Unlink()=0;
 
-    Bool* operator==(const Value &rhs) const;
-    Bool* operator<=(const Value &rhs) const;
-    Bool* operator<(const Value &rhs) const;
-    Bool* operator>=(const Value &rhs) const;
-    Bool* operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
 // DOCUMENTATION: Send method {{{
 /*!
@@ -48,14 +48,24 @@ class Channel : public Value
     virtual void Send(Value *msg)=0;
 // DOCUMENTATION: Send method {{{
 /*!
- * Task level send method. Enables the receiving task to be sceduled on the
- * sending tasas worker, avoiding further synchronization issues.
+ * Task level send method for values. Enables the receiving task to be sceduled
+ * on the sending tasks worker, avoiding further synchronization issues.
  * Returns true if message was received directly, and false if the task was
  * added to queue, and the task skould be ended (untill it will automatically
  * bede requeued by the channel when the message is received.
  */
 // }}}
     virtual void Send(task::Task *sender, Value *msg)=0;
+// DOCUMENTATION: Send method {{{
+/*!
+ * Task level send method for ints. Enables the receiving task to be sceduled
+ * on the sending tasks worker, avoiding further synchronization issues.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * bede requeued by the channel when the message is received.
+ */
+// }}}
+    virtual void Send(task::Task *sender, long int msg)=0;
 // DOCUMENTATION: SingleSend method {{{
 /*!
  * SingleSend transmits a message on the channel, ensuring the message
@@ -71,6 +81,12 @@ class Channel : public Value
  */
 // }}}
     virtual void SingleSend(task::Task *sender, Value *msg)=0;
+// DOCUMENTATION: Send method {{{
+/*!
+ * Task level single packet send method.
+ */
+// }}}
+    virtual void SingleSend(task::Task *sender, long int msg)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive returns the value received on the channel.
@@ -89,6 +105,16 @@ class Channel : public Value
     virtual bool Receive(task::Task *receiver, Value **dest)=0;
 // DOCUMENTATION: Receive method {{{
 /*!
+ * Task level receive method. Enables the task to be stored in a local queue
+ * until the desired message is received.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * be requeued by the channel when the message is received.
+ */
+// }}}
+    virtual bool Receive(task::Task *receiver, long int *dest)=0;
+// DOCUMENTATION: Receive method {{{
+/*!
  * SingleReceive receives a single packet, and returns the contained
  * value.
  */
@@ -103,6 +129,16 @@ class Channel : public Value
  */
 // }}}
     virtual bool SingleReceive(task::Task *receiver, Value **dest)=0;
+// DOCUMENTATION: Receive method {{{
+/*!
+ * Task level receive method. Enables the task to be stored in a local queue
+ * until the decired message is received.
+ * Returns true if message was received directly, and false if the task was
+ * added to queue, and the task skould be ended (untill it will automatically
+ * be requeued by the channel when the message is received.
+ */
+// }}}
+    virtual bool SingleReceive(task::Task *receiver, long int *dest)=0;
 // DOCUMENTATION: GetAddress accessor {{{
 /*!
  * GetAddress is used to obtain a serialized address that can be used

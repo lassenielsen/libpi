@@ -85,40 +85,40 @@ Quotient *Quotient::operator/(const Quotient &rhs) const // {{{
   mpq_div(res->GetValue(),GetValue(),rhs.GetValue());
   return res;
 } // }}}
-Bool *Quotient::operator==(const Value &rhs) const // {{{
+bool Quotient::operator==(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return Bool::GetInstance(cmp==0);
+  return cmp==0;
 } // }}}
-Bool *Quotient::operator<=(const Value &rhs) const // {{{
+bool Quotient::operator<=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return Bool::GetInstance(cmp<=0);
+  return cmp<=0;
 } // }}}
-Bool *Quotient::operator<(const Value &rhs) const // {{{
+bool Quotient::operator<(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return Bool::GetInstance(cmp<0);
+  return cmp<0;
 } // }}}
-Bool *Quotient::operator>=(const Value &rhs) const // {{{
+bool Quotient::operator>=(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return Bool::GetInstance(cmp>=0);
+  return cmp>=0;
 } // }}}
-Bool *Quotient::operator>(const Value &rhs) const // {{{
+bool Quotient::operator>(const Value &rhs) const // {{{
 { const Quotient *rhsptr=dynamic_cast<const Quotient*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpq_cmp(GetValue(),rhsptr->GetValue());
-  return Bool::GetInstance(cmp>0);
+  return cmp>0;
 } // }}}
 
 Value *Quotient::ParseQuotient(std::istream &in) // {{{

@@ -19,11 +19,11 @@ class Link : public libpi::Link // {{{
     virtual ~Link();
     virtual std::string GetType() const;
     virtual void ToStream(std::ostream &dest) const;
-    virtual Bool *operator==(const Value &rhs) const;
-    virtual Bool *operator<=(const Value &rhs) const;
-    virtual Bool *operator<(const Value &rhs) const;
-    virtual Bool *operator>=(const Value &rhs) const;
-    virtual Bool *operator>(const Value &rhs) const;
+    virtual bool operator==(const Value &rhs) const;
+    virtual bool operator<=(const Value &rhs) const;
+    virtual bool operator<(const Value &rhs) const;
+    virtual bool operator>=(const Value &rhs) const;
+    virtual bool operator>(const Value &rhs) const;
     virtual Session *Connect(int pid, int actors);
 
     const std::vector<Channel*> &GetChannels() const { return myChannels; }

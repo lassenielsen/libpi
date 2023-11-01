@@ -36,11 +36,11 @@ class Int : public Value // {{{
     //! Integer division
     Int *operator/(const Int &rhs) const;
     //! Integer comparison
-    Bool *operator==(const Value &rhs) const;
-    Bool *operator<=(const Value &rhs) const;
-    Bool *operator<(const Value &rhs) const;
-    Bool *operator>=(const Value &rhs) const;
-    Bool *operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     const mpz_t &GetValue() const;
 

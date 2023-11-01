@@ -44,20 +44,20 @@ std::string Value::Serialize() const // {{{
   Serialize(ss);
   return ss.str();
 } // }}}
-Bool* Value::operator==(const Value &rhs) const // {{{
-{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+bool Value::operator==(const Value &rhs) const // {{{
+{ return typeid(rhs)==typeid(*this); 
 } // }}}
-Bool* Value::operator<=(const Value &rhs) const // {{{
-{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+bool Value::operator<=(const Value &rhs) const // {{{
+{ return typeid(rhs)==typeid(*this); 
 } // }}}
-Bool* Value::operator<(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false); 
+bool Value::operator<(const Value &rhs) const // {{{
+{ return false; 
 } // }}}
-Bool* Value::operator>=(const Value &rhs) const // {{{
-{ return Bool::GetInstance(typeid(rhs)==typeid(*this)); 
+bool Value::operator>=(const Value &rhs) const // {{{
+{ return typeid(rhs)==typeid(*this); 
 } // }}}
-Bool* Value::operator>(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false); 
+bool Value::operator>(const Value &rhs) const // {{{
+{ return false; 
 } // }}}
 Value* Value::Parse(const string &str) // {{{
 { stringstream ss;

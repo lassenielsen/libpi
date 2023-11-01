@@ -66,40 +66,40 @@ Int *Int::operator/(const Int &rhs) const // {{{
   mpz_tdiv_q(res,myValue,rhs.GetValue());
   return new Int(res,true);
 } // }}}
-Bool *Int::operator==(const Value &rhs) const // {{{
+bool Int::operator==(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp==0);
+  return cmp==0;
 } // }}}
-Bool *Int::operator<=(const Value &rhs) const // {{{
+bool Int::operator<=(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp<=0);
+  return cmp<=0;
 } // }}}
-Bool *Int::operator<(const Value &rhs) const // {{{
+bool Int::operator<(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp<0);
+  return cmp<0;
 } // }}}
-Bool *Int::operator>=(const Value &rhs) const // {{{
+bool Int::operator>=(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp>=0);
+  return cmp>=0;
 } // }}}
-Bool *Int::operator>(const Value &rhs) const // {{{
+bool Int::operator>(const Value &rhs) const // {{{
 { const Int *rhsptr=dynamic_cast<const Int*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpz_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp>0);
+  return cmp>0;
 } // }}}
 const mpz_t &Int::GetValue() const // {{{
 { return myValue;

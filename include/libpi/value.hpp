@@ -8,7 +8,6 @@
 
 namespace libpi
 {
-class Bool;
 
 // DOCUMENTATION: Value class {{{
 /*!
@@ -28,18 +27,18 @@ class Value // {{{
     std::string ToString() const;
     void Serialize(std::ostream &dest) const;
     std::string Serialize() const;
-    virtual Bool* operator==(const Value &rhs) const;
-    virtual Bool* operator<=(const Value &rhs) const;
-    virtual Bool* operator<(const Value &rhs) const;
-    virtual Bool* operator>=(const Value &rhs) const;
-    virtual Bool* operator>(const Value &rhs) const;
+    virtual bool operator==(const Value &rhs) const;
+    virtual bool operator<=(const Value &rhs) const;
+    virtual bool operator<(const Value &rhs) const;
+    virtual bool operator>=(const Value &rhs) const;
+    virtual bool operator>(const Value &rhs) const;
 
     static Value* Parse(const std::string &str);
     static Value* Parse(std::istream &in);
     static int RegisterParser(const std::string &type, value_creator p);
 
     inline void AddRef() { ++myRefCount; }
-    inline void RemoveRef() { --myRefCount; if (myRefCount<=0) delete this; }
+    inline void RemoveRef() { --myRefCount; /* FIXME: INCLUDE THIS: if (myRefCount<=0) delete this;*/ }
   private:
     static std::map<std::string,value_creator> ourParsers;
     std::atomic<int> myRefCount;

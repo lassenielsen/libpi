@@ -73,40 +73,40 @@ Float *Float::operator/(const Float &rhs) const // {{{
   mpf_div(res,myValue,rhs.GetValue());
   return new Float(res,true);
 } // }}}
-Bool *Float::operator==(const Value &rhs) const // {{{
+bool Float::operator==(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp==0);
+  return cmp==0;
 } // }}}
-Bool *Float::operator<=(const Value &rhs) const // {{{
+bool Float::operator<=(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp<=0);
+  return cmp<=0;
 } // }}}
-Bool *Float::operator<(const Value &rhs) const // {{{
+bool Float::operator<(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp<0);
+  return cmp<0;
 } // }}}
-Bool *Float::operator>=(const Value &rhs) const // {{{
+bool Float::operator>=(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp>=0);
+  return cmp>=0;
 } // }}}
-Bool *Float::operator>(const Value &rhs) const // {{{
+bool Float::operator>(const Value &rhs) const // {{{
 { const Float *rhsptr=dynamic_cast<const Float*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   int cmp = mpf_cmp(myValue,rhsptr->GetValue());
-  return Bool::GetInstance(cmp>0);
+  return cmp>0;
 } // }}}
 
 Value *Float::ParseFloat(std::istream &in) // {{{

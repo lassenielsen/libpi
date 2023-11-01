@@ -25,32 +25,30 @@ void Link::ToStream(ostream &dest) const // {{{
 { throw "libpi::task::Link is not serializable";
 } // }}}
 
-Bool *Link::operator==(const Value &rhs) const // {{{
+bool Link::operator==(const Value &rhs) const // {{{
 { const Link *rhsptr=dynamic_cast<const Link*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->GetChannels().size()!=GetChannels().size())
-    return Bool::GetInstance(false);
+    return false;
   for (int i=0; i<GetChannels().size(); ++i)
-  { Bool *eltResult=(*GetChannels()[i])==(*rhsptr->GetChannels()[i]);
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false - simplifies ref count
-    else
-      eltResult->RemoveRef();
+  { bool eltResult=(*GetChannels()[i])==(*rhsptr->GetChannels()[i]);
+    if (!eltResult)
+      return false;
   }
-  return Bool::GetInstance(true);
+  return true;
 } // }}}
-Bool *Link::operator<=(const Value &rhs) const // {{{
+bool Link::operator<=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Link::operator<(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Link::operator<(const Value &rhs) const // {{{
+{ return false;
 } // }}}
-Bool *Link::operator>=(const Value &rhs) const // {{{
+bool Link::operator>=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Link::operator>(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Link::operator>(const Value &rhs) const // {{{
+{ return false;
 } // }}}
 
 Session *Link::Connect(int pid, int actors) // {{{

@@ -44,35 +44,35 @@ void String::ToStream(ostream &dest) const // {{{
 String *String::operator+(const String &rhs) const // {{{
 { return new String(myValue+rhs.GetValue());
 } // }}}
-Bool *String::operator==(const Value &rhs) const // {{{
+bool String::operator==(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(myValue == rhsptr->GetValue());
+    return false;
+  return myValue == rhsptr->GetValue();
 } // }}}
-Bool *String::operator<=(const Value &rhs) const // {{{
+bool String::operator<=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(myValue <= rhsptr->GetValue());
+    return false;
+  return myValue <= rhsptr->GetValue();
 } // }}}
-Bool *String::operator<(const Value &rhs) const // {{{
+bool String::operator<(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(myValue < rhsptr->GetValue());
+    return false;
+  return myValue < rhsptr->GetValue();
 } // }}}
-Bool *String::operator>=(const Value &rhs) const // {{{
+bool String::operator>=(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(myValue >= rhsptr->GetValue());
+    return false;
+  return myValue >= rhsptr->GetValue();
 } // }}}
-Bool *String::operator>(const Value &rhs) const // {{{
+bool String::operator>(const Value &rhs) const // {{{
 { const String *rhsptr=dynamic_cast<const String*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(myValue > rhsptr->GetValue());
+    return false;
+  return myValue > rhsptr->GetValue();
 } // }}}
 
 Value *String::ParseString(istream &in) // {{{

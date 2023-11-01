@@ -4,7 +4,7 @@
 using namespace std;
 using namespace libpi::task;
 
-bool _methods(Task *_task);
+bool _methods(Task*& _task);
 
 atomic<size_t> Worker::ActiveTasks(0);
 size_t Worker::TargetTasks=std::thread::hardware_concurrency(); // Target number of active processes per worker

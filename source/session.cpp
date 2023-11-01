@@ -31,6 +31,12 @@ void Session::Send(int to, task::Task *sender, libpi::Value *value) // {{{
   myOutChannels[to]->Send(sender,value);
 } //}}}
 
+void Session::Send(int to, task::Task *sender, long int value) // {{{
+{ if (Closed()) throw string("Session::Send: Trying to use closed session.");
+  if (to<0 || to>=GetActors()) throw string("Session::Send: to must be between 0 and actors-1");
+  myOutChannels[to]->Send(sender,value);
+} //}}}
+
 libpi::Value *Session::Receive(int from) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors()) throw string("Session::Receive: to must be between 0 and actors-1");
@@ -38,6 +44,13 @@ libpi::Value *Session::Receive(int from) // {{{
 } //}}}
 
 bool Session::Receive(int from, task::Task *receiver, libpi::Value **dest) // {{{
+{ if (Closed()) throw string("Session::Receive: Trying to use closed session.");
+  if (from<0 || from>=GetActors())
+    throw string("Session::Receive: to must be between 0 and actors-1");
+  return myInChannels[from]->Receive(receiver,dest);
+} //}}}
+
+bool Session::Receive(int from, task::Task *receiver, long int *dest) // {{{
 { if (Closed()) throw string("Session::Receive: Trying to use closed session.");
   if (from<0 || from>=GetActors())
     throw string("Session::Receive: to must be between 0 and actors-1");
@@ -77,32 +90,32 @@ void Session::ToStream(ostream &dest) const // {{{
   }
 } // }}}
 
-Bool *Session::operator==(const Value &rhs) const // {{{
+bool Session::operator==(const Value &rhs) const // {{{
 { const Session *rhsptr=dynamic_cast<const Session*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->GetPid()!=GetPid())
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->GetActors()!=GetActors())
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->myInChannels!=myInChannels)
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->myOutChannels!=myOutChannels)
-    return Bool::GetInstance(false);
-  return Bool::GetInstance(true);
+    return false;
+  return true;
 
 } // }}}
-Bool *Session::operator<=(const Value &rhs) const // {{{
+bool Session::operator<=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Session::operator<(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Session::operator<(const Value &rhs) const // {{{
+{ return false;
 } // }}}
-Bool *Session::operator>=(const Value &rhs) const // {{{
+bool Session::operator>=(const Value &rhs) const // {{{
 { return (*this)==rhs;
 } // }}}
-Bool *Session::operator>(const Value &rhs) const // {{{
-{ return Bool::GetInstance(false);
+bool Session::operator>(const Value &rhs) const // {{{
+{ return false;
 } // }}}
 
 }

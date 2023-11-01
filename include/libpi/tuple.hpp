@@ -26,11 +26,11 @@ class Tuple : public Value // {{{
     Value *GetValue(const Int &index);
     const Value *GetValue(int index) const;
     Value *GetValue(int index);
-    Bool *operator==(const Value &rhs) const;
-    Bool *operator<=(const Value &rhs) const;
-    Bool *operator<(const Value &rhs) const;
-    Bool *operator>=(const Value &rhs) const;
-    Bool *operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     const std::vector<Value*> &GetValues() const {return myValues; }
     std::vector<Value*> &GetValues() { return myValues; }

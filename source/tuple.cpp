@@ -44,92 +44,78 @@ const Value *Tuple::GetValue(int index) const // {{{
 Value *Tuple::GetValue(int index) // {{{
 { return myValues[index];
 } // }}}
-Bool *Tuple::operator==(const Value &rhs) const // {{{
+bool Tuple::operator==(const Value &rhs) const // {{{
 { const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   if (rhsptr->GetValues().size()!=myValues.size())
-    return Bool::GetInstance(false);
+    return false;
   for (int i=0; i<myValues.size(); ++i)
-  { Bool *eltResult=(*GetValue(i))==(*rhsptr->GetValue(i));
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false but simpler
-    else
-      eltResult->RemoveRef();
+  { bool eltResult=(*GetValue(i))==(*rhsptr->GetValue(i));
+    if (!eltResult)
+      return false;
   }
-  return Bool::GetInstance(true);
+  return true;
 } // }}}
-Bool *Tuple::operator<=(const Value &rhs) const // {{{
+bool Tuple::operator<=(const Value &rhs) const // {{{
 { const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
   if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  for (int i=0; true; ++i)
-  { if (i>=GetValues().size() && i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(true);
-    if (i>=GetValues().size())
-      return Bool::GetInstance(true);
-    if (i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(false);
-    Bool *eltResult=(*GetValue(i))<=(*rhsptr->GetValue(i));
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false but simpler
-    else
-      eltResult->RemoveRef();
-  }
-  return Bool::GetInstance(true);
-} // }}}
-Bool *Tuple::operator<(const Value &rhs) const // {{{
-{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
-  if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  for (int i=0; true; ++i)
-  { if (i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(false);
-    if (i>=GetValues().size())
-      return Bool::GetInstance(true);
-    Bool *eltResult=(*GetValue(i))<(*rhsptr->GetValue(i));
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false but simpler
-    else
-      eltResult->RemoveRef();
-  }
-  return Bool::GetInstance(true);
-} // }}}
-Bool *Tuple::operator>=(const Value &rhs) const // {{{
-{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
-  if (rhsptr==NULL)
-    return Bool::GetInstance(false);
-  for (int i=0; true; ++i)
-  { if (i>=GetValues().size() && i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(true);
-    if (i>=GetValues().size())
-      return Bool::GetInstance(false);
-    if (i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(true);
-    Bool *eltResult=(*GetValue(i))>=(*rhsptr->GetValue(i));
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false but simpler
-    else
-      eltResult->RemoveRef();
-  }
-  return Bool::GetInstance(true);
-} // }}}
-Bool *Tuple::operator>(const Value &rhs) const // {{{
-{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
-  if (rhsptr==NULL)
-    return Bool::GetInstance(false);
+    return false;
   for (int i=0; true; ++i)
   { if (i>=GetValues().size())
-      return Bool::GetInstance(false);
+      return true;
     if (i>=rhsptr->GetValues().size())
-      return Bool::GetInstance(true);
-    Bool *eltResult=(*GetValue(i))>(*rhsptr->GetValue(i));
-    if (!(eltResult->GetValue()))
-      return eltResult; // return false but simpler
-    else
-      eltResult->RemoveRef();
+      return false;
+    bool eltResult=(*GetValue(i))<=(*rhsptr->GetValue(i));
+    if (!eltResult)
+      return false;
   }
-  return Bool::GetInstance(true);
+  return true;
+} // }}}
+bool Tuple::operator<(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  for (int i=0; true; ++i)
+  { if (i>=rhsptr->GetValues().size())
+      return false;
+    if (i>=GetValues().size())
+      return true;
+    bool eltResult=(*GetValue(i))<(*rhsptr->GetValue(i));
+    if (!eltResult)
+      return false;
+  }
+  return true;
+} // }}}
+bool Tuple::operator>=(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  for (int i=0; true; ++i)
+  { if (i>=rhsptr->GetValues().size())
+      return true;
+    if (i>=GetValues().size())
+      return false;
+    bool eltResult=(*GetValue(i))>=(*rhsptr->GetValue(i));
+    if (!eltResult)
+      return false;
+  }
+  return true;
+} // }}}
+bool Tuple::operator>(const Value &rhs) const // {{{
+{ const Tuple *rhsptr=dynamic_cast<const Tuple*>(&rhs);
+  if (rhsptr==NULL)
+    return false;
+  for (int i=0; true; ++i)
+  { if (i>=GetValues().size())
+      return false;
+    if (i>=rhsptr->GetValues().size())
+      return true;
+    bool eltResult=(*GetValue(i))>(*rhsptr->GetValue(i));
+    if (!eltResult)
+      return false;
+  }
+  return true;
 } // }}}
 void Tuple::AddValue(Value *val) // {{{
 { val->AddRef();

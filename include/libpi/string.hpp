@@ -22,11 +22,11 @@ class String : public Value // {{{
     std::string GetType() const { return "str"; }
     void ToStream(std::ostream &dest) const;
     String *operator+(const String &rhs) const;
-    Bool *operator==(const Value &rhs) const;
-    Bool *operator<=(const Value &rhs) const;
-    Bool *operator<(const Value &rhs) const;
-    Bool *operator>=(const Value &rhs) const;
-    Bool *operator>(const Value &rhs) const;
+    bool operator==(const Value &rhs) const;
+    bool operator<=(const Value &rhs) const;
+    bool operator<(const Value &rhs) const;
+    bool operator>=(const Value &rhs) const;
+    bool operator>(const Value &rhs) const;
 
     const std::string &GetValue() const { return myValue; }
 

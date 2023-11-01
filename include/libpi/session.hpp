@@ -62,6 +62,7 @@ namespace libpi
 // }}}
       virtual void Send(int to, Value *value);
       virtual void Send(int to, task::Task *sender, Value *value);
+      virtual void Send(int to, task::Task *sender, long int msg);
 // DOCUMENTATION: Receive method {{{
 /*!
  * Receive waits for and receives a value over the channel from the
@@ -74,6 +75,7 @@ namespace libpi
 // }}}
       virtual Value *Receive(int from);
       virtual bool Receive(int from, task::Task *receiver, Value **dest);
+      virtual bool Receive(int from, task::Task *receiver, long int *dest);
 
 //      virtual std::string Sync(std::vector<std::string> choices)=0;
 
@@ -106,11 +108,11 @@ namespace libpi
       // Value methods
       std::string GetType() const;
       void ToStream(std::ostream &dest) const;
-      Bool *operator==(const Value &rhs) const;
-      Bool *operator<=(const Value &rhs) const;
-      Bool *operator<(const Value &rhs) const;
-      Bool *operator>=(const Value &rhs) const;
-      Bool *operator>(const Value &rhs) const;
+      bool operator==(const Value &rhs) const;
+      bool operator<=(const Value &rhs) const;
+      bool operator<(const Value &rhs) const;
+      bool operator>=(const Value &rhs) const;
+      bool operator>(const Value &rhs) const;
 
       static Value *ParseSession(const std::string &str);
 
