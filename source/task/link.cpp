@@ -14,7 +14,10 @@ Link::Link(int actors) // {{{
 } // }}}
 
 Link::~Link() // {{{
-{
+{ while (!myChannels.empty())
+  { myChannels.back()->RemoveRef();
+    myChannels.pop_back();
+  }
 } // }}}
 
 string Link::GetType() const // {{{

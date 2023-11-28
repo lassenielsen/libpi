@@ -12,11 +12,21 @@ Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::ve
   myActors(actors),
   myInChannels(inChannels),
   myOutChannels(outChannels)
-{
+{ for (auto it=myInChannels.begin(); it!=myInChannels.end(); ++it)
+    (*it)->AddRef();
+  for (auto it=myOutChannels.begin(); it!=myOutChannels.end(); ++it)
+    (*it)->AddRef();
 } // }}}
 
 Session::~Session() // {{{
-{
+{ while (!myInChannels.empty())
+  { myInChannels.back()->RemoveRef();
+    myInChannels.pop_back();
+  }
+  while (!myOutChannels.empty())
+  { myOutChannels.back()->RemoveRef();
+    myOutChannels.pop_back();
+  }
 } // }}}
 
 void Session::Send(int to, libpi::Value *value) // {{{

@@ -23,7 +23,7 @@ namespace libpi
 // }}}
     class Task : public libpi::Value // {{{
     { public:
-        Task() {}
+        Task() { tmp=NULL; }
         virtual ~Task();
         virtual std::string GetType() const;
         virtual void ToStream(std::ostream &dest) const;
@@ -35,6 +35,7 @@ namespace libpi
 
         static size_t MaxSteps;                  //! Maximum number of steps before yielding
 
+        long int tmpInt;                         //! A temporary value that can be used by the task for example to receive a boolean value
         libpi::Value *tmp;                       //! A temporary value that can be used by the task for example to receive a value
         std::vector<libpi::Value*> tmps;         //! A list of temporary values that can be used by the task, used mainly for linking
 

@@ -4,6 +4,7 @@
 #include <memory>
 #include <ostream>
 #include <istream>
+#include <iostream>
 #include <atomic>
 
 namespace libpi
@@ -22,6 +23,8 @@ class Value // {{{
     Value();
     Value(const std::string &str);
     virtual ~Value();
+
+    int RefCount() const { return myRefCount; }
     virtual std::string GetType() const;
     virtual void ToStream(std::ostream &dest) const;
     std::string ToString() const;
@@ -38,10 +41,23 @@ class Value // {{{
     static int RegisterParser(const std::string &type, value_creator p);
 
     inline void AddRef() { ++myRefCount; }
-    inline void RemoveRef() { --myRefCount; /* FIXME: INCLUDE THIS: if (myRefCount<=0) delete this;*/ }
+    inline void RemoveRef() { --myRefCount; if (myRefCount<=0) { /*std::cout << "Deleting value at: " << (long int)this << std::endl;*/ delete this;} }
   private:
     static std::map<std::string,value_creator> ourParsers;
     std::atomic<int> myRefCount;
 }; // }}}
 
+inline void AssignValue(Value **var, Value *val) // {{{
+{ if (val==*var)
+    return;
+  val->AddRef();
+  if (*var)
+    (*var)->RemoveRef();
+  *var=val;
+} // }}}
+inline void AssignNewValue(Value **var, Value *val) // {{{
+{ if (*var)
+    (*var)->RemoveRef();
+  *var=val;
+} // }}}
 }

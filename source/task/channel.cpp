@@ -52,14 +52,6 @@ void Channel::Send(Task *sender, libpi::Value *val) // {{{
 { SingleSend(sender,val);
 } // }}}
 
-inline void AssignValue(Value **var, Value *val) // {{{
-{ if (val==*var)
-    return;
-  val->AddRef();
-  if (*var)
-    (*var)->RemoveRef();
-  *var=val;
-} // }}}
 void Channel::SingleSend(Task *sender, libpi::Value *val) // {{{
 { pthread_mutex_lock(&myLock);
   if (!myTasks.empty()) // Pop task
