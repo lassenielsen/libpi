@@ -41,23 +41,25 @@ class Value // {{{
     static int RegisterParser(const std::string &type, value_creator p);
 
     inline void AddRef() { ++myRefCount; }
-    inline void RemoveRef() { --myRefCount; if (myRefCount<=0) { /*std::cout << "Deleting value at: " << (long int)this << std::endl;*/ delete this;} }
+    friend void RemoveRef(Value *ref);
   private:
     static std::map<std::string,value_creator> ourParsers;
     std::atomic<int> myRefCount;
 }; // }}}
 
+
+inline void RemoveRef(Value *ref) { --(ref->myRefCount); if (ref->myRefCount<=0) { /*std::cout << "Deleting value at: " << (long int)this << std::endl;*/ delete ref;} }
 inline void AssignValue(Value **var, Value *val) // {{{
 { if (val==*var)
     return;
   val->AddRef();
   if (*var)
-    (*var)->RemoveRef();
+    RemoveRef(*var);
   *var=val;
 } // }}}
 inline void AssignNewValue(Value **var, Value *val) // {{{
 { if (*var)
-    (*var)->RemoveRef();
+    RemoveRef(*var);
   *var=val;
 } // }}}
 }

@@ -7,7 +7,7 @@ using namespace std;
 namespace libpi
 {
 
-Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels) // {{{
+Session::Session(int pid, int actors, std::vector<task::Channel*> &inChannels, std::vector<task::Channel*> &outChannels) // {{{
 : myPid(pid),
   myActors(actors),
   myInChannels(inChannels),
@@ -20,11 +20,11 @@ Session::Session(int pid, int actors, std::vector<Channel*> &inChannels, std::ve
 
 Session::~Session() // {{{
 { while (!myInChannels.empty())
-  { myInChannels.back()->RemoveRef();
+  { RemoveRef(myInChannels.back());
     myInChannels.pop_back();
   }
   while (!myOutChannels.empty())
-  { myOutChannels.back()->RemoveRef();
+  { RemoveRef(myOutChannels.back());
     myOutChannels.pop_back();
   }
 } // }}}

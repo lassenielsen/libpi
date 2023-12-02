@@ -2,9 +2,7 @@
 #define libpi_task_channel
 
 #include <pthread.h>
-#include <libpi/thread/mutex.hpp>
 #include <libpi/task/task.hpp>
-#include <libpi/channel.hpp>
 #include <string>
 #include <queue>
 #include <atomic>
@@ -22,7 +20,7 @@ namespace libpi {
  * level channels.
  */
 // }}}
-    class Channel : public libpi::Channel
+    class Channel : public libpi::Value
     { public:
         Channel();
         Channel(const Channel &rhs);

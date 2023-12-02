@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <libpi/channel.hpp>
+#include <libpi/task/channel.hpp>
 #include <libpi/value.hpp>
 #include <libpi/task/task.hpp>
 
@@ -40,7 +40,7 @@ namespace libpi
 * participants in the session.
 */
 // }}}
-      Session(int pid, int actors, std::vector<Channel*> &inChannels, std::vector<Channel*> &outChannels);
+      Session(int pid, int actors, std::vector<task::Channel*> &inChannels, std::vector<task::Channel*> &outChannels);
 // DOCUMENTATION: Session destructor {{{
 /*!
 * The destructor closes the session (and all of its channels)
@@ -120,8 +120,8 @@ namespace libpi
       int myPid;
       int myActors;
 
-      std::vector<Channel*> myInChannels;
-      std::vector<Channel*> myOutChannels;
+      std::vector<task::Channel*> myInChannels;
+      std::vector<task::Channel*> myOutChannels;
 // DOCUMENTATION: ourSessionCreators field {{{
 /*!
  * Maps all session protocols to methods that can create a session from an

@@ -15,7 +15,7 @@ Link::Link(int actors) // {{{
 
 Link::~Link() // {{{
 { while (!myChannels.empty())
-  { myChannels.back()->RemoveRef();
+  { RemoveRef(myChannels.back());
     myChannels.pop_back();
   }
 } // }}}
@@ -61,8 +61,8 @@ Session *Link::Connect(int pid, int actors) // {{{
     throw string("libpi::task::Link::Connect: pid must be between 0 and actors-1.");
 
   // Create vectors for session channels
-  vector<libpi::Channel*> inChannels;
-  vector<libpi::Channel*> outChannels;
+  vector<libpi::task::Channel*> inChannels;
+  vector<libpi::task::Channel*> outChannels;
 
   // Create receiving session-channels
   for (int i=0; i<actors; ++i)
@@ -73,7 +73,7 @@ Session *Link::Connect(int pid, int actors) // {{{
   { outChannels.push_back(inChannels[pid]);
     for (int actor=1; actor<actors; ++actor) // Receive channels from all actors
     { Value *val=myChannels[actor-1]->SingleReceive();
-      libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
+      libpi::task::Channel *ch=dynamic_cast<libpi::task::Channel*>(val);
       if (!ch)
         throw string("libpi::task::Link Received non-channel during connecting");
       outChannels.push_back(ch);
@@ -94,7 +94,7 @@ Session *Link::Connect(int pid, int actors) // {{{
   else
   { myChannels[pid-1]->SingleSend(inChannels.front());
     Value *val=inChannels.front()->SingleReceive();
-    libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
+    libpi::task::Channel *ch=dynamic_cast<libpi::task::Channel*>(val);
     if (!ch)
       throw string("libpi::task::Link Received non-channel during connecting");
     outChannels.push_back(ch);
@@ -109,7 +109,7 @@ Session *Link::Connect(int pid, int actors) // {{{
         continue; // Skip distribution of own channel
       }
       Value *val=inChannels.front()->SingleReceive();
-      libpi::Channel *ch=dynamic_cast<libpi::Channel*>(val);
+      libpi::task::Channel *ch=dynamic_cast<libpi::task::Channel*>(val);
       if (!ch)
         throw string("libpi::task::Link Received non-channel during connecting");
       outChannels.push_back(ch);

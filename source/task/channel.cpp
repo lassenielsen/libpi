@@ -18,16 +18,17 @@ Channel::Channel(const Channel &rhs) // {{{
 Channel::~Channel() // {{{
 { pthread_mutex_destroy(&myLock);
   while (!myTasks.empty())
-  { myTasks.front().first->RemoveRef();
-    (*myTasks.front().second)->RemoveRef();
+  { RemoveRef(myTasks.front().first);
+    if (*myTasks.front().second)
+    (RemoveRef(*myTasks.front().second));
     myTasks.pop();
   }
   while (!myIntTasks.empty())
-  { myIntTasks.front().first->RemoveRef();
+  { RemoveRef(myIntTasks.front().first);
     myIntTasks.pop();
   }
   while (!myMsgs.empty())
-  { myMsgs.front()->RemoveRef();
+  { RemoveRef(myMsgs.front());
     myMsgs.pop();
   }
   //Not included, because not necessary, and inefficient
@@ -108,7 +109,7 @@ bool Channel::SingleReceive(Task *task, libpi::Value **dest) // {{{
     myMsgs.pop();
     pthread_mutex_unlock(&myLock);
     AssignValue(dest,msg);
-    msg->RemoveRef();
+    RemoveRef(msg);
     return true;
   }
   else // Task waits in queue

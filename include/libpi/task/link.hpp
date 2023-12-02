@@ -13,7 +13,7 @@ namespace libpi
  * channels.
  */
 // }}}
-class Link : public libpi::Link // {{{
+class Link : public libpi::Value // {{{
 { public:
     Link(int actors);
     virtual ~Link();

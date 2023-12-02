@@ -7,7 +7,6 @@
 #include <libpi/value.hpp>
 #include <vector>
 #include <atomic>
-#include <libpi/task/channel.hpp>
 
 namespace libpi
 {

@@ -19,7 +19,7 @@ Tuple::Tuple(vector<Value*> &vals) // {{{
 } // }}}
 Tuple::~Tuple() // {{{
 { while (!myValues.empty())
-  { myValues.back()->RemoveRef();
+  { RemoveRef(myValues.back());
     myValues.pop_back();
   }
 } // }}}
