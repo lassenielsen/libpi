@@ -6,6 +6,8 @@
 #include <istream>
 #include <iostream>
 #include <atomic>
+#include <queue>
+#include <pthread.h>
 
 namespace libpi
 {
@@ -41,14 +43,49 @@ class Value // {{{
     static int RegisterParser(const std::string &type, value_creator p);
 
     inline void AddRef() { ++myRefCount; }
-    friend void RemoveRef(Value *ref);
+    inline void UnRef() { --myRefCount; }
+    inline int  RefCount() { return myRefCount; }
+
+    inline static void Erase(Value *obj)
+    { pthread_mutex_lock(&ourGarbageLock);
+      ourGarbage.push(obj);
+      pthread_mutex_unlock(&ourGarbageLock);
+      pthread_mutex_unlock(&ourGarbageWaitLock);
+    }
+    inline static void GetGarbage(Value **obj)
+    { pthread_mutex_lock(&ourGarbageLock);
+      while (ourGarbage.empty())
+      { pthread_mutex_unlock(&ourGarbageLock);
+        pthread_mutex_lock(&ourGarbageWaitLock);
+        pthread_mutex_lock(&ourGarbageLock);
+      }
+      *obj=ourGarbage.front();
+      ourGarbage.pop();
+      pthread_mutex_unlock(&ourGarbageLock);
+    }
+    inline static int InitLocks()
+    { pthread_mutex_init(&ourGarbageLock,NULL);
+      pthread_mutex_init(&ourGarbageWaitLock,NULL);
+      return 1;
+    }
+
   private:
+
     static std::map<std::string,value_creator> ourParsers;
+    static std::queue<Value*> ourGarbage;
+    static pthread_mutex_t ourGarbageLock;
+    static pthread_mutex_t ourGarbageWaitLock;
     std::atomic<int> myRefCount;
 }; // }}}
 
-
-inline void RemoveRef(Value *ref) { --(ref->myRefCount); if (ref->myRefCount<=0) { /*std::cout << "Deleting value at: " << (long int)this << std::endl;*/ delete ref;} }
+inline void RemoveRef(Value *ref) // {{{
+{ ref->UnRef();
+  if (ref->RefCount()<=0)
+  { // std::cout << "Deleting value at: " << (long int)this << std::endl;
+    //delete ref;
+    Value::Erase(ref);
+  }
+} // }}}
 inline void AssignValue(Value **var, Value *val) // {{{
 { if (val==*var)
     return;
