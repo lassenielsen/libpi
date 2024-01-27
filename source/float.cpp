@@ -18,8 +18,7 @@ Float &Float::operator=(const Float &rhs) // {{{
 } // }}}
 
 Float::Float(const std::string &val) // {{{
-{ mpf_init2(myValue,256);
-  int res=mpf_set_str(myValue,val.c_str(),10);
+{ int res=mpf_init_set_str(myValue,val.c_str(),10);
   if (res<0) throw string("Bad Float conversion of string: ") + val;
 } // }}}
 Float::Float(mpf_t &val, bool clear_arg) // {{{
@@ -27,6 +26,12 @@ Float::Float(mpf_t &val, bool clear_arg) // {{{
   mpf_set(myValue,val);
   if (clear_arg)
     mpf_clear(val);
+} // }}}
+Float::Float(mpz_t &val, bool clear_arg) // {{{
+{ mpf_init2(myValue,256);
+  mpf_set_z(myValue,val);
+  if (clear_arg)
+    mpz_clear(val);
 } // }}}
 Float::Float(double val) // {{{
 { mpf_init2(myValue,256);
@@ -41,12 +46,17 @@ Float::~Float() // {{{
 void Float::ToStream(ostream &dest) const // {{{
 { mp_exp_t exp;
   char *str=mpf_get_str(NULL,&exp,10,0,myValue);
-  if (int(exp)>=int(strlen(str)))
-    dest << str << string(int(exp)-strlen(str),'0') << ".0";
-  else if (int(exp)>=0)
-    dest << (int(exp)==0?string("0"):string(str,int(exp))) << "." << string(str+int(exp));
+  char *spos=str;
+  if (spos[0]=='-')
+  { dest << spos[0];
+    ++spos;
+  }
+  if (int(exp)>=int(strlen(spos)))
+    dest << spos << string(int(exp)-strlen(spos),'0') << ".0";
+  else if (int(exp)>0)
+    dest << (string(spos,int(exp))) << "." << string(spos+int(exp));
   else
-    dest << "0." << string(1-int(exp),'0') << string(str);
+    dest << "0." << string(-int(exp),'0') << string(spos);
   free(str);
 } // }}}
 shared_ptr<Float> Float::operator+(const Float &rhs) const // {{{

@@ -22,6 +22,7 @@ class Float : public Value // {{{
     // Constructors
     Float(const std::string &val);
     Float(mpf_t &val, bool clear_arg=false);
+    Float(mpz_t &val, bool clear_arg=false);
     Float(double val=0);
     virtual ~Float();
 
