@@ -48,24 +48,24 @@ class Value // {{{
 
     inline static void Erase(Value *obj)
     { pthread_mutex_lock(&ourGarbageLock);
-      ourGarbage.push(obj);
+      delete obj; //ourGarbage.push(obj);
       pthread_mutex_unlock(&ourGarbageLock);
-      pthread_mutex_unlock(&ourGarbageWaitLock);
+      //pthread_mutex_unlock(&ourGarbageWaitLock);
     }
-    inline static void GetGarbage(Value **obj)
-    { pthread_mutex_lock(&ourGarbageLock);
-      while (ourGarbage.empty())
-      { pthread_mutex_unlock(&ourGarbageLock);
-        pthread_mutex_lock(&ourGarbageWaitLock);
-        pthread_mutex_lock(&ourGarbageLock);
-      }
-      *obj=ourGarbage.front();
-      ourGarbage.pop();
-      pthread_mutex_unlock(&ourGarbageLock);
-    }
+    //inline static void GetGarbage(Value **obj)
+    //{ pthread_mutex_lock(&ourGarbageLock);
+    //  while (ourGarbage.empty())
+    //  { pthread_mutex_unlock(&ourGarbageLock);
+    //    pthread_mutex_lock(&ourGarbageWaitLock);
+    //    pthread_mutex_lock(&ourGarbageLock);
+    //  }
+    //  *obj=ourGarbage.front();
+    //  ourGarbage.pop();
+    //  pthread_mutex_unlock(&ourGarbageLock);
+    //}
     inline static int InitLocks()
     { pthread_mutex_init(&ourGarbageLock,NULL);
-      pthread_mutex_init(&ourGarbageWaitLock,NULL);
+      //pthread_mutex_init(&ourGarbageWaitLock,NULL);
       return 1;
     }
 
@@ -74,7 +74,7 @@ class Value // {{{
     static std::map<std::string,value_creator> ourParsers;
     static std::queue<Value*> ourGarbage;
     static pthread_mutex_t ourGarbageLock;
-    static pthread_mutex_t ourGarbageWaitLock;
+    //static pthread_mutex_t ourGarbageWaitLock;
     std::atomic<int> myRefCount;
 }; // }}}
 
