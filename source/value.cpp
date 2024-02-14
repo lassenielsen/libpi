@@ -14,7 +14,7 @@ namespace libpi
 map<string,Value::value_creator> Value::ourParsers;
 queue<Value*> Value::ourGarbage;
 pthread_mutex_t Value::ourGarbageLock;
-//pthread_mutex_t Value::ourGarbageWaitLock;
+pthread_mutex_t Value::ourGarbageWaitLock;
 int initValueLocks=Value::InitLocks();
 
 // Value Implementation
